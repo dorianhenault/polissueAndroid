@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "200004753595",
+    "firebase_url": "https://polissue-63a97.firebaseio.com",
+    "project_id": "polissue-63a97",
+    "storage_bucket": "polissue-63a97.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:200004753595:android:65b267da678452ad",
+        "android_client_info": {
+          "package_name": "ihm.si3.fr.unice.polytech.polissue"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "200004753595-agijj3isq2nqbqh688tr8ub78m0vocq5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ihm.si3.fr.unice.polytech.polissue",
+            "certificate_hash": "f1219dd3737e911b1121d2fda87e1b6569d38d38"
+          }
+        },
+        {
+          "client_id": "200004753595-drj23thgl1idstqtv24u6dumer8ftv1o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcGYN4yvNqmoFostopOBvFtVSw7C3TzS4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "200004753595-drj23thgl1idstqtv24u6dumer8ftv1o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
