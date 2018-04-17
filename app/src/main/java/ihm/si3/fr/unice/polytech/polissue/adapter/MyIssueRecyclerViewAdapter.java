@@ -9,26 +9,22 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import ihm.si3.fr.unice.polytech.polissue.R;
-import ihm.si3.fr.unice.polytech.polissue.fragment.IssueFragment.OnListFragmentInteractionListener;
-import ihm.si3.fr.unice.polytech.polissue.dummy.DummyContent.DummyItem;
-import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
-
 import java.util.List;
 
+import ihm.si3.fr.unice.polytech.polissue.R;
+
+import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
+
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * {@link RecyclerView.Adapter} that can display a {@link IssueModel}
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecyclerViewAdapter.ViewHolder> {
 
     private final List<IssueModel> mValues;
-    private final OnListFragmentInteractionListener mListener;
 
-    public MyIssueRecyclerViewAdapter(List<IssueModel> items, OnListFragmentInteractionListener listener) {
+    public MyIssueRecyclerViewAdapter(List<IssueModel> items) {
         mValues = items;
-        mListener = listener;
     }
 
     @NonNull
@@ -50,11 +46,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.issueModel);
-                }
+
             }
         });
     }
