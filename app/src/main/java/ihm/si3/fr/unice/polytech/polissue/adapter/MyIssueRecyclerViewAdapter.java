@@ -1,13 +1,18 @@
-package ihm.si3.fr.unice.polytech.polissue;
+package ihm.si3.fr.unice.polytech.polissue.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import ihm.si3.fr.unice.polytech.polissue.IssueFragment.OnListFragmentInteractionListener;
+import ihm.si3.fr.unice.polytech.polissue.R;
+import ihm.si3.fr.unice.polytech.polissue.fragment.IssueFragment.OnListFragmentInteractionListener;
 import ihm.si3.fr.unice.polytech.polissue.dummy.DummyContent.DummyItem;
+import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 import java.util.List;
 
@@ -18,14 +23,15 @@ import java.util.List;
  */
 public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<IssueModel> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyIssueRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyIssueRecyclerViewAdapter(List<IssueModel> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -35,9 +41,11 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.issueModel = mValues.get(position);
+//        holder.issueTitle.setText(mValues.get(position).getTitle());
+//        holder.issueState.setProgress(mValues.get(position).getState().getProgress());
+//        holder.issueDeclarer.setText(mValues.get(position).getDeclarer().getName());
+//        holder.issueDate.setText(mValues.get(position).getDate());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +53,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onListFragmentInteraction(holder.issueModel);
                 }
             }
         });
@@ -58,20 +66,22 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public final ImageView issueImage;
+        public final TextView issueTitle;
+        public final TextView issueDeclarer;
+        public final TextView issueDate;
+        public final ProgressBar issueState;
+        public IssueModel issueModel;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
-        }
+            issueImage = view.findViewById(R.id.issueImage);
+            issueTitle = view.findViewById(R.id.issueTitle);
+            issueDeclarer = view.findViewById(R.id.issueDeclarer);
+            issueDate = view.findViewById(R.id.issueDate);
+            issueState = view.findViewById(R.id.issueState);
 
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
         }
     }
 }

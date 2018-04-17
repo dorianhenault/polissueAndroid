@@ -1,4 +1,4 @@
-package ihm.si3.fr.unice.polytech.polissue;
+package ihm.si3.fr.unice.polytech.polissue.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import ihm.si3.fr.unice.polytech.polissue.dummy.DummyContent;
-import ihm.si3.fr.unice.polytech.polissue.dummy.DummyContent.DummyItem;
-
+import java.util.ArrayList;
 import java.util.List;
+
+import ihm.si3.fr.unice.polytech.polissue.adapter.MyIssueRecyclerViewAdapter;
+import ihm.si3.fr.unice.polytech.polissue.R;
+import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 /**
  * A fragment representing a list of Items.
@@ -69,7 +71,11 @@ public class IssueFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyIssueRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+
+            List<IssueModel> issues = new ArrayList<>();
+            issues.add(new IssueModel());
+
+            recyclerView.setAdapter(new MyIssueRecyclerViewAdapter(issues, mListener));
         }
         return view;
     }
@@ -104,6 +110,6 @@ public class IssueFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(IssueModel item);
     }
 }
