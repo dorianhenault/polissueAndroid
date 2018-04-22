@@ -27,8 +27,9 @@
     <!--Login API datas-->
     <string name="facebook_application_id" translatable="false">167226237228606</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb167226237228606</string>
+    <string name="web_client_id">200004753595-drj23thgl1idstqtv24u6dumer8ftv1o.apps.googleusercontent.com</string>
+    <string name="authFail">Echec de connexion</string>
+    <string name="error_auth_google_play_service_update">Mise a jours des services google play necessaire</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
