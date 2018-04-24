@@ -30,12 +30,7 @@ public class MainPageActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment = DeclareIssueFragment.newInstance();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.replace(R.id.content_frame, fragment);
-                ft.addToBackStack(null);
-                ft.commit();
+                displayView(R.id.nav_manage);
             }
         });
 
@@ -45,8 +40,8 @@ public class MainPageActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         System.out.println("requestSentHere");
-        DataBaseAcces dataBaseAcces=new DataBaseAcces();
-         dataBaseAcces.sendData();
+        DataBaseAccess dataBaseAccess =new DataBaseAccess();
+         dataBaseAccess.sendData();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -103,12 +98,14 @@ public class MainPageActivity extends AppCompatActivity
 
         if (itemId == R.id.nav_camera) {
             fragment = IssueListFragment.newInstance(2);
+            title = "Liste incidents";
         } else if (itemId == R.id.nav_gallery) {
 
         } else if (itemId == R.id.nav_slideshow) {
 
         } else if (itemId == R.id.nav_manage) {
-
+            fragment = DeclareIssueFragment.newInstance();
+            title = "Déclaration d'un incident";
         } else if (itemId == R.id.nav_share) {
 
         } else if (itemId == R.id.nav_send) {

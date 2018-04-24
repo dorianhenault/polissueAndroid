@@ -5,13 +5,19 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Date;
 
+import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
+
 /**
  * Created by doh06 on 20/04/2018.
  */
 
-public class DataBaseAcces {
-    public DataBaseAcces(){
+public class DataBaseAccess {
 
+    private static final String TAG = "DataBaseAccess";
+    private FirebaseDatabase database;
+
+    public DataBaseAccess(){
+        FirebaseDatabase.getInstance();
     }
 
     public void sendData(){
@@ -41,4 +47,14 @@ public class DataBaseAcces {
         modelLocation.child("latitude").setValue("0,0");
 
     }
+
+    /**
+     * Method used to post and issue to the database
+     * @param issue the issue to post to the server
+     */
+    public void postIssue(IssueModel issue){
+        DatabaseReference issueRef = database.getReference().child("mishap");
+        issueRef.setValue(issue);
+    }
+
 }
