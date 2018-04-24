@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "200004753595-8bvo0o7aco8fqtju27t36lsvfu2d3vk4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ihm.si3.fr.unice.polytech.polissue",
+            "certificate_hash": "91203d7da26bbff3448d8de90ded738bbb899cfc"
+          }
+        },
+        {
           "client_id": "200004753595-agijj3isq2nqbqh688tr8ub78m0vocq5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
