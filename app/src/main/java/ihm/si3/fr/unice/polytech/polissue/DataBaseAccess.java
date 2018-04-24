@@ -54,7 +54,7 @@ public class DataBaseAccess {
      */
     public void postIssue(IssueModel issue){
         DatabaseReference issueRef = database.getReference().child("mishap");
-        issueRef.setValue(issue);
+        issueRef.push().setValue(issue);
     }
 
 }
