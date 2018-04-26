@@ -14,11 +14,11 @@ import ihm.si3.fr.unice.polytech.polissue.R;
 /**
  * {@link Fragment} subclass to handle the login method selection
  * Activities that contain this fragment must implement the
- * {@link LoginSelectorListener} interface to handle the login method being selected
+ * {@link LoginFragmentListener} interface to handle the login method being selected
  */
 public class LoginSelectorFragment extends Fragment {
 
-    private LoginSelectorListener mListener;
+    private LoginFragmentListener mListener;
 
     public LoginSelectorFragment() {
         // Required empty public constructor
@@ -33,19 +33,26 @@ public class LoginSelectorFragment extends Fragment {
 
         Button emailButton = mainView.findViewById(R.id.email_login);
         emailButton.setOnClickListener((View view) -> {
-            if (mListener != null) mListener.methodSelected(LoginActivity.LoginMethod.EMAIL);
+            if (mListener != null)
+                mListener.methodSelected(LoginFragmentListener.LoginMethod.EMAIL);
         });
 
         Button googleButton = mainView.findViewById(R.id.google_login);
         googleButton.setOnClickListener((View view) -> {
-            if (mListener != null) mListener.methodSelected(LoginActivity.LoginMethod.GOOGLE);
+            if (mListener != null)
+                mListener.methodSelected(LoginFragmentListener.LoginMethod.GOOGLE);
         });
 
         Button facebookButton = mainView.findViewById(R.id.facebook_login);
         facebookButton.setOnClickListener((View view) -> {
-            if (mListener != null) mListener.methodSelected(LoginActivity.LoginMethod.FACEBOOK);
+            if (mListener != null)
+                mListener.methodSelected(LoginFragmentListener.LoginMethod.FACEBOOK);
         });
 
+        Button signUpButton = mainView.findViewById(R.id.sign_up_button);
+        signUpButton.setOnClickListener((View view) -> {
+            if (mListener != null) mListener.toSignUp("", "");
+        });
 
         return mainView;
     }
@@ -54,11 +61,11 @@ public class LoginSelectorFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof LoginSelectorListener) {
-            mListener = (LoginSelectorListener) context;
+        if (context instanceof LoginFragmentListener) {
+            mListener = (LoginFragmentListener) context;
         } else {
             throw new ClassCastException(context.toString()
-                    + " must implement LoginSelectorListener");
+                    + " must implement LoginFragmentListener");
         }
     }
 
@@ -68,13 +75,5 @@ public class LoginSelectorFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     */
-    public interface LoginSelectorListener {
-        void methodSelected(LoginActivity.LoginMethod method);
-    }
+
 }

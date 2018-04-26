@@ -101,6 +101,9 @@ public class MainPageActivity extends AppCompatActivity
             startActivity(logInIntent);
         } else if (id == R.id.nav_log_out) {
             auth.signOut();
+        } else if (id == R.id.nav_sign_in) {
+            Intent signInIntent = new Intent(this, LoginActivity.class);
+            startActivity(signInIntent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

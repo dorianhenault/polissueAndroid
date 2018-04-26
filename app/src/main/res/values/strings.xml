@@ -12,16 +12,22 @@
     <!--String related to login-->
     <string name="log_in">Connexion</string>
     <string name="sign_in">Inscription</string>
+    <string name="user_id">Identifiants</string>
     <string name="log_out">Deconnexion</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
-    <string name="error_invalid_email">Email invalid</string>
-    <string name="error_invalid_password">Mot de passe trop court</string>
+    <string name="error_invalid_email">Email doit avoir la forme example@example.com</string>
+    <string name="error_invalid_password">Doit faire au moins 6 characteres</string>
     <string name="error_incorrect_password">Mot de passe incorect</string>
     <string name="error_field_required">Ce champ est obligatoire</string>
     <string name="email_login">Email</string>
     <string name="google_login">Google</string>
     <string name="facebook_login">Facebook</string>
+    <string name="first_name">Prenom</string>
+    <string name="surname">Nom</string>
+    <string name="profile">Profile</string>
+    <string name="birthdate">Date de naissance</string>
+
     <!--End of Login related string -->
 
     <!--Login API datas-->
@@ -30,6 +36,7 @@
     <string name="web_client_id">200004753595-drj23thgl1idstqtv24u6dumer8ftv1o.apps.googleusercontent.com</string>
     <string name="authFail">Echec de connexion</string>
     <string name="error_auth_google_play_service_update">Mise a jours des services google play necessaire</string>
+    <string name="error_profile_settings">Erreur lors de la creation de profile, voir la rubrique Mon Compte</string>
 
 
 </resources>

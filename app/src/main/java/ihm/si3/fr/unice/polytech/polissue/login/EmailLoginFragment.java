@@ -25,16 +25,14 @@ import ihm.si3.fr.unice.polytech.polissue.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link EmailLoginFragmentListener} interface
+ * {@link LoginFragmentListener} interface
  * to handle interaction events.
- * Use the {@link EmailLoginFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class EmailLoginFragment extends Fragment {
 
     private static final String TAG = "Email Login Fragment";
 
-    private EmailLoginFragmentListener listener;
+    private LoginFragmentListener listener;
 
     private AutoCompleteTextView email;
     private TextView password;
@@ -42,16 +40,6 @@ public class EmailLoginFragment extends Fragment {
 
     public EmailLoginFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters
-     *
-     * @return A new instance of fragment EmailLoginFragment.
-     */
-    public static EmailLoginFragment newInstance() {
-        return new EmailLoginFragment();
     }
 
 
@@ -76,6 +64,12 @@ public class EmailLoginFragment extends Fragment {
         Button login = mainView.findViewById(R.id.email_sign_in_button);
         login.setOnClickListener((View v) -> login());
 
+        Button signup = mainView.findViewById(R.id.email_sign_up_button);
+        signup.setOnClickListener((View v) -> {
+            if (listener != null)
+                listener.toSignUp(email.getText().toString(), password.getText().toString());
+        });
+
         return mainView;
     }
 
@@ -93,7 +87,7 @@ public class EmailLoginFragment extends Fragment {
         if (task.isSuccessful()) {
             // Sign in success, update UI with the signed-in user's information
             Log.d(TAG, "createUserWithEmail:success");
-            listener.loggedIn();
+            listener.done();
         } else {
             // If sign in fails, display a message to the user.
             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -107,27 +101,14 @@ public class EmailLoginFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof EmailLoginFragmentListener) {
-            listener = (EmailLoginFragmentListener) context;
+        if (context instanceof LoginFragmentListener) {
+            listener = (LoginFragmentListener) context;
         } else {
             throw new ClassCastException(context.toString()
-                    + " must implement EmailLoginFragmentListener");
+                    + " must implement LoginFragmentListener");
         }
 
     }
 
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface EmailLoginFragmentListener {
-        void loggedIn();
-    }
 }

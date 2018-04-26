@@ -24,7 +24,7 @@ import ihm.si3.fr.unice.polytech.polissue.R;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements EmailLoginFragment.EmailLoginFragmentListener, LoginSelectorFragment.LoginSelectorListener {
+public class LoginActivity extends AppCompatActivity implements LoginFragmentListener {
 
 
     private static final int RC_SIGN_IN = 1;
@@ -43,8 +43,10 @@ public class LoginActivity extends AppCompatActivity implements EmailLoginFragme
         setContentView(R.layout.activity_login);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.login_placeholder, new LoginSelectorFragment());
+        LoginSelectorFragment loginSelector = new LoginSelectorFragment();
+        fragmentTransaction.replace(R.id.login_placeholder, loginSelector);
         fragmentTransaction.commit();
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
                 .requestEmail()
@@ -54,7 +56,7 @@ public class LoginActivity extends AppCompatActivity implements EmailLoginFragme
 
 
     @Override
-    public void loggedIn() {
+    public void done() {
 
         finish();
     }
@@ -67,18 +69,28 @@ public class LoginActivity extends AppCompatActivity implements EmailLoginFragme
     @Override
     public void methodSelected(LoginMethod loginMethod) {
         if (loginMethod != null) {
-            Fragment loginFragment = null;
-            if (loginMethod.equals(LoginMethod.EMAIL)) loginFragment = new EmailLoginFragment();
-            if (loginFragment != null) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.login_placeholder, loginFragment);
-                transaction.commit();
-            }
             if (loginMethod.equals(LoginMethod.GOOGLE)) {
                 Intent signInIntent = googleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
+            } else {
+                Fragment loginFragment = null;
+                if (loginMethod.equals(LoginMethod.EMAIL)) loginFragment = new EmailLoginFragment();
+                if (loginFragment != null) {
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.login_placeholder, loginFragment);
+                    transaction.addToBackStack("emailLogin");
+                    transaction.commit();
+                }
             }
         }
+    }
+
+    @Override
+    public void toSignUp(String email, String password) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.login_placeholder, SignUpFragment.newInstance(email, password));
+        transaction.addToBackStack("signUp");
+        transaction.commit();
     }
 
     @Override
@@ -112,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements EmailLoginFragme
     private void ackowledgeCredentialLogin(Task<AuthResult> authResultTask) {
         if (authResultTask.isSuccessful()) {
             Log.d(TAG, "Successfull credential login");
-            loggedIn();
+            done();
         } else {
             Log.d(TAG, "Failed credential Login", authResultTask.getException());
             Toast.makeText(this, authResultTask.getException().getLocalizedMessage(),
@@ -120,9 +132,6 @@ public class LoginActivity extends AppCompatActivity implements EmailLoginFragme
         }
     }
 
-    public enum LoginMethod {
-        EMAIL, FACEBOOK, GOOGLE
-    }
 
 
 }
