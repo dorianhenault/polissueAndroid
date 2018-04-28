@@ -4,35 +4,39 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/issues">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_issues_list"
+                android:title="@string/issue_list"/>
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_declare_issue"
+                android:title="@string/declare_issue"/>
+        </menu>
+
+    </item>
+
+    <item android:title="@string/account">
+        <menu>
+            <item
+                android:id="@+id/nav_log_in"
+                android:title="@string/log_in" />
+            <item
+                android:id="@+id/nav_sign_in"
+                android:title="@string/sign_in" />
+            <item
+                android:id="@+id/nav_account"
+                android:title="@string/account"
+                android:visible="false"/>
+            <item
+                android:id="@+id/nav_log_out"
+                android:title="@string/log_out"
+                android:visible="false"/>
         </menu>
     </item>
+
 
 </menu>
