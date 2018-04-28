@@ -9,6 +9,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import ihm.si3.fr.unice.polytech.polissue.R;
@@ -22,9 +29,16 @@ import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecyclerViewAdapter.ViewHolder> {
 
     private final List<IssueModel> mValues;
+    private ChildEventListener issueEventListener;
+    private DatabaseReference ref;
 
-    public MyIssueRecyclerViewAdapter(List<IssueModel> items) {
-        mValues = items;
+
+
+    public MyIssueRecyclerViewAdapter() {
+        mValues=new ArrayList<>();
+        ref = FirebaseDatabase.getInstance().getReference("mishap");
+        addEventListener();
+
     }
 
     @NonNull
@@ -76,4 +90,38 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
 
         }
     }
+
+    private void addEventListener(){
+        issueEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                IssueModel issue = dataSnapshot.getValue(IssueModel.class);
+                mValues.add(issue);
+                notifyItemInserted(mValues.size()-1);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                //TODO implement
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                //TODO implement
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                //TODO implement
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //TODO implement
+            }
+        };
+        ref.addChildEventListener(issueEventListener);
+    }
+
+
 }

@@ -2,7 +2,7 @@ package ihm.si3.fr.unice.polytech.polissue.model;
 
 
 
-enum Emergency{
+public enum Emergency{
 
     HIGH,
     MEDIUM,

@@ -13,8 +13,11 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.Date;
+
 import ihm.si3.fr.unice.polytech.polissue.DataBaseAccess;
 import ihm.si3.fr.unice.polytech.polissue.R;
+import ihm.si3.fr.unice.polytech.polissue.model.Emergency;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 /**
@@ -62,7 +65,7 @@ public class DeclareIssueFragment extends Fragment{
 
         validButton.setOnClickListener((v) -> {
             if(checkMandatoryFields()){
-                IssueModel issue = new IssueModel(); //TODO implement the use of data from form
+                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), Emergency.MEDIUM,declarer.getText().toString());
                 DataBaseAccess dataBaseAccess = new DataBaseAccess();
                 dataBaseAccess.postIssue(issue);
             }
