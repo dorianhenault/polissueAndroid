@@ -17,7 +17,7 @@ public class DataBaseAccess {
     private FirebaseDatabase database;
 
     public DataBaseAccess(){
-        FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
     }
 
     public void sendData(){

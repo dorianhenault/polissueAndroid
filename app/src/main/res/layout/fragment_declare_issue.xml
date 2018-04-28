@@ -29,7 +29,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Titre de l'incident"
+        android:hint="Titre de l'incident*"
         android:inputType="text|textCapSentences|textAutoCorrect"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,12 +42,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Urgence"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleTextField" />
+        app:layout_constraintTop_toBottomOf="@+id/titleError" />
 
     <SeekBar
         android:id="@+id/emergencyLevel"
@@ -85,7 +85,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Déclarant"
+        android:hint="Déclarant*"
         android:inputType="text|textCapSentences|textPersonName"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,13 +97,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Emplacement"
+        android:hint="Emplacement*"
         android:inputType="textPersonName"
         android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/declarerTextField" />
+        app:layout_constraintTop_toBottomOf="@+id/declarerError" />
 
     <ImageButton
         android:id="@+id/addImageButton"
@@ -123,12 +123,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:src="@android:drawable/ic_menu_mylocation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/locationTextField"
-        app:layout_constraintTop_toBottomOf="@+id/declarerTextField" />
+        app:layout_constraintTop_toBottomOf="@+id/declarerError" />
 
     <ImageButton
         android:id="@+id/cancelButton"
@@ -138,7 +138,7 @@
         android:layout_marginTop="8dp"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentLocationButton" />
+        app:layout_constraintTop_toBottomOf="@+id/locationError" />
 
     <ImageButton
         android:id="@+id/validButton"
@@ -148,6 +148,54 @@
         android:layout_marginTop="8dp"
         android:src="@android:drawable/ic_menu_send"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentLocationButton" />
+        app:layout_constraintTop_toBottomOf="@+id/locationError" />
+
+    <TextView
+        android:id="@+id/titleError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Le titre de l'incident ne peut être vide"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_red_light"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleTextField" />
+
+    <TextView
+        android:id="@+id/declarerError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Le déclarant ne peut être vide"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_red_light"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/declarerTextField" />
+
+    <TextView
+        android:id="@+id/locationError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="L'emplacement ne peut être vide"
+        android:textAlignment="center"
+        android:textColor="@android:color/holo_red_light"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/locationTextField" />
 
 </android.support.constraint.ConstraintLayout>

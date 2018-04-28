@@ -3,6 +3,7 @@ package ihm.si3.fr.unice.polytech.polissue.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,26 +11,23 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
+import ihm.si3.fr.unice.polytech.polissue.DataBaseAccess;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
-import ihm.si3.fr.unice.polytech.polissue.notifications.IssueNotificationBuilder;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DeclareIssueFragment extends Fragment {
+public class DeclareIssueFragment extends Fragment{
 
-    private ImageButton validButton;
-    private ImageButton addImage;
-    private ImageButton currentLocation;
-    private ImageButton cancelButton;
+    private static final String TAG = "DeclareIssueFragment";
+    private ImageButton validButton, addImage, currentLocation, cancelButton;
     private ImageView image;
-    private EditText title;
-    private EditText description;
-    private EditText declarer;
-    private EditText location;
+    private EditText title, description, declarer, location;
     private SeekBar emergencyLevel;
+    private TextView titleError, declarerError, locationError;
 
 
     public DeclareIssueFragment() {
@@ -40,6 +38,8 @@ public class DeclareIssueFragment extends Fragment {
     public static Fragment newInstance(){
         return new DeclareIssueFragment();
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,13 +56,54 @@ public class DeclareIssueFragment extends Fragment {
         declarer = view.findViewById(R.id.declarerTextField);
         location = view.findViewById(R.id.locationTextField);
         emergencyLevel = view.findViewById(R.id.emergencyLevel);
-        validButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IssueModel issueModel;
+        titleError = view.findViewById(R.id.titleError);
+        declarerError = view.findViewById(R.id.declarerError);
+        locationError = view.findViewById(R.id.locationError);
+
+        validButton.setOnClickListener((v) -> {
+            if(checkMandatoryFields()){
+                IssueModel issue = new IssueModel(); //TODO implement the use of data from form
+                DataBaseAccess dataBaseAccess = new DataBaseAccess();
+                dataBaseAccess.postIssue(issue);
             }
         });
+
+        cancelButton.setOnClickListener((v -> {
+            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, IssueListFragment.newInstance(2));
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.commit();
+        }));
+
+        addImage.setOnClickListener(v -> {
+            //TODO implement adding an image
+        });
+
+        currentLocation.setOnClickListener(v -> {
+            //TODO implement the use of the location from the GPS sensor
+        });
+
         return view;
     }
 
+    private boolean checkMandatoryFields() {
+        boolean ok = true;
+        titleError.setVisibility(View.GONE);
+        declarerError.setVisibility(View.GONE);
+        locationError.setVisibility(View.GONE);
+
+        if (title.getText().length() == 0 || title.getText().toString().equals("")){
+            titleError.setVisibility(View.VISIBLE);
+            ok = false;
+        }
+        if (declarer.getText().length() == 0 || declarer.getText().toString().equals("")){
+            declarerError.setVisibility(View.VISIBLE);
+            ok=false;
+        }
+        if (location.getText().length() == 0 || location.getText().toString().equals("")){
+            locationError.setVisibility(View.VISIBLE);
+            ok = false;
+        }
+        return ok;
+    }
 }

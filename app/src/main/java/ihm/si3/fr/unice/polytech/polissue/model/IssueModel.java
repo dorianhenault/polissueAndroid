@@ -10,14 +10,13 @@ import java.util.Date;
  */
 public class IssueModel implements Parcelable{
 
-    private int id;
-    private String title;
-    private String description;
-    private Date date;
-    private Emergency emergency;
-    private Location location;
-    private int userID;
-    private String imageURL;
+    public String title;
+    public String description;
+    public Date date;
+    public Emergency emergency;
+    public Location location;
+    public int userID;
+    public String imageURL;
 
 
     public IssueModel() {
@@ -26,15 +25,13 @@ public class IssueModel implements Parcelable{
 
     /**
      * Minimalistic constructor for an issue
-     * @param id the id of the issue
      * @param title the title of the issue
      * @param description the description of the issue
      * @param date the date of declaration of the issue
      * @param emergency the emergency level of the issue
      * @param userID the userID who declared the issue
      */
-    public IssueModel(int id, String title, String description, Date date, Emergency emergency, int userID) {
-        this.id = id;
+    public IssueModel(String title, String description, Date date, Emergency emergency, int userID) {
         this.title = title;
         this.description = description;
         this.date = date;
@@ -44,7 +41,6 @@ public class IssueModel implements Parcelable{
 
     /**
      * Full constructor for an issue
-     * @param id the id of the issue
      * @param title the title of the issue
      * @param description the description of the issue
      * @param date the date of declaration of the issue
@@ -53,8 +49,7 @@ public class IssueModel implements Parcelable{
      * @param userID the userID who declared the issue
      * @param imageURL the image URL of the issue
      */
-    public IssueModel(int id, String title, String description, Date date, Emergency emergency, Location location, int userID, String imageURL) {
-        this.id = id;
+    public IssueModel(String title, String description, Date date, Emergency emergency, Location location, int userID, String imageURL) {
         this.title = title;
         this.description = description;
         this.date = date;
@@ -66,13 +61,12 @@ public class IssueModel implements Parcelable{
 
 
     protected IssueModel(Parcel in) {
-        id = in.readInt();
         title = in.readString();
         description = in.readString();
         date = new Date(in.readLong());
         emergency = Emergency.valueOf(in.readString());
         location = in.readParcelable(Location.class.getClassLoader());
-        userID = in.readParcelable(User.class.getClassLoader());
+        userID = in.readInt();
         imageURL = in.readString();
     }
 
@@ -95,7 +89,6 @@ public class IssueModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(description);
         dest.writeLong(date.getTime());
@@ -104,4 +97,6 @@ public class IssueModel implements Parcelable{
         dest.writeInt(userID);
         dest.writeString(imageURL);
     }
+
+
 }

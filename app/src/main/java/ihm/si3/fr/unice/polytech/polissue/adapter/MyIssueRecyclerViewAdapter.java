@@ -38,7 +38,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.issueModel = mValues.get(position);
-//        holder.issueTitle.setText(mValues.get(position).getTitle());
+        holder.issueTitle.setText(mValues.get(position).title);
 //        holder.issueState.setProgress(mValues.get(position).getState().getProgress());
 //        holder.issueDeclarer.setText(mValues.get(position).getDeclarer().getName());
 //        holder.issueDate.setText(mValues.get(position).getDate());
@@ -46,7 +46,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //TODO change view to issue details
             }
         });
     }

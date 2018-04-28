@@ -10,11 +10,11 @@ import java.util.Date;
  */
 class User implements Parcelable{
 
-    private int id;
-    private String email;
-    private String lastName;
-    private String firstName;
-    private Date birthDate;
+    public int id;
+    public String email;
+    public String lastName;
+    public String firstName;
+    public Date birthDate;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)

@@ -8,9 +8,9 @@ import android.os.Parcelable;
  */
 class Location implements Parcelable{
 
-    private String place;
-    private double longitude;
-    private double latitude;
+    public String place;
+    public double longitude;
+    public double latitude;
 
     public Location() {
         // Default constructor required for calls to DataSnapshot.getValue(Location.class)

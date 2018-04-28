@@ -41,7 +41,6 @@ public class MainPageActivity extends AppCompatActivity
         toggle.syncState();
         System.out.println("requestSentHere");
         DataBaseAccess dataBaseAccess =new DataBaseAccess();
-         dataBaseAccess.sendData();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);

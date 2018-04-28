@@ -10,6 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +33,9 @@ public class IssueListFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 2;
+    private List<IssueModel> issues;
+    private DatabaseReference ref;
+    private ChildEventListener issueEventListener;
 
 
     /**
@@ -34,10 +43,11 @@ public class IssueListFragment extends Fragment {
      * fragment (e.g. upon screen orientation changes).
      */
     public IssueListFragment() {
+        issues = new ArrayList<>();
+        ref = FirebaseDatabase.getInstance().getReference("mishap");
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+
     public static IssueListFragment newInstance(int columnCount) {
         IssueListFragment fragment = new IssueListFragment();
         Bundle args = new Bundle();
@@ -69,15 +79,46 @@ public class IssueListFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-
-            List<IssueModel> issues = new ArrayList<>();
-            issues.add(new IssueModel());
-
+            addEventListener();
             recyclerView.setAdapter(new MyIssueRecyclerViewAdapter(issues));
         }
         return view;
     }
 
+    private void addEventListener(){
+        issueEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                IssueModel issue = dataSnapshot.getValue(IssueModel.class);
+                issues.add(issue);
+            }
 
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                //TODO implement
+            }
 
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                //TODO implement
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                //TODO implement
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //TODO implement
+            }
+        };
+        ref.addChildEventListener(issueEventListener);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ref.removeEventListener(issueEventListener);
+    }
 }
