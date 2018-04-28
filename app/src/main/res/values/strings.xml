@@ -9,6 +9,11 @@
     <string name="account">Compte</string>
     <string name="issues">Issues</string>
 
+    <!-- Issues -->
+    <string name="issue_list">Liste des incidents</string>
+    <string name="declare_issue">Déclarer un incident</string>
+    <!-- /Issues -->
+
     <!--String related to login-->
     <string name="log_in">Connexion</string>
     <string name="sign_in">Inscription</string>

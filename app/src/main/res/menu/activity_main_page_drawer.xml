@@ -10,6 +10,12 @@
     <item android:title="@string/account">
         <menu>
             <item
+                android:id="@+id/nav_issues_list"
+                android:title="@string/issue_list"/>
+            <item
+                android:id="@+id/nav_declare_issue"
+                android:title="@string/declare_issue"/>
+            <item
                 android:id="@+id/nav_log_in"
                 android:title="@string/log_in" />
             <item

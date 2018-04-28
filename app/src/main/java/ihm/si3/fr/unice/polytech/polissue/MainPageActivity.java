@@ -41,7 +41,7 @@ public class MainPageActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                displayView(R.id.nav_manage);
+                displayView(R.id.nav_declare_issue);
             }
         });
 
@@ -55,7 +55,7 @@ public class MainPageActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        displayView(R.id.nav_camera);
+        displayView(R.id.nav_issues_list);
 
 
         auth = FirebaseAuth.getInstance();
@@ -103,15 +103,6 @@ public class MainPageActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         displayView(item.getItemId());
-        int id = item.getItemId();
-
-        if (id == R.id.nav_log_in) {
-            Intent logInIntent = new Intent(this, LoginActivity.class);
-            startActivity(logInIntent);
-        } else if (id == R.id.nav_log_out) {
-            auth.signOut();
-        }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -121,20 +112,17 @@ public class MainPageActivity extends AppCompatActivity
         Fragment fragment = null;
         String title = getString(R.string.app_name);
 
-        if (itemId == R.id.nav_camera) {
+        if (itemId == R.id.nav_issues_list) {
             fragment = IssueListFragment.newInstance(2);
-            title = "Liste incidents";
-        } else if (itemId == R.id.nav_gallery) {
-
-        } else if (itemId == R.id.nav_slideshow) {
-
-        } else if (itemId == R.id.nav_manage) {
+            title = getString(R.string.issue_list);
+        } else if ( itemId == R.id.nav_log_in){
+            Intent logInIntent = new Intent(this, LoginActivity.class);
+            startActivity(logInIntent);
+        } else if(itemId == R.id.nav_log_out) {
+            auth.signOut();
+        } else if(itemId == R.id.nav_declare_issue){
             fragment = DeclareIssueFragment.newInstance();
-            title = "Déclaration d'un incident";
-        } else if (itemId == R.id.nav_share) {
-
-        } else if (itemId == R.id.nav_send) {
-
+            title = getString(R.string.declare_issue);
         }
 
         if (fragment != null){
