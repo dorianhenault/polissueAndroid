@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Class that models the location of an Issue
  */
-class Location implements Parcelable{
+public class Location implements Parcelable{
 
     public String place;
     public double longitude;

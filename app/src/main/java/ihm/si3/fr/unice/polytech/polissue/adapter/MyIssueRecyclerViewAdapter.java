@@ -1,6 +1,10 @@
 package ihm.si3.fr.unice.polytech.polissue.adapter;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +24,8 @@ import java.util.List;
 
 import ihm.si3.fr.unice.polytech.polissue.R;
 
+import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
+import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 /**
@@ -60,7 +66,14 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO change view to issue details
+                FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
+                Fragment issueDetailFragment=IssueDetailFragment.newInstance();
+                Bundle bundle=new Bundle();
+                bundle.putParcelable("issue",mValues.get(position));
+                issueDetailFragment.setArguments(bundle);
+                ft.replace(R.id.content_frame, issueDetailFragment );
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.commit();
             }
         });
     }
