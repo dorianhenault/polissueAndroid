@@ -1,8 +1,12 @@
 package ihm.si3.fr.unice.polytech.polissue;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -14,19 +18,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
+import android.view.View;
+
 import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
 
 public class MainPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    private FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -34,23 +45,30 @@ public class MainPageActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        System.out.println("requestSentHere");
-        DataBaseAccess dataBaseAccess =new DataBaseAccess();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         displayView(R.id.nav_camera);
+
+
+        auth = FirebaseAuth.getInstance();
+
+        auth.signOut();
+        auth.addAuthStateListener(new NavigationAuthStateListener(navigationView));
+
     }
+
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -85,6 +103,14 @@ public class MainPageActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         displayView(item.getItemId());
+        int id = item.getItemId();
+
+        if (id == R.id.nav_log_in) {
+            Intent logInIntent = new Intent(this, LoginActivity.class);
+            startActivity(logInIntent);
+        } else if (id == R.id.nav_log_out) {
+            auth.signOut();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -121,5 +147,32 @@ public class MainPageActivity extends AppCompatActivity
         }
 
 
+    }
+
+    /**
+     * Updates the navigation view based on the auth state
+     */
+    private class NavigationAuthStateListener implements FirebaseAuth.AuthStateListener {
+        private final NavigationView navView;
+
+        NavigationAuthStateListener(NavigationView navigationView) {
+            this.navView = navigationView;
+        }
+
+        @Override
+        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            Menu menu = navView.getMenu();
+
+            MenuItem logIn = menu.findItem(R.id.nav_log_in);
+            MenuItem logOut= menu.findItem(R.id.nav_log_out);
+            MenuItem signIn= menu.findItem(R.id.nav_sign_in);
+            MenuItem account= menu.findItem(R.id.nav_account);
+
+            logIn.setVisible(user==null);
+            signIn.setVisible(user==null);
+            logOut.setVisible(user!=null);
+            account.setVisible(user!=null);
+        }
     }
 }
