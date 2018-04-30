@@ -63,19 +63,16 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
 //        holder.issueDeclarer.setText(mValues.get(position).getDeclarer().getName());
 //        holder.issueDate.setText(mValues.get(position).getDate());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
-                Fragment issueDetailFragment=IssueDetailFragment.newInstance();
-                Bundle bundle=new Bundle();
-                bundle.putParcelable("issue",mValues.get(position));
-                issueDetailFragment.setArguments(bundle);
-                ft.replace(R.id.content_frame, issueDetailFragment );
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.addToBackStack(null);
-                ft.commit();
-            }
+        holder.mView.setOnClickListener(v -> {
+            FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
+            Fragment issueDetailFragment=IssueDetailFragment.newInstance();
+            Bundle bundle=new Bundle();
+            bundle.putParcelable("issue",mValues.get(position));
+            issueDetailFragment.setArguments(bundle);
+            ft.replace(R.id.content_frame, issueDetailFragment );
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.addToBackStack(null);
+            ft.commit();
         });
     }
 
