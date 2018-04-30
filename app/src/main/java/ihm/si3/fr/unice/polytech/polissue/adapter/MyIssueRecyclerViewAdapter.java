@@ -73,6 +73,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
                 issueDetailFragment.setArguments(bundle);
                 ft.replace(R.id.content_frame, issueDetailFragment );
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.addToBackStack(null);
                 ft.commit();
             }
         });
