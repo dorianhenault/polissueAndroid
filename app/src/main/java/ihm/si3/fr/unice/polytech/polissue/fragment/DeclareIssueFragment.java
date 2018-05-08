@@ -1,6 +1,7 @@
 package ihm.si3.fr.unice.polytech.polissue.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import java.util.Date;
 
 import ihm.si3.fr.unice.polytech.polissue.DataBaseAccess;
+import ihm.si3.fr.unice.polytech.polissue.IncidentLocalisationActivity;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.model.Emergency;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
@@ -83,7 +85,7 @@ public class DeclareIssueFragment extends Fragment{
         });
 
         currentLocation.setOnClickListener(v -> {
-            //TODO implement the use of the location from the GPS sensor
+            startActivity(new Intent(this.getActivity(), IncidentLocalisationActivity.class));
         });
 
         return view;
