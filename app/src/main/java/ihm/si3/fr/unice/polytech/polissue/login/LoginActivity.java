@@ -1,6 +1,7 @@
 package ihm.si3.fr.unice.polytech.polissue.login;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -17,7 +18,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import ihm.si3.fr.unice.polytech.polissue.R;
 
@@ -43,8 +47,14 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
         setContentView(R.layout.activity_login);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        LoginSelectorFragment loginSelector = new LoginSelectorFragment();
-        fragmentTransaction.replace(R.id.login_placeholder, loginSelector);
+        Fragment startFragment = new LoginSelectorFragment();
+        Bundle datas = getIntent().getExtras();
+
+        if (datas != null && datas.containsKey("signUp") && datas.getBoolean("signUp")) {
+            startFragment = SignUpFragment.newInstance();
+        }
+
+        fragmentTransaction.replace(R.id.login_placeholder, startFragment);
         fragmentTransaction.commit();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -124,6 +134,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
     private void ackowledgeCredentialLogin(Task<AuthResult> authResultTask) {
         if (authResultTask.isSuccessful()) {
             Log.d(TAG, "Successfull credential login");
+            updateProviderData();
             done();
         } else {
             Log.d(TAG, "Failed credential Login", authResultTask.getException());
@@ -132,6 +143,31 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
         }
     }
 
+    /**
+     * updates the user's profile with the account provider data
+     */
+    private void updateProviderData() {
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null) {
+
+            for (UserInfo data : user.getProviderData()) {
+                // Name, email address, and profile photo Url
+                String name = data.getDisplayName();
+                Uri photoUrl = data.getPhotoUrl();
+
+                UserProfileChangeRequest changeRequest = new UserProfileChangeRequest
+                        .Builder()
+                        .setDisplayName(name)
+                        .setPhotoUri(photoUrl).build();
+                user.updateProfile(changeRequest).addOnFailureListener((Exception e) -> {
+                    Log.e(TAG, "updateProviderData: error updating profile", e);
+                    Toast.makeText(this, getString(R.string.error_profile_settings), Toast.LENGTH_LONG).show();
+
+                });
+            }
+
+        }
+    }
 
 
 }

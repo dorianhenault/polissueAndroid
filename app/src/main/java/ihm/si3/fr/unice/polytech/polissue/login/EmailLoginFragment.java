@@ -34,8 +34,8 @@ public class EmailLoginFragment extends Fragment {
 
     private LoginFragmentListener listener;
 
-    private AutoCompleteTextView email;
-    private TextView password;
+    private AutoCompleteTextView emailTextView;
+    private TextView passwordTextView;
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
     public EmailLoginFragment() {
@@ -49,9 +49,9 @@ public class EmailLoginFragment extends Fragment {
         // Inflate the layout for this fragment
         View mainView = inflater.inflate(R.layout.fragment_email_login, container, false);
 
-        email = mainView.findViewById(R.id.email);
-        password = mainView.findViewById(R.id.password);
-        password.setOnEditorActionListener(
+        emailTextView = mainView.findViewById(R.id.email);
+        passwordTextView = mainView.findViewById(R.id.password);
+        passwordTextView.setOnEditorActionListener(
                 (TextView v, int actionId, KeyEvent event) -> {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         login();
@@ -67,20 +67,49 @@ public class EmailLoginFragment extends Fragment {
         Button signup = mainView.findViewById(R.id.email_sign_up_button);
         signup.setOnClickListener((View v) -> {
             if (listener != null)
-                listener.toSignUp(email.getText().toString(), password.getText().toString());
+                listener.toSignUp(emailTextView.getText().toString(), passwordTextView.getText().toString());
         });
 
         return mainView;
     }
 
     private void login() {
-        String emailText = this.email.getText().toString();
-        String passwordText = this.password.getText().toString();
-        if (!emailText.isEmpty() && !passwordText.isEmpty()) {
+        String emailText = this.emailTextView.getText().toString();
+        String passwordText = this.passwordTextView.getText().toString();
+        if (validateLogin()) {
             auth.signOut();
             auth.signInWithEmailAndPassword(emailText, passwordText)
                     .addOnCompleteListener(this::loginAckowledge);
         }
+    }
+
+    /**
+     * Check the form for errors, return false if data are not valid
+     *
+     * @return true if user can login, false otherwise.
+     */
+    private boolean validateLogin() {
+        String email = this.emailTextView.getText().toString();
+        String password = this.passwordTextView.getText().toString();
+
+        boolean valid = true;
+        String error = "";
+        if (email.isEmpty()) error = getString(R.string.error_field_required);
+        else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches())
+            error = getString(R.string.error_invalid_email);
+
+        if (!error.isEmpty()) {
+            emailTextView.setError(error);
+            valid = false;
+        }
+
+        error = "";
+        if (password.isEmpty()) error = getString(R.string.error_field_required);
+        if (!error.isEmpty()) {
+            passwordTextView.setError(error);
+            valid = false;
+        }
+        return valid;
     }
 
     private void loginAckowledge(Task<AuthResult> task) {
