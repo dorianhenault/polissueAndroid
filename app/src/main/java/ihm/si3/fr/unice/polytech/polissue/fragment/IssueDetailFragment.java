@@ -60,7 +60,7 @@ public class IssueDetailFragment extends Fragment{
         title.setText(issue.title);
         declarer.setText(issue.userName);
         date.setText(issue.date.toString());
-        //place.setText(issue.location.place);
+        place.setText(issue.location.place);
         description.setText(issue.description);
         emergency.setText(issue.emergency.toString());
 

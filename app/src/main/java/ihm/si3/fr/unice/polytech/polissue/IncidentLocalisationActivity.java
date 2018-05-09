@@ -1,5 +1,6 @@
 package ihm.si3.fr.unice.polytech.polissue;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -65,7 +66,8 @@ public class IncidentLocalisationActivity extends AppCompatActivity
         setContentView(R.layout.incident_location_gmaps);
         Button button=(Button) findViewById(R.id.validatePosition) ;
         button.setOnClickListener(v -> {
-                startActivity(new Intent(this, MainPageActivity.class));
+            setResult(Activity.RESULT_OK, new Intent().putExtra("latitude", getIncidentPosition().latitude).putExtra("longitude", getIncidentPosition().longitude));
+            IncidentLocalisationActivity.this.finish();
         });
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);

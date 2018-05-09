@@ -1,6 +1,7 @@
 package ihm.si3.fr.unice.polytech.polissue.fragment;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,18 +22,22 @@ import ihm.si3.fr.unice.polytech.polissue.IncidentLocalisationActivity;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.model.Emergency;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
+import ihm.si3.fr.unice.polytech.polissue.model.Location;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class DeclareIssueFragment extends Fragment{
 
+    private static final int REQUEST_GET_MAP_LOCATION = 0;
     private static final String TAG = "DeclareIssueFragment";
     private ImageButton validButton, addImage, currentLocation, cancelButton;
     private ImageView image;
     private EditText title, description, declarer, location;
     private SeekBar emergencyLevel;
     private TextView titleError, declarerError, locationError;
+
+    private Location locationMap;
 
 
     public DeclareIssueFragment() {
@@ -67,7 +72,7 @@ public class DeclareIssueFragment extends Fragment{
 
         validButton.setOnClickListener((v) -> {
             if(checkMandatoryFields()){
-                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), Emergency.MEDIUM,declarer.getText().toString());
+                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), Emergency.MEDIUM,locationMap,declarer.getText().toString(),"http://www.picslyrics.net/images/141613-rick-astley-never-gonna-give-you-up.jpg");
                 DataBaseAccess dataBaseAccess = new DataBaseAccess();
                 dataBaseAccess.postIssue(issue);
             }
@@ -85,7 +90,8 @@ public class DeclareIssueFragment extends Fragment{
         });
 
         currentLocation.setOnClickListener(v -> {
-            startActivity(new Intent(this.getActivity(), IncidentLocalisationActivity.class));
+            Intent localisationActivity=new Intent(this.getActivity(), IncidentLocalisationActivity.class);
+            startActivityForResult(localisationActivity,REQUEST_GET_MAP_LOCATION);
         });
 
         return view;
@@ -110,5 +116,15 @@ public class DeclareIssueFragment extends Fragment{
             ok = false;
         }
         return ok;
+    }
+
+    @Override
+     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_GET_MAP_LOCATION && resultCode == Activity.RESULT_OK) {
+            double latitude = data.getDoubleExtra("latitude", 0);
+            double longitude = data.getDoubleExtra("longitude", 0);
+            this.locationMap=new Location(location.getText().toString(),longitude,latitude);
+            // do something with B's return values
+        }
     }
 }
