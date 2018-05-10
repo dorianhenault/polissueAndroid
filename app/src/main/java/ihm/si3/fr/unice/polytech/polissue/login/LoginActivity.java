@@ -83,9 +83,9 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
                         Log.d(TAG, "Successfull Facebook Login");
                         firebaseAuthWithFacebook(loginResult.getAccessToken());
                     }
-
                     @Override
                     public void onCancel() {
+                        //no operation needed
                     }
 
                     @Override
@@ -197,7 +197,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
                 // Name, email address, and profile photo Url
                 String name = data.getDisplayName();
                 Uri photoUrl = data.getPhotoUrl();
-
                 UserProfileChangeRequest changeRequest = new UserProfileChangeRequest
                         .Builder()
                         .setDisplayName(name)
