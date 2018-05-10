@@ -1,14 +1,12 @@
 package ihm.si3.fr.unice.polytech.polissue;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,11 +23,12 @@ import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
-import android.view.View;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
+import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
 
 public class MainPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -183,7 +182,11 @@ public class MainPageActivity extends AppCompatActivity
 
                 username.setText(user.getDisplayName());
                 email.setText(user.getEmail());
-
+                try {
+                    (new PictureFetcher(profilePic)).execute(new URL(String.valueOf(user.getPhotoUrl())));
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
