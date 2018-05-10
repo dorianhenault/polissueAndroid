@@ -14,7 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -54,6 +58,8 @@ public class MainPageActivity extends AppCompatActivity
 
         auth.signOut();
         auth.addAuthStateListener(new NavigationAuthStateListener(navigationView));
+        FacebookSdk.setApplicationId(getString(R.string.facebook_application_id));
+        AppEventsLogger.activateApp(this);
 
     }
 
@@ -103,6 +109,7 @@ public class MainPageActivity extends AppCompatActivity
             auth.signOut();
         } else if (id == R.id.nav_sign_in) {
             Intent signInIntent = new Intent(this, LoginActivity.class);
+            signInIntent.putExtra("signUp", true);
             startActivity(signInIntent);
         }
 
@@ -135,6 +142,18 @@ public class MainPageActivity extends AppCompatActivity
             signIn.setVisible(user==null);
             logOut.setVisible(user!=null);
             account.setVisible(user!=null);
+
+            if (user != null) {
+                View v = navView.getHeaderView(0);
+
+                ImageView profilePic = v.findViewById(R.id.nav_header_profile_pic);
+                TextView username = v.findViewById(R.id.nav_header_username);
+                TextView email = v.findViewById(R.id.nav_header_email);
+
+                username.setText(user.getDisplayName());
+                email.setText(user.getEmail());
+
+            }
         }
     }
 }

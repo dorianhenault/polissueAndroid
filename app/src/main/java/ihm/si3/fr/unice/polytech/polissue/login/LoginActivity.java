@@ -9,6 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -17,11 +23,14 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
+
+import java.util.Arrays;
 
 import ihm.si3.fr.unice.polytech.polissue.R;
 
@@ -36,6 +45,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private GoogleSignInClient googleSignInClient;
+    private CallbackManager callbackManager;
 
     public LoginActivity() {
         //mandatory empty constructor
@@ -45,7 +55,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Fragment startFragment = new LoginSelectorFragment();
         Bundle datas = getIntent().getExtras();
@@ -57,11 +66,36 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
         fragmentTransaction.replace(R.id.login_placeholder, startFragment);
         fragmentTransaction.commit();
 
+        //setting up the google sign in
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        //setting up the facebook sign in option
+        callbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(
+                callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        Log.d(TAG, "Successfull Facebook Login");
+                        firebaseAuthWithFacebook(loginResult.getAccessToken());
+                    }
+
+                    @Override
+                    public void onCancel() {
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        Log.d(TAG, "Failed credential Login", exception);
+                        Toast.makeText(getBaseContext(), exception.getLocalizedMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
     }
 
 
@@ -82,6 +116,10 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
             if (loginMethod.equals(LoginMethod.GOOGLE)) {
                 Intent signInIntent = googleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, RC_SIGN_IN);
+            } else if (loginMethod.equals(LoginMethod.FACEBOOK)) {
+                LoginManager.getInstance()
+                        .logInWithReadPermissions(this, Arrays.asList("user_photos", "email", "public_profile"));
+
             } else {
                 Fragment loginFragment = null;
                 if (loginMethod.equals(LoginMethod.EMAIL)) loginFragment = new EmailLoginFragment();
@@ -106,6 +144,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
@@ -125,6 +164,11 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
         }
     }
 
+    private void firebaseAuthWithFacebook(AccessToken token) {
+        Log.d(TAG, "Firebase Auth with Facebook");
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        auth.signInWithCredential(credential).addOnCompleteListener(this, this::ackowledgeCredentialLogin);
+    }
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         Log.d(TAG, "Firebase Auth With google");
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
@@ -149,7 +193,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
     private void updateProviderData() {
         FirebaseUser user = auth.getCurrentUser();
         if (user != null) {
-
             for (UserInfo data : user.getProviderData()) {
                 // Name, email address, and profile photo Url
                 String name = data.getDisplayName();
@@ -162,7 +205,6 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
                 user.updateProfile(changeRequest).addOnFailureListener((Exception e) -> {
                     Log.e(TAG, "updateProviderData: error updating profile", e);
                     Toast.makeText(this, getString(R.string.error_profile_settings), Toast.LENGTH_LONG).show();
-
                 });
             }
 
