@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,10 +20,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
-import android.view.View;
 
 import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
+import ihm.si3.fr.unice.polytech.polissue.service.HighEmergencyIssueService;
 
 public class MainPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,7 +42,7 @@ public class MainPageActivity extends AppCompatActivity
                 displayView(R.id.nav_declare_issue);
             }
         });
-
+        fab.setVisibility(View.GONE);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -57,6 +55,9 @@ public class MainPageActivity extends AppCompatActivity
 
         displayView(R.id.nav_issues_list);
 
+
+        Intent serviceIntent = new Intent(getApplicationContext(), HighEmergencyIssueService.class);
+        getApplicationContext().startService(serviceIntent);
 
         auth = FirebaseAuth.getInstance();
 

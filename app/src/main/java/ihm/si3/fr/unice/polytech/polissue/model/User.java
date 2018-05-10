@@ -8,13 +8,12 @@ import java.util.Date;
 /**
  * Class that models a user
  */
-class User implements Parcelable{
+public class User implements Parcelable{
 
     public int id;
     public String email;
     public String lastName;
     public String firstName;
-    public Date birthDate;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -26,14 +25,12 @@ class User implements Parcelable{
      * @param email the email of the user
      * @param lastName the lastName of the user
      * @param firstName the first name of the user
-     * @param birthDate the birth date of the user
      */
-    public User(int id, String email, String lastName, String firstName, Date birthDate) {
+    public User(int id, String email, String lastName, String firstName) {
         this.id = id;
         this.email = email;
         this.lastName = lastName;
         this.firstName = firstName;
-        this.birthDate = birthDate;
     }
 
     protected User(Parcel in) {
@@ -41,7 +38,6 @@ class User implements Parcelable{
         email = in.readString();
         lastName = in.readString();
         firstName = in.readString();
-        birthDate = new Date(in.readLong());
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -67,6 +63,5 @@ class User implements Parcelable{
         dest.writeString(email);
         dest.writeString(lastName);
         dest.writeString(firstName);
-        dest.writeLong(birthDate.getTime());
     }
 }

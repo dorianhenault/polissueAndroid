@@ -14,6 +14,11 @@
     <string name="declare_issue">Déclarer un incident</string>
     <!-- /Issues -->
 
+    <!-- Users -->
+    <string name="search_bar_hint">Rechercher (Nom/E-mail)</string>
+    <string name="notify_button">Notifier</string>
+    <!-- /Users -->
+
     <!--String related to login-->
     <string name="log_in">Connexion</string>
     <string name="sign_in">Inscription</string>

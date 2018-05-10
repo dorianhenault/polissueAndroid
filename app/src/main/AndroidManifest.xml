@@ -26,7 +26,12 @@
         </activity>
         <activity
             android:name=".login.LoginActivity"
-            android:label="@string/log_in"></activity>
+            android:label="@string/log_in" />
+
+        <service
+            android:name=".service.HighEmergencyIssueService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
