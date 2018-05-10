@@ -1,11 +1,14 @@
 package ihm.si3.fr.unice.polytech.polissue;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,6 +26,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
+import android.view.View;
+
+import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
+import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
 
 public class MainPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,8 +45,7 @@ public class MainPageActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                displayView(R.id.nav_declare_issue);
             }
         });
 
@@ -52,6 +58,8 @@ public class MainPageActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        displayView(R.id.nav_issues_list);
 
 
         auth = FirebaseAuth.getInstance();
@@ -102,22 +110,43 @@ public class MainPageActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        displayView(item.getItemId());
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 
-        if (id == R.id.nav_log_in) {
+    private void displayView(int itemId){
+        Fragment fragment = null;
+        String title = getString(R.string.app_name);
+
+        if (itemId == R.id.nav_issues_list) {
+            fragment = IssueListFragment.newInstance(2);
+            title = getString(R.string.issue_list);
+        } else if ( itemId == R.id.nav_log_in){
             Intent logInIntent = new Intent(this, LoginActivity.class);
             startActivity(logInIntent);
-        } else if (id == R.id.nav_log_out) {
+        } else if(itemId == R.id.nav_log_out) {
             auth.signOut();
-        } else if (id == R.id.nav_sign_in) {
+        } else if (itemId == R.id.nav_sign_in) {
             Intent signInIntent = new Intent(this, LoginActivity.class);
             signInIntent.putExtra("signUp", true);
             startActivity(signInIntent);
+        } else if(itemId == R.id.nav_declare_issue){
+            fragment = DeclareIssueFragment.newInstance();
+            title = getString(R.string.declare_issue);
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        if (fragment != null){
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
+            if (getSupportActionBar()!=null){
+                getSupportActionBar().setTitle(title);
+            }
+        }
+
+
     }
 
     /**
