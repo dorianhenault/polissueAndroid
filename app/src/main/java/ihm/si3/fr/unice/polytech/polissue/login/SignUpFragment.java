@@ -28,16 +28,16 @@ public class SignUpFragment extends Fragment {
     private static final String EMAIL_KEY = "email";
     private static final String TAG = "SignUpFragment";
     private static final String USER_FIREBASE_REF = "users";
-    private static final Pattern PASS_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\\\S+$).{4,}$");
+    private static final Pattern PASS_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{6,}$");
     LoginFragmentListener listener;
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
 
     private TextView passwordTextView;
+    private TextView passwordConfirmationTextView;
     private TextView emailTextView;
     private TextView surnameTextView;
     private TextView firstnameTextView;
-    private TextView birtdateTextView;
 
     public SignUpFragment() {
     }
@@ -67,9 +67,9 @@ public class SignUpFragment extends Fragment {
 
         emailTextView = mainView.findViewById(R.id.signup_email);
         passwordTextView = mainView.findViewById(R.id.signup_password);
+        passwordConfirmationTextView = mainView.findViewById(R.id.signup_password_confirmation);
         firstnameTextView = mainView.findViewById(R.id.signup_firstname);
         surnameTextView = mainView.findViewById(R.id.signup_name);
-        birtdateTextView = mainView.findViewById(R.id.signup_birthdate);
         Bundle args = getArguments();
         String email = args.getString(EMAIL_KEY);
         String password = args.getString(PASS_KEY);
@@ -96,7 +96,6 @@ public class SignUpFragment extends Fragment {
             auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this::ackowledgeSignUp);
         } else {
             Log.d(TAG, "signUp: No Email or Password");
-
         }
     }
 
@@ -124,12 +123,22 @@ public class SignUpFragment extends Fragment {
         else if (password.length() < 6) error = getString(R.string.error_invalid_password);
         else if (!PASS_PATTERN.matcher(password).matches())
             error = getString(R.string.error_incorrect_password);
-
         if (!error.isEmpty()) {
             passwordTextView.setError(error);
             valid = false;
         }
-
+        if (valid) {
+            String confirmation = passwordConfirmationTextView.getText().toString();
+            error = "";
+            if (confirmation.isEmpty()) error = getString(R.string.error_field_required);
+            if (!confirmation.equals(password)) {
+                error = getString(R.string.error_password_confirmation_must_match);
+            }
+            if (!error.isEmpty()) {
+                passwordConfirmationTextView.setError(error);
+                valid = false;
+            }
+        }
         String firstname = firstnameTextView.getText().toString();
         error = "";
         if (firstname.isEmpty()) error = getString(R.string.error_field_required);
@@ -145,13 +154,6 @@ public class SignUpFragment extends Fragment {
             valid = false;
         }
 
-        String birthdate = birtdateTextView.getText().toString();
-        error = "";
-        if (birthdate.isEmpty()) error = getString(R.string.error_field_required);
-        if (!error.isEmpty()) {
-            birtdateTextView.setError(error);
-            valid = false;
-        }
 
         return valid;
     }
