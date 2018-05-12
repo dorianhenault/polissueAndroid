@@ -1,5 +1,6 @@
 package ihm.si3.fr.unice.polytech.polissue.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ShareActionProvider;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.MapView;
@@ -25,6 +27,7 @@ public class IssueDetailFragment extends Fragment{
     private ImageButton share,notification;
     private TextView title, declarer, date,place, description, emergency;
     private MapView mapView;
+
 
     public IssueDetailFragment(){}
 
@@ -71,6 +74,15 @@ public class IssueDetailFragment extends Fragment{
             ft.addToBackStack(null);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.commit();
+        });
+
+
+        share.setOnClickListener(v -> {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TITLE, issue.title);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, issue.description);
+            startActivity(Intent.createChooser(shareIntent, "Partager un incident"));
         });
 
         return  view;
