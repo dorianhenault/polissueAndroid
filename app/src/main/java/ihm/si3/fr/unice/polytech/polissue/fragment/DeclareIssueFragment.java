@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +19,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
 
@@ -40,6 +46,7 @@ public class DeclareIssueFragment extends Fragment{
     private EditText title, description, declarer, location;
     private SeekBar emergencyLevel;
     private TextView titleError, declarerError, locationError;
+    private Uri imageURI;
 
 
     public DeclareIssueFragment() {
@@ -96,7 +103,22 @@ public class DeclareIssueFragment extends Fragment{
         takePicture.setOnClickListener(v -> {
             final Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (cameraIntent.resolveActivity(Objects.requireNonNull(getContext()).getPackageManager()) != null) {
-                startActivityForResult(cameraIntent, TAKE_PICTURE);
+                try {
+                    File tempPicture = createPictureFile();
+                    imageURI = FileProvider.getUriForFile(this.getContext(), "fr.unice.polytech.polissue.fileprovider", tempPicture);
+                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI);
+                    startActivityForResult(cameraIntent, TAKE_PICTURE);
+                } catch (IOException e) {
+                    Log.e(TAG, "onCreateView: error with temp file", e);
+                    Toast.makeText(this.getContext(), getString(R.string.error_internal_file), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        image.setOnClickListener(v -> {
+            if (imageURI != null) {
+                final Intent galeryIntent = new Intent(Intent.ACTION_VIEW);
+                galeryIntent.setDataAndType(imageURI, "image/*");
+                startActivity(galeryIntent);
             }
         });
         currentLocation.setOnClickListener(v -> {
@@ -104,6 +126,18 @@ public class DeclareIssueFragment extends Fragment{
         });
 
         return view;
+    }
+
+    private File createPictureFile() throws IOException {
+        String timeStamp = String.valueOf(System.currentTimeMillis() / 1000);
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Objects.requireNonNull(getContext()).getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        return File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
     }
 
     private boolean checkMandatoryFields() {
@@ -130,15 +164,27 @@ public class DeclareIssueFragment extends Fragment{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ADD_IMAGE && resultCode == RESULT_OK) {
-            Uri result = data.getData();
-            if (result != null) {
-                image.setImageURI(result);
+        if (resultCode == RESULT_OK && data != null) {
+            Bitmap picture = null;
+            if (requestCode == ADD_IMAGE) {
+                Uri result = data.getData();
+                if (result != null) {
+                    image.setImageURI(result);
+
+                    imageURI = result;
+                }
             }
-        } else if (requestCode == TAKE_PICTURE) {
-            Bundle extras = data.getExtras();
-            Bitmap preview = (Bitmap) extras.get("data");
-            image.setImageBitmap(preview);
+            try {
+                picture = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getContext()).getContentResolver(), imageURI);
+            } catch (IOException e) {
+                Log.e(TAG, "onActivityResult:Loading Picture ", e);
+                Toast.makeText(this.getContext(), getString(R.string.error_loading_picture), Toast.LENGTH_LONG).show();
+            }
+            if (picture != null) {
+                image.setImageBitmap(picture);
+
+            }
+
         }
     }
 }
