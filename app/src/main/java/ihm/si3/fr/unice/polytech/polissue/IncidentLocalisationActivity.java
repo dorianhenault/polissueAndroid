@@ -1,13 +1,17 @@
 package ihm.si3.fr.unice.polytech.polissue;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -60,6 +64,7 @@ public class IncidentLocalisationActivity extends AppCompatActivity
     private LatLng myPosition;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +79,7 @@ public class IncidentLocalisationActivity extends AppCompatActivity
         mapFragment.getMapAsync(this);
 
         mLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
     }
 
     @Override
@@ -94,8 +100,10 @@ public class IncidentLocalisationActivity extends AppCompatActivity
                 incidentPosition=point;
             }
         });
-
-
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            buildAlertMessageNoGps();
+        }
     }
 
     private void setCurrentLocation(){
@@ -182,6 +190,7 @@ public class IncidentLocalisationActivity extends AppCompatActivity
             showMissingPermissionError();
             mPermissionDenied = false;
         }
+        setCurrentLocation();
     }
 
     /**
@@ -199,5 +208,24 @@ public class IncidentLocalisationActivity extends AppCompatActivity
         else{
             return incidentPosition;
         }
+    }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        IncidentLocalisationActivity.this.finish();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 }
