@@ -42,6 +42,8 @@ public class DeclareIssueFragment extends Fragment{
 
     private Location locationMap;
 
+    private double longitude=0;
+    private double latitude=0;
 
     public DeclareIssueFragment() {
 
@@ -76,7 +78,7 @@ public class DeclareIssueFragment extends Fragment{
         validButton.setOnClickListener((v) -> {
             if(checkMandatoryFields()){
                 Emergency level = buildEmergencyLevel();
-
+                this.locationMap=new Location(location.getText().toString(),longitude,latitude);
                // IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,declarer.getText().toString());
                 IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,locationMap,declarer.getText().toString(),"http://www.picslyrics.net/images/141613-rick-astley-never-gonna-give-you-up.jpg");
                 DataBaseAccess dataBaseAccess = new DataBaseAccess();
@@ -172,9 +174,8 @@ public class DeclareIssueFragment extends Fragment{
     @Override
      public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_GET_MAP_LOCATION && resultCode == Activity.RESULT_OK) {
-            double latitude = data.getDoubleExtra("latitude", 0);
-            double longitude = data.getDoubleExtra("longitude", 0);
-            this.locationMap=new Location(location.getText().toString(),longitude,latitude);
+            latitude = data.getDoubleExtra("latitude", 0);
+            longitude = data.getDoubleExtra("longitude", 0);
             // do something with B's return values
         }
     }
