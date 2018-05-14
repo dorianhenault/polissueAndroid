@@ -1,9 +1,13 @@
 package ihm.si3.fr.unice.polytech.polissue.fragment;
 
 
+import android.graphics.Color;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,19 +16,23 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Date;
 
 import ihm.si3.fr.unice.polytech.polissue.DataBaseAccess;
+import ihm.si3.fr.unice.polytech.polissue.IncidentLocalisationActivity;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.model.Emergency;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
+import ihm.si3.fr.unice.polytech.polissue.model.Location;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class DeclareIssueFragment extends Fragment{
 
+    private static final int REQUEST_GET_MAP_LOCATION = 0;
     private static final String TAG = "DeclareIssueFragment";
     private ImageButton validButton, addImage, currentLocation, cancelButton;
     private ImageView image;
@@ -32,6 +40,10 @@ public class DeclareIssueFragment extends Fragment{
     private SeekBar emergencyLevel;
     private TextView titleError, declarerError, locationError;
 
+    private Location locationMap;
+
+    private double longitude=0;
+    private double latitude=0;
 
     public DeclareIssueFragment() {
 
@@ -65,9 +77,20 @@ public class DeclareIssueFragment extends Fragment{
 
         validButton.setOnClickListener((v) -> {
             if(checkMandatoryFields()){
-                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), Emergency.MEDIUM,declarer.getText().toString());
+                Emergency level = buildEmergencyLevel();
+                this.locationMap=new Location(location.getText().toString(),longitude,latitude);
+               // IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,declarer.getText().toString());
+                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,locationMap,declarer.getText().toString(),"http://www.picslyrics.net/images/141613-rick-astley-never-gonna-give-you-up.jpg");
                 DataBaseAccess dataBaseAccess = new DataBaseAccess();
                 dataBaseAccess.postIssue(issue);
+                Log.d(TAG, "onCreateView: Posted issue");
+                Fragment fragment = IssueListFragment.newInstance(2);
+                FragmentTransaction ft = this.getActivity().getSupportFragmentManager().beginTransaction();
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+            }else {
+                Toast.makeText(this.getContext(), "Champ(s) manquant(s)", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -78,15 +101,53 @@ public class DeclareIssueFragment extends Fragment{
             ft.commit();
         }));
 
+        emergencyLevel.setProgress(0);
+        emergencyLevel.setMax(100);
+
+        emergencyLevel.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (progress >= 0 && progress <50){
+                    seekBar.setProgress(0);
+                }else if (progress>=50 && progress<100){
+                    seekBar.setProgress(50);
+                }else {
+                    seekBar.setProgress(100);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
         addImage.setOnClickListener(v -> {
             //TODO implement adding an image
         });
 
         currentLocation.setOnClickListener(v -> {
-            //TODO implement the use of the location from the GPS sensor
+            Intent localisationActivity=new Intent(this.getActivity(), IncidentLocalisationActivity.class);
+            startActivityForResult(localisationActivity,REQUEST_GET_MAP_LOCATION);
         });
 
         return view;
+    }
+
+    private Emergency buildEmergencyLevel() {
+        if (emergencyLevel.getProgress() == 0){
+            return Emergency.LOW;
+        }else if (emergencyLevel.getProgress() == 50){
+            return Emergency.MEDIUM;
+        }
+        else {
+            return Emergency.HIGH;
+        }
     }
 
     private boolean checkMandatoryFields() {
@@ -108,5 +169,14 @@ public class DeclareIssueFragment extends Fragment{
             ok = false;
         }
         return ok;
+    }
+
+    @Override
+     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_GET_MAP_LOCATION && resultCode == Activity.RESULT_OK) {
+            latitude = data.getDoubleExtra("latitude", 0);
+            longitude = data.getDoubleExtra("longitude", 0);
+            // do something with B's return values
+        }
     }
 }

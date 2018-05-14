@@ -23,11 +23,13 @@ import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
+import ihm.si3.fr.unice.polytech.polissue.service.HighEmergencyIssueService;
 import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
 
 public class MainPageActivity extends AppCompatActivity
@@ -47,7 +49,7 @@ public class MainPageActivity extends AppCompatActivity
                 displayView(R.id.nav_declare_issue);
             }
         });
-
+        fab.setVisibility(View.GONE);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -60,6 +62,9 @@ public class MainPageActivity extends AppCompatActivity
 
         displayView(R.id.nav_issues_list);
 
+
+        Intent serviceIntent = new Intent(getApplicationContext(), HighEmergencyIssueService.class);
+        getApplicationContext().startService(serviceIntent);
 
         auth = FirebaseAuth.getInstance();
 

@@ -14,6 +14,11 @@
     <string name="declare_issue">Déclarer un incident</string>
     <!-- /Issues -->
 
+    <!-- Users -->
+    <string name="search_bar_hint">Rechercher (Nom/E-mail)</string>
+    <string name="notify_button">Notifier</string>
+    <!-- /Users -->
+
     <!--String related to login-->
     <string name="log_in">Connexion</string>
     <string name="sign_in">Inscription</string>
@@ -44,6 +49,14 @@
     <string name="error_auth_google_play_service_update">Mise a jours des services google play necessaire</string>
     <string name="error_profile_settings">Erreur lors de la creation de profile, voir la rubrique Mon Compte</string>
     <string name="error_password_confirmation_must_match">Doit être identique au mot de passe</string>
+
+    <!--    Permissions    -->
+    <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
+    <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+    <string name="permission_required_toast">Location permission is required for this demo.</string>
+
+    <!-- INCIDENT LOCATION ACTIVITY -->
+    <string name="incident_location">Position de l'incident</string>
 
 
 </resources>
