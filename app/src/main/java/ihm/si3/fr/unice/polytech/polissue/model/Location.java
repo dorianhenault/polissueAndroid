@@ -8,9 +8,9 @@ import android.os.Parcelable;
  */
 public class Location implements Parcelable{
 
-    public String place;
-    public double longitude;
-    public double latitude;
+    private String place;
+    private double longitude;
+    private double latitude;
 
     public Location() {
         // Default constructor required for calls to DataSnapshot.getValue(Location.class)
@@ -64,5 +64,29 @@ public class Location implements Parcelable{
         dest.writeString(place);
         dest.writeDouble(longitude);
         dest.writeDouble(latitude);
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 }

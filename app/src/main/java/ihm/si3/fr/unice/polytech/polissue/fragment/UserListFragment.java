@@ -9,13 +9,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +34,8 @@ import ihm.si3.fr.unice.polytech.polissue.model.User;
  * <p/>
  */
 public class UserListFragment extends Fragment {
+
+    private static final String TAG = "UserListFragment";
 
     // TODO: Customize parameters
     private int mColumnCount = 1;
@@ -91,6 +93,7 @@ public class UserListFragment extends Fragment {
                 @Override
                 public void afterTextChanged(Editable s) {
                     filter(s.toString());
+                    Log.d(TAG, s.toString());
                 }
             });
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
@@ -118,10 +121,9 @@ public class UserListFragment extends Fragment {
     private void filter(String s) {
         List<User> users = new ArrayList<>();
 
-        for (User user : users) {
-            if (user.firstName.toLowerCase().contains(s.toLowerCase()) ||
-                    user.lastName.toLowerCase().contains(s.toLowerCase())||
-                    user.email.contains(s)){
+        for (User user : this.users) {
+            if (user.getUsername().toLowerCase().contains(s.toLowerCase())||
+                    user.getEmail().toLowerCase().contains(s.toLowerCase())){
                 users.add(user);
             }
         }

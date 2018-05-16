@@ -30,7 +30,7 @@ public class HighEmergencyIssueService extends Service {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     IssueModel issueModel = snapshot.getValue(IssueModel.class);
-                    if (issueModel.emergency.equals(Emergency.HIGH)){
+                    if (issueModel.getEmergency().equals(Emergency.HIGH)){
                         IssueNotificationBuilder builder = new IssueNotificationBuilder(issueModel, getApplicationContext());
                     }
                 }
