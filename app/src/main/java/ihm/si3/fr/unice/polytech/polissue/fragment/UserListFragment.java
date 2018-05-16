@@ -27,6 +27,7 @@ import java.util.List;
 
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.adapter.MyUserRecyclerViewAdapter;
+import ihm.si3.fr.unice.polytech.polissue.model.MyNotification;
 import ihm.si3.fr.unice.polytech.polissue.model.User;
 
 /**
@@ -42,6 +43,8 @@ public class UserListFragment extends Fragment {
 
     private List<User> users = new ArrayList<>();;
     private MyUserRecyclerViewAdapter adapter;
+    private OnCheckUserListener checkUserListener;
+    private List<MyNotification> notifications = new ArrayList<>();
 
 
     /**
@@ -77,7 +80,8 @@ public class UserListFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             notify.setOnClickListener(v -> {
-                //TODO
+                //TODO notify user
+                Log.d(TAG, "users to notify size :" + notifications.size());
             });
             searchField.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -112,8 +116,23 @@ public class UserListFragment extends Fragment {
                 }
             };
             ref.addListenerForSingleValueEvent(eventListener);
+            checkUserListener = new OnCheckUserListener() {
+                @Override
+                public void onUserChecked(MyNotification notification) {
+                    if (!notifications.contains(notification)) {
+                        notifications.add(notification);
+                    }
+                }
 
+                @Override
+                public void onUserUnchecked(MyNotification notification) {
+                    if (notifications.contains(notification)) {
+                        notifications.remove(notification);
+                    }
+                }
+            };
             adapter = new MyUserRecyclerViewAdapter(users);
+            adapter.setCheckUserListener(checkUserListener);
             recyclerView.setAdapter(adapter);
         return view;
     }
@@ -130,6 +149,11 @@ public class UserListFragment extends Fragment {
         adapter.filter(users);
 
 
+    }
+
+    public interface OnCheckUserListener{
+        void onUserChecked(MyNotification notification);
+        void onUserUnchecked(MyNotification notification);
     }
 
 

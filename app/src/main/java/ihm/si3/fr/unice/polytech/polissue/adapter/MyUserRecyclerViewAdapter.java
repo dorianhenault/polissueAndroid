@@ -5,11 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
 import ihm.si3.fr.unice.polytech.polissue.R;
+import ihm.si3.fr.unice.polytech.polissue.fragment.UserListFragment;
+import ihm.si3.fr.unice.polytech.polissue.model.MyNotification;
 import ihm.si3.fr.unice.polytech.polissue.model.User;
 
 /**
@@ -19,7 +24,11 @@ import ihm.si3.fr.unice.polytech.polissue.model.User;
 public class MyUserRecyclerViewAdapter extends RecyclerView.Adapter<MyUserRecyclerViewAdapter.ViewHolder> {
 
     private List<User> mValues;
+    private UserListFragment.OnCheckUserListener checkUserListener;
 
+    public void setCheckUserListener(UserListFragment.OnCheckUserListener checkUserListener) {
+        this.checkUserListener = checkUserListener;
+    }
 
     public MyUserRecyclerViewAdapter(List<User> items) {
         mValues = items;
@@ -40,7 +49,23 @@ public class MyUserRecyclerViewAdapter extends RecyclerView.Adapter<MyUserRecycl
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                holder.notify.setChecked(!holder.notify.isChecked());
+                if (holder.notify.isChecked()){
+                    MyNotification notification = new MyNotification(/*TODO implement new notif*/);
+                    checkUserListener.onUserChecked(holder.mItem);
+                }else {
+                    checkUserListener.onUserUnchecked(holder.mItem);
+                }
+            }
+        });
+        holder.notify.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    checkUserListener.onUserChecked(holder.mItem);
+                }else {
+                    checkUserListener.onUserUnchecked(holder.mItem);
+                }
             }
         });
     }

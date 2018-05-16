@@ -31,6 +31,7 @@ import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
 import ihm.si3.fr.unice.polytech.polissue.service.HighEmergencyIssueService;
 import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
+import ihm.si3.fr.unice.polytech.polissue.service.NotifyUserService;
 
 public class MainPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -63,8 +64,10 @@ public class MainPageActivity extends AppCompatActivity
         displayView(R.id.nav_issues_list);
 
 
-        Intent serviceIntent = new Intent(getApplicationContext(), HighEmergencyIssueService.class);
-        getApplicationContext().startService(serviceIntent);
+        Intent highEmergencyIssueServiceIntent = new Intent(getApplicationContext(), HighEmergencyIssueService.class);
+        Intent notifyUserServiceIntent = new Intent(getApplicationContext(), NotifyUserService.class);
+        getApplicationContext().startService(highEmergencyIssueServiceIntent);
+        getApplicationContext().startService(notifyUserServiceIntent);
 
         auth = FirebaseAuth.getInstance();
 

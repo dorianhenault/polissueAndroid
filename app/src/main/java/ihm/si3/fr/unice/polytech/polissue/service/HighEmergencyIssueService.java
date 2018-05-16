@@ -15,23 +15,23 @@ import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 import ihm.si3.fr.unice.polytech.polissue.notifications.IssueNotificationBuilder;
 
 public class HighEmergencyIssueService extends Service {
+    private static final String TAG = "HighEmergencyIssueService";
+    private DatabaseReference ref;
+    private ValueEventListener listener;
 
-
-
-    public HighEmergencyIssueService() {
-    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("mishap");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        ref = FirebaseDatabase.getInstance().getReference().child("mishap");
+        listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     IssueModel issueModel = snapshot.getValue(IssueModel.class);
-                    if (issueModel.getEmergency().equals(Emergency.HIGH)){
+                    if (issueModel.getEmergency().equals(Emergency.HIGH)) {
                         IssueNotificationBuilder builder = new IssueNotificationBuilder(issueModel, getApplicationContext());
+                        builder.build();
                     }
                 }
             }
@@ -40,12 +40,19 @@ public class HighEmergencyIssueService extends Service {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+        ref.addListenerForSingleValueEvent(listener);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ref.removeEventListener(listener);
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return null;
     }
 }

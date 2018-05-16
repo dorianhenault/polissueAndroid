@@ -6,6 +6,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Date;
 
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
+import ihm.si3.fr.unice.polytech.polissue.model.MyNotification;
 
 /**
  * Created by doh06 on 20/04/2018.
@@ -55,6 +56,12 @@ public class DataBaseAccess {
     public void postIssue(IssueModel issue){
         DatabaseReference issueRef = database.getReference().child("mishap");
         issueRef.push().setValue(issue);
+    }
+
+
+    public void postNotification(MyNotification notification){
+        DatabaseReference notificationRef = database.getReference().child("notifications");
+        notificationRef.push().setValue(notification);
     }
 
 }
