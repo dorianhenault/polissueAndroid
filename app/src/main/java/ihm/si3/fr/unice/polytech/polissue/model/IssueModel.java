@@ -10,15 +10,15 @@ import java.util.Date;
  */
 public class IssueModel implements Parcelable{
 
-    public String title;
-    public String description;
-    public Date date;
-    public Emergency emergency;
-    public Location location;
+    private String title;
+    private String description;
+    private Date date;
+    private Emergency emergency;
+    private Location location;
     //public int userID;
     //TODO temporarly replaces  the userID
-    public String userName;
-    public String imageURL;
+    private String userName;
+    private String imagePath;
 
 
     public IssueModel() {
@@ -50,9 +50,9 @@ public class IssueModel implements Parcelable{
      * @param emergency the emergency level of the issue
      * @param location the location of the issue
      * @param userName the userID who declared the issue
-     * @param imageURL the image URL of the issue
+     * @param imagePath the image URL of the issue
      */
-    public IssueModel(String title, String description, Date date, Emergency emergency, Location location,String userName /*int userID*/, String imageURL) {
+    public IssueModel(String title, String description, Date date, Emergency emergency, Location location,String userName /*int userID*/, String imagePath) {
         this.title = title;
         this.description = description;
         this.date = date;
@@ -60,7 +60,7 @@ public class IssueModel implements Parcelable{
         this.location = location;
         //this.userID = userID;
         this.userName=userName;
-        this.imageURL = imageURL;
+        this.imagePath = imagePath;
     }
 
 
@@ -73,7 +73,7 @@ public class IssueModel implements Parcelable{
         //userID = in.readInt();
         userName=in.readString();
 
-        imageURL = in.readString();
+        imagePath = in.readString();
     }
 
     public static final Creator<IssueModel> CREATOR = new Creator<IssueModel>() {
@@ -102,8 +102,62 @@ public class IssueModel implements Parcelable{
         dest.writeParcelable(location, PARCELABLE_WRITE_RETURN_VALUE);
         //dest.writeInt(userID);
         dest.writeString(userName);
-        dest.writeString(imageURL);
+        dest.writeString(imagePath);
     }
 
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Emergency getEmergency() {
+        return emergency;
+    }
+
+    public void setEmergency(Emergency emergency) {
+        this.emergency = emergency;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 }

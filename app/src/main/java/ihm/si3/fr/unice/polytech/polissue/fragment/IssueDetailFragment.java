@@ -1,5 +1,6 @@
 package ihm.si3.fr.unice.polytech.polissue.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -58,12 +59,12 @@ public class IssueDetailFragment extends Fragment{
         notification=view.findViewById(R.id.incidentNotify);
         emergency=view.findViewById(R.id.incidentEmergency);
 
-        title.setText(issue.title);
-        declarer.setText(issue.userName);
-        date.setText(issue.date.toString());
-        place.setText(issue.location.place);
-        description.setText(issue.description);
-        emergency.setText(issue.emergency.toString());
+        title.setText(issue.getTitle());
+        declarer.setText(issue.getUserName());
+        date.setText(issue.getDate().toString());
+        place.setText(issue.getLocation().getPlace());
+        description.setText(issue.getDescription());
+        emergency.setText(issue.getEmergency().toString());
 
         notification.setOnClickListener(v -> {
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -71,6 +72,15 @@ public class IssueDetailFragment extends Fragment{
             ft.addToBackStack(null);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.commit();
+        });
+
+
+        share.setOnClickListener(v -> {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TITLE, issue.getTitle());
+            shareIntent.putExtra(Intent.EXTRA_TEXT, issue.getDescription());
+            startActivity(Intent.createChooser(shareIntent, "Partager un incident"));
         });
 
         return  view;

@@ -35,7 +35,7 @@ public class MyUserRecyclerViewAdapter extends RecyclerView.Adapter<MyUserRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-
+        holder.name.setText(holder.mItem.getUsername());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
