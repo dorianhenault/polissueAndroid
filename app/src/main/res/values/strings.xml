@@ -46,6 +46,7 @@
     <string name="error_password_confirmation_must_match">Doit être identique au mot de passe</string>
     <string name="error_loading_picture">Erreur lors du chargement de l\'image</string>
     <string name="error_internal_file">Erreur avec vos fichiers</string>
+    <string name="error_uploading_picture">Erreur d\'envoie de l\'image</string>
 
 
 </resources>

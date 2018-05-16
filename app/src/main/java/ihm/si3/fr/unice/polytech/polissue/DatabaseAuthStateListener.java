@@ -20,7 +20,7 @@ public class DatabaseAuthStateListener implements AuthStateListener {
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        if (user != null) {
+        if (user != null && !user.isAnonymous()) {
             updateUserInfo(user);
         }
     }

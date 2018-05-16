@@ -21,12 +21,16 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
 
 import ihm.si3.fr.unice.polytech.polissue.DataBaseAccess;
+import ihm.si3.fr.unice.polytech.polissue.IssuePictureListener;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.model.Emergency;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
@@ -83,6 +87,8 @@ public class DeclareIssueFragment extends Fragment{
         validButton.setOnClickListener((v) -> {
             if(checkMandatoryFields()){
                 IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), Emergency.MEDIUM,declarer.getText().toString());
+                StorageReference imageRef = uploadPicture(imageURI, issue);
+                issue.imagePathFromRef(imageRef);
                 DataBaseAccess dataBaseAccess = new DataBaseAccess();
                 dataBaseAccess.postIssue(issue);
             }
@@ -128,15 +134,25 @@ public class DeclareIssueFragment extends Fragment{
         return view;
     }
 
+    private StorageReference uploadPicture(Uri imageURI, IssueModel issue) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference issueImages = storage.getReference("images").child("issues").child(issue.title);
+        String pictureName = String.valueOf(System.currentTimeMillis() / 1000);
+        StorageReference pictureRef = issueImages.child(pictureName);
+        IssuePictureListener uploadListener = new IssuePictureListener(issue);
+        pictureRef.putFile(imageURI).addOnCompleteListener(uploadListener);
+        return pictureRef;
+    }
+
     private File createPictureFile() throws IOException {
         String timeStamp = String.valueOf(System.currentTimeMillis() / 1000);
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = Objects.requireNonNull(getContext()).getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
         return File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
+                imageFileName,
+                ".jpg",
+                storageDir
         );
     }
 
@@ -170,7 +186,6 @@ public class DeclareIssueFragment extends Fragment{
                 Uri result = data.getData();
                 if (result != null) {
                     image.setImageURI(result);
-
                     imageURI = result;
                 }
             }

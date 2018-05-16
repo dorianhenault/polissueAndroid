@@ -63,10 +63,9 @@ public class MainPageActivity extends AppCompatActivity
 
         auth = FirebaseAuth.getInstance();
 
-        auth.signOut();
+        if (auth.getCurrentUser() == null) auth.signInAnonymously();
         auth.addAuthStateListener(new NavigationAuthStateListener(navigationView));
         auth.addAuthStateListener(new DatabaseAuthStateListener());
-
         FacebookSdk.setApplicationId(getString(R.string.facebook_application_id));
         AppEventsLogger.activateApp(this);
 
