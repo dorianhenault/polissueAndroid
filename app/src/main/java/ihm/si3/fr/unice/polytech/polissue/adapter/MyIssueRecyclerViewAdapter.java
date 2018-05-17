@@ -1,11 +1,13 @@
 package ihm.si3.fr.unice.polytech.polissue.adapter;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +20,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ihm.si3.fr.unice.polytech.polissue.FirebasePictureFetcher;
 import ihm.si3.fr.unice.polytech.polissue.R;
-
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
-import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 /**
@@ -37,11 +42,11 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
     private final List<IssueModel> mValues;
     private ChildEventListener issueEventListener;
     private DatabaseReference ref;
-
+    private static final String TAG = "IssueViewAdapter";
 
 
     public MyIssueRecyclerViewAdapter() {
-        mValues=new ArrayList<>();
+        mValues = new ArrayList<>();
         ref = FirebaseDatabase.getInstance().getReference("mishap");
         addEventListener();
 
@@ -62,14 +67,28 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
 //        holder.issueState.setProgress(mValues.get(position).getState().getProgress());
 //        holder.issueDeclarer.setText(mValues.get(position).getDeclarer().getName());
 //        holder.issueDate.setText(mValues.get(position).getDate());
+        if (mValues.get(position).imagePath != null) {
+
+            FirebasePictureFetcher fetcher = new FirebasePictureFetcher(holder.issueImage);
+            Log.d(TAG, "onBindViewHolder: " + mValues.get(position).imagePath);
+            StorageReference imageRef = FirebaseStorage.getInstance().getReference(mValues.get(position).imagePath);
+
+            File imageDir = holder.issueImage.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            try {
+                fetcher.fetch(imageRef, imageDir, true);
+            } catch (IOException e) {
+                Log.e(TAG, "onBindViewHolder: failed loading image", e);
+            }
+        }
+
 
         holder.mView.setOnClickListener(v -> {
-            FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
-            Fragment issueDetailFragment=IssueDetailFragment.newInstance();
-            Bundle bundle=new Bundle();
-            bundle.putParcelable("issue",mValues.get(position));
+            FragmentTransaction ft = ((FragmentActivity) v.getContext()).getSupportFragmentManager().beginTransaction();
+            Fragment issueDetailFragment = IssueDetailFragment.newInstance();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("issue", mValues.get(position));
             issueDetailFragment.setArguments(bundle);
-            ft.replace(R.id.content_frame, issueDetailFragment );
+            ft.replace(R.id.content_frame, issueDetailFragment);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.addToBackStack(null);
             ft.commit();
@@ -102,13 +121,13 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
         }
     }
 
-    private void addEventListener(){
+    private void addEventListener() {
         issueEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 IssueModel issue = dataSnapshot.getValue(IssueModel.class);
                 mValues.add(issue);
-                notifyItemInserted(mValues.size()-1);
+                notifyItemInserted(mValues.size() - 1);
             }
 
             @Override

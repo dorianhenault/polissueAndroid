@@ -182,7 +182,7 @@ public class MainPageActivity extends AppCompatActivity
                 username.setText(user.getDisplayName());
                 email.setText(user.getEmail());
                 try {
-                    (new PictureFetcher(profilePic)).execute(new URL(String.valueOf(user.getPhotoUrl())));
+                    (new PictureFecthingTask(profilePic)).execute(new URL(String.valueOf(user.getPhotoUrl())));
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }

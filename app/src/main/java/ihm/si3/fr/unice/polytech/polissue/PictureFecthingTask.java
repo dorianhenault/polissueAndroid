@@ -10,11 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-public class PictureFetcher extends AsyncTask<URL, Void, Bitmap> {
+public class PictureFecthingTask extends AsyncTask<URL, Void, Bitmap> {
     private static final String TAG = "Picture Fectcher";
     private final ImageView imageView;
 
-    PictureFetcher(ImageView imageView) {
+    PictureFecthingTask(ImageView imageView) {
         this.imageView = imageView;
     }
 
