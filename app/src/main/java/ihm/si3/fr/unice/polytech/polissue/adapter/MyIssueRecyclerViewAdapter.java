@@ -67,12 +67,11 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
 //        holder.issueState.setProgress(mValues.get(position).getState().getProgress());
 //        holder.issueDeclarer.setText(mValues.get(position).getDeclarer().getName());
 //        holder.issueDate.setText(mValues.get(position).getDate());
+
         if (mValues.get(position).imagePath != null) {
 
             FirebasePictureFetcher fetcher = new FirebasePictureFetcher(holder.issueImage);
-            Log.d(TAG, "onBindViewHolder: " + mValues.get(position).imagePath);
             StorageReference imageRef = FirebaseStorage.getInstance().getReference(mValues.get(position).imagePath);
-
             File imageDir = holder.issueImage.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             try {
                 fetcher.fetch(imageRef, imageDir, true);
