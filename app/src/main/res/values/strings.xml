@@ -12,6 +12,7 @@
     <!-- Issues -->
     <string name="issue_list">Liste des incidents</string>
     <string name="declare_issue">Déclarer un incident</string>
+    <string name="issue_list_maps">Carte des incidents</string>
     <!-- /Issues -->
 
     <!-- Users -->
@@ -56,7 +57,8 @@
     <string name="permission_required_toast">Location permission is required for this demo.</string>
 
     <!-- INCIDENT LOCATION ACTIVITY -->
-    <string name="incident_location">Position de l'incident</string>
+    <string name="incident_location">Position de l\'incident</string>
+    <string name="issues_position">Carte des incidents</string>
 
 
 </resources>

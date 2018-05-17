@@ -15,6 +15,9 @@
             <item
                 android:id="@+id/nav_declare_issue"
                 android:title="@string/declare_issue"/>
+            <item
+                android:id="@+id/nav_issues_list_maps"
+                android:title="@string/issue_list_maps"/>
         </menu>
 
     </item>

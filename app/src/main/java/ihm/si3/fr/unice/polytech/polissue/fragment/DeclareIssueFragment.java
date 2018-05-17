@@ -1,9 +1,10 @@
 package ihm.si3.fr.unice.polytech.polissue.fragment;
 
 
-import android.graphics.Color;
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -18,10 +19,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import ihm.si3.fr.unice.polytech.polissue.DataBaseAccess;
-import ihm.si3.fr.unice.polytech.polissue.IncidentLocalisationActivity;
+import ihm.si3.fr.unice.polytech.polissue.location.IncidentLocalisationActivity;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.model.Emergency;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
@@ -38,7 +42,7 @@ public class DeclareIssueFragment extends Fragment{
     private ImageView image;
     private EditText title, description, declarer, location;
     private SeekBar emergencyLevel;
-    private TextView titleError, declarerError, locationError;
+    private TextView titleError, declarerError, locationError,cityLocation,cityLocationText;
 
     private Location locationMap;
 
@@ -74,6 +78,9 @@ public class DeclareIssueFragment extends Fragment{
         titleError = view.findViewById(R.id.titleError);
         declarerError = view.findViewById(R.id.declarerError);
         locationError = view.findViewById(R.id.locationError);
+        cityLocation = view.findViewById(R.id.cityLocation);
+        cityLocationText = view.findViewById(R.id.cityLocationText);
+
 
         validButton.setOnClickListener((v) -> {
             if(checkMandatoryFields()){
@@ -176,7 +183,18 @@ public class DeclareIssueFragment extends Fragment{
         if (requestCode == REQUEST_GET_MAP_LOCATION && resultCode == Activity.RESULT_OK) {
             latitude = data.getDoubleExtra("latitude", 0);
             longitude = data.getDoubleExtra("longitude", 0);
-            // do something with B's return values
+            Geocoder gcd = new Geocoder(this.getContext(), Locale.getDefault());
+            List<Address> addresses = null;
+            try {
+                addresses = gcd.getFromLocation(latitude, longitude, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (addresses.size() > 0) {
+                cityLocation.setText(addresses.get(0).getLocality());
+                cityLocation.setVisibility(View.VISIBLE);
+                cityLocationText.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

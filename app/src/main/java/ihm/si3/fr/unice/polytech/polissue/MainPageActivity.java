@@ -23,6 +23,8 @@ import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import ihm.si3.fr.unice.polytech.polissue.location.IncidentLocalisationActivity;
+import ihm.si3.fr.unice.polytech.polissue.location.IssuesListLocationActivity;
 import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -139,7 +141,12 @@ public class MainPageActivity extends AppCompatActivity
         } else if(itemId == R.id.nav_declare_issue){
             fragment = DeclareIssueFragment.newInstance();
             title = getString(R.string.declare_issue);
+        } else if(itemId == R.id.nav_issues_list_maps){
+            Intent localisationActivity=new Intent(this, IssuesListLocationActivity.class);
+            startActivityForResult(localisationActivity,0);
+            title = getString(R.string.issue_list_maps);
         }
+
 
         if (fragment != null){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
