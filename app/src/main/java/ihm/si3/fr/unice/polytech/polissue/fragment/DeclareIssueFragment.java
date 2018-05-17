@@ -82,6 +82,11 @@ public class DeclareIssueFragment extends Fragment{
         cityLocation = view.findViewById(R.id.cityLocation);
         cityLocationText = view.findViewById(R.id.cityLocationText);
 
+        if(getArguments()!=null){
+            this.latitude=getArguments().getDouble("latitude");
+            this.longitude=getArguments().getDouble("longitude");
+            restoreFormFields(getArguments().getParcelable("issue"));
+        }
 
         validButton.setOnClickListener((v) -> {
             if(checkMandatoryFields()){
@@ -140,8 +145,13 @@ public class DeclareIssueFragment extends Fragment{
         });
 
         currentLocation.setOnClickListener(v -> {
+            this.locationMap=new Location(location.getText().toString(),longitude,latitude);
+            IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), buildEmergencyLevel(),locationMap,declarer.getText().toString(),"");
+            Bundle bundle=new Bundle();
+            bundle.putParcelable("issue",issue);
             FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
             Fragment issueLocationFragment= IncidentLocalisationActivity.newInstance();
+            issueLocationFragment.setArguments(bundle);
             ft.replace(R.id.content_frame, issueLocationFragment );
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.addToBackStack(null);
@@ -149,7 +159,46 @@ public class DeclareIssueFragment extends Fragment{
 
         });
 
+        updateCityLocation();
+
         return view;
+    }
+
+    private void restoreFormFields(IssueModel issueModel){
+        if(issueModel.title!=null){
+            this.title.setText(issueModel.title);
+        }
+        if(issueModel.emergency!=null){
+            this.emergencyLevel.setProgress(buildEmergencyLevelReversed(issueModel.emergency));
+        }
+        if(issueModel.userName!=null){
+            this.declarer.setText(issueModel.userName);
+        }
+        //if(issueModel.imageURL!=null){
+         //   this.im.setText(issueModel.title);
+        //}
+        if(issueModel.description!=null){
+            this.description.setText(issueModel.description);
+        }
+        if(issueModel.location!=null){
+            this.location.setText(issueModel.location.place);
+        }
+
+    }
+
+    private void updateCityLocation(){
+        Geocoder gcd = new Geocoder(this.getContext(), Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = gcd.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (addresses.size() > 0) {
+            cityLocation.setText(addresses.get(0).getLocality());
+            cityLocation.setVisibility(View.VISIBLE);
+            cityLocationText.setVisibility(View.VISIBLE);
+        }
     }
 
     private Emergency buildEmergencyLevel() {
@@ -160,6 +209,17 @@ public class DeclareIssueFragment extends Fragment{
         }
         else {
             return Emergency.HIGH;
+        }
+    }
+
+    private int buildEmergencyLevelReversed(Emergency emergency) {
+        if (emergency == Emergency.LOW){
+            return 0 ;
+        }else  if (emergency == Emergency.MEDIUM){
+            return 50;
+        }
+        else {
+            return 100;
         }
     }
 
@@ -184,23 +244,4 @@ public class DeclareIssueFragment extends Fragment{
         return ok;
     }
 
-    @Override
-     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_GET_MAP_LOCATION && resultCode == Activity.RESULT_OK) {
-            latitude = data.getDoubleExtra("latitude", 0);
-            longitude = data.getDoubleExtra("longitude", 0);
-            Geocoder gcd = new Geocoder(this.getContext(), Locale.getDefault());
-            List<Address> addresses = null;
-            try {
-                addresses = gcd.getFromLocation(latitude, longitude, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (addresses.size() > 0) {
-                cityLocation.setText(addresses.get(0).getLocality());
-                cityLocation.setVisibility(View.VISIBLE);
-                cityLocationText.setVisibility(View.VISIBLE);
-            }
-        }
-    }
 }

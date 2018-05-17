@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +40,9 @@ import java.util.concurrent.Executor;
 
 import ihm.si3.fr.unice.polytech.polissue.PermissionUtils;
 import ihm.si3.fr.unice.polytech.polissue.R;
+import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
+import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
+import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 public class IncidentLocalisationActivity extends Fragment
         implements
@@ -70,6 +75,8 @@ public class IncidentLocalisationActivity extends Fragment
 
     private LatLng myPosition;
 
+    private IssueModel issueModel;
+
     public static IncidentLocalisationActivity newInstance() {
         return new IncidentLocalisationActivity();
     }
@@ -78,6 +85,10 @@ public class IncidentLocalisationActivity extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if(getArguments()!=null){
+            issueModel=getArguments().getParcelable("issue");
+        }
         final View view = inflater.inflate(R.layout.incident_location_gmaps, container, false);
 
         findViewById(view);
@@ -89,12 +100,23 @@ public class IncidentLocalisationActivity extends Fragment
                 (SupportMapFragment) this.getActivity().getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);*/
 
-       /* Button button=(Button) rootView.findViewById(R.id.validatePosition) ;
+        Button button=(Button) view.findViewById(R.id.validatePosition) ;
         button.setOnClickListener(v -> {
+            FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
+            Fragment declareIssueFragment= DeclareIssueFragment.newInstance();
+            Bundle bundle=new Bundle();
+            bundle.putDouble("latitude",getIncidentPosition().latitude);
+            bundle.putDouble("longitude", getIncidentPosition().longitude);
+            bundle.putParcelable("issue",issueModel);
+            declareIssueFragment.setArguments(bundle);
+            ft.replace(R.id.content_frame, declareIssueFragment );
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.addToBackStack(null);
+            ft.commit();
 
-            setResult(Activity.RESULT_OK, new Intent().putExtra("latitude", getIncidentPosition().latitude).putExtra("longitude", getIncidentPosition().longitude));
-            IncidentLocalisationActivity.this.finish();
-        });*/
+            /*setResult(Activity.RESULT_OK, new Intent().putExtra("latitude", getIncidentPosition().latitude).putExtra("longitude", getIncidentPosition().longitude));
+            IncidentLocalisationActivity.this.finish();*/
+        });
         return view;
     }
 
@@ -121,9 +143,9 @@ public class IncidentLocalisationActivity extends Fragment
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         mMap.setOnMarkerClickListener(this);
-        //enableMyLocation();
-        //setCurrentLocation();
-       /* mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        enableMyLocation();
+        setCurrentLocation();
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng point) {
@@ -132,17 +154,24 @@ public class IncidentLocalisationActivity extends Fragment
                 mMap.addMarker(new MarkerOptions().position(point));
                 incidentPosition=point;
             }
-        });*/
-       /* final LocationManager manager = (LocationManager) this.getActivity().getSystemService( Context.LOCATION_SERVICE );
+        });
+        final LocationManager manager = (LocationManager) this.getActivity().getSystemService( Context.LOCATION_SERVICE );
         if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
             buildAlertMessageNoGps();
-        }*/
+        }
+
+    }
+
+    @Override
+    public void onResume() {
+        map.onResume();
+        super.onResume();
     }
 
     private void setCurrentLocation(){
         // if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-       /* Task<Location> locationTask = mLocationClient.getLastLocation()
-                .addOnSuccessListener((Executor) this, location -> {
+        Task<Location> locationTask = mLocationClient.getLastLocation()
+                .addOnSuccessListener( this.getActivity(), location -> {
                     // Got last known location. In some rare situations this can be null.
                     if (location != null) {
                         System.out.println(location+"LOCATION");
@@ -151,7 +180,7 @@ public class IncidentLocalisationActivity extends Fragment
                         mMap.animateCamera(cameraUpdate);
                         myPosition=latLng;
                     }
-                });*/
+                });
 
         // }
     }
