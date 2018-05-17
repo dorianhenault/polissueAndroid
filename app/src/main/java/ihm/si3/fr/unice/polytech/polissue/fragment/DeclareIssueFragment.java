@@ -1,7 +1,6 @@
 package ihm.si3.fr.unice.polytech.polissue.fragment;
 
 
-import android.graphics.Color;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

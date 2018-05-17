@@ -1,12 +1,14 @@
 package ihm.si3.fr.unice.polytech.polissue;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Date;
+import java.util.Set;
 
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
-import ihm.si3.fr.unice.polytech.polissue.model.MyNotification;
+import ihm.si3.fr.unice.polytech.polissue.model.User;
 
 /**
  * Created by doh06 on 20/04/2018.
@@ -58,10 +60,19 @@ public class DataBaseAccess {
         issueRef.push().setValue(issue);
     }
 
-
-    public void postNotification(MyNotification notification){
+    /**
+     * Posts a notification to firebase database
+     * @param users the users to notify
+     * @param issue the issue where the user has been notified
+     */
+    public void postNotification(Set<User> users, IssueModel issue){
         DatabaseReference notificationRef = database.getReference().child("notifications");
-        notificationRef.push().setValue(notification);
+        for (User user : users) {
+            String key = notificationRef.push().getKey();
+            notificationRef.child(key).child("notifier").setValue(FirebaseAuth.getInstance().getUid());
+            notificationRef.child(key).child("notified").setValue(user.getId());
+            notificationRef.child(key).child("issueID").setValue(issue.getId());
+        }
     }
 
 }

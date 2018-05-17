@@ -68,7 +68,11 @@ public class IssueDetailFragment extends Fragment{
 
         notification.setOnClickListener(v -> {
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, UserListFragment.newInstance());
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("issue", issue);
+            Fragment fragment = UserListFragment.newInstance();
+            fragment.setArguments(bundle);
+            ft.replace(R.id.content_frame, fragment);
             ft.addToBackStack(null);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.commit();

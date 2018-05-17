@@ -10,6 +10,7 @@ import java.util.Date;
  */
 public class IssueModel implements Parcelable{
 
+    private String id;
     private String title;
     private String description;
     private Date date;
@@ -25,14 +26,34 @@ public class IssueModel implements Parcelable{
         // Default constructor required for calls to DataSnapshot.getValue(IssueModel.class)
     }
 
+    public IssueModel(String title, String description, Date date, Emergency emergency, Location location, String userName, String imagePath) {
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.emergency = emergency;
+        this.location = location;
+        this.userName = userName;
+        this.imagePath = imagePath;
+    }
+
+    public IssueModel(String title, String description, Date date, Emergency emergency, String userName) {
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.emergency = emergency;
+        this.userName = userName;
+    }
+
     /**
      * Minimalistic constructor for an issue
+     * @param id id in db
      * @param title the title of the issue
      * @param description the description of the issue
      * @param date the date of declaration of the issue
      * @param emergency the emergency level of the issue
      */
-    public IssueModel(String title, String description, Date date, Emergency emergency,String userName /*int userID*/) {
+    public IssueModel(String id, String title, String description, Date date, Emergency emergency, String userName /*int userID*/) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.date = date;
@@ -44,6 +65,7 @@ public class IssueModel implements Parcelable{
 
     /**
      * Full constructor for an issue
+     * @param id id in db
      * @param title the title of the issue
      * @param description the description of the issue
      * @param date the date of declaration of the issue
@@ -52,7 +74,8 @@ public class IssueModel implements Parcelable{
      * @param userName the userID who declared the issue
      * @param imagePath the image URL of the issue
      */
-    public IssueModel(String title, String description, Date date, Emergency emergency, Location location,String userName /*int userID*/, String imagePath) {
+    public IssueModel(String id, String title, String description, Date date, Emergency emergency, Location location, String userName /*int userID*/, String imagePath) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.date = date;
@@ -65,6 +88,7 @@ public class IssueModel implements Parcelable{
 
 
     protected IssueModel(Parcel in) {
+        id = in.readString();
         title = in.readString();
         description = in.readString();
         date = new Date(in.readLong());
@@ -95,6 +119,7 @@ public class IssueModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(description);
         dest.writeLong(date.getTime());
@@ -159,5 +184,13 @@ public class IssueModel implements Parcelable{
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -24,6 +24,7 @@ import java.util.List;
 
 import ihm.si3.fr.unice.polytech.polissue.R;
 
+import ihm.si3.fr.unice.polytech.polissue.factory.IssueModelFactory;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
@@ -106,7 +107,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
         issueEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                IssueModel issue = dataSnapshot.getValue(IssueModel.class);
+                IssueModel issue = new IssueModelFactory().forge(dataSnapshot);
                 mValues.add(issue);
                 notifyItemInserted(mValues.size()-1);
             }
@@ -119,6 +120,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 //TODO implement
+
             }
 
             @Override
