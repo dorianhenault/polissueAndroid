@@ -45,6 +45,7 @@ public class IssueDetailFragment extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
         View view = inflater.inflate(R.layout.fragment_issue_detail, container, false);
 
         title=view.findViewById(R.id.incidentTitle);

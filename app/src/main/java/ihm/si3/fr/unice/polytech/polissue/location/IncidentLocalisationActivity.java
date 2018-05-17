@@ -10,9 +10,13 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -21,6 +25,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -29,10 +34,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.concurrent.Executor;
+
 import ihm.si3.fr.unice.polytech.polissue.PermissionUtils;
 import ihm.si3.fr.unice.polytech.polissue.R;
 
-public class IncidentLocalisationActivity extends AppCompatActivity
+public class IncidentLocalisationActivity extends Fragment
         implements
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMyLocationButtonClickListener,
@@ -51,7 +58,9 @@ public class IncidentLocalisationActivity extends AppCompatActivity
      * Flag indicating whether a requested permission has been denied after returning in
      * {@link #onRequestPermissionsResult(int, String[], int[])}.
      */
-    private boolean mPermissionDenied = false;
+   // private boolean mPermissionDenied = false;
+
+    private MapView map;
 
     private GoogleMap mMap;
 
@@ -61,22 +70,48 @@ public class IncidentLocalisationActivity extends AppCompatActivity
 
     private LatLng myPosition;
 
+    public static IncidentLocalisationActivity newInstance() {
+        return new IncidentLocalisationActivity();
+    }
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.incident_location_gmaps);
-        Button button=(Button) findViewById(R.id.validatePosition) ;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.incident_location_gmaps, container, false);
+
+        findViewById(view);
+        map.onCreate(savedInstanceState);
+        map.getMapAsync(this);
+
+
+       /* SupportMapFragment mapFragment =
+                (SupportMapFragment) this.getActivity().getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);*/
+
+       /* Button button=(Button) rootView.findViewById(R.id.validatePosition) ;
         button.setOnClickListener(v -> {
+
             setResult(Activity.RESULT_OK, new Intent().putExtra("latitude", getIncidentPosition().latitude).putExtra("longitude", getIncidentPosition().longitude));
             IncidentLocalisationActivity.this.finish();
-        });
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        });*/
+        return view;
+    }
 
-        mLocationClient = LocationServices.getFusedLocationProviderClient(this);
+    private void findViewById(View rootView) {
+
+        map = (MapView) rootView.findViewById(R.id.map);
+
+    }
+
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+
+        mLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
 
     }
 
@@ -86,9 +121,9 @@ public class IncidentLocalisationActivity extends AppCompatActivity
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         mMap.setOnMarkerClickListener(this);
-        enableMyLocation();
-        setCurrentLocation();
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        //enableMyLocation();
+        //setCurrentLocation();
+       /* mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng point) {
@@ -97,29 +132,26 @@ public class IncidentLocalisationActivity extends AppCompatActivity
                 mMap.addMarker(new MarkerOptions().position(point));
                 incidentPosition=point;
             }
-        });
-        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+        });*/
+       /* final LocationManager manager = (LocationManager) this.getActivity().getSystemService( Context.LOCATION_SERVICE );
         if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
             buildAlertMessageNoGps();
-        }
+        }*/
     }
 
     private void setCurrentLocation(){
         // if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        Task<Location> locationTask = mLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            System.out.println(location+"LOCATION");
-                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-                            mMap.animateCamera(cameraUpdate);
-                            myPosition=latLng;
-                        }
+       /* Task<Location> locationTask = mLocationClient.getLastLocation()
+                .addOnSuccessListener((Executor) this, location -> {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        System.out.println(location+"LOCATION");
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                        mMap.animateCamera(cameraUpdate);
+                        myPosition=latLng;
                     }
-                });
+                });*/
 
         // }
     }
@@ -130,11 +162,11 @@ public class IncidentLocalisationActivity extends AppCompatActivity
      * Enables the My Location layer if the fine location permission has been granted.
      */
     private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION, true);
+        if (ActivityCompat.checkSelfPermission(getContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
         }else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
@@ -143,7 +175,7 @@ public class IncidentLocalisationActivity extends AppCompatActivity
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        Toast.makeText(this, "Marqueur de l'incident retiré", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getActivity(), "Marqueur de l'incident retiré", Toast.LENGTH_SHORT).show();
         incidentPosition=null;
         mMap.clear();
         return true;
@@ -151,7 +183,7 @@ public class IncidentLocalisationActivity extends AppCompatActivity
 
     @Override
     public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getActivity(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
@@ -160,7 +192,7 @@ public class IncidentLocalisationActivity extends AppCompatActivity
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, "L'incident est sur ma position", Toast.LENGTH_LONG).show();
+        Toast.makeText(this.getActivity(), "L'incident est sur ma position", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -176,28 +208,11 @@ public class IncidentLocalisationActivity extends AppCompatActivity
             enableMyLocation();
         } else {
             // Display the missing permission error dialog when the fragments resume.
-            mPermissionDenied = true;
+           // mPermissionDenied = true;
         }
     }
 
-    @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-        if (mPermissionDenied) {
-            // Permission was not granted, display error dialog.
-            showMissingPermissionError();
-            mPermissionDenied = false;
-        }
-        setCurrentLocation();
-    }
 
-    /**
-     * Displays a dialog with error message explaining that the location permission is missing.
-     */
-    private void showMissingPermissionError() {
-        PermissionUtils.PermissionDeniedDialog
-                .newInstance(true).show(getSupportFragmentManager(), "dialog");
-    }
 
     public LatLng getIncidentPosition(){
         if(this.incidentPosition==null){
@@ -209,7 +224,7 @@ public class IncidentLocalisationActivity extends AppCompatActivity
     }
 
     private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -220,7 +235,6 @@ public class IncidentLocalisationActivity extends AppCompatActivity
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
-                        IncidentLocalisationActivity.this.finish();
                     }
                 });
         final AlertDialog alert = builder.create();

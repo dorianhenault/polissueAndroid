@@ -7,6 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -139,8 +140,13 @@ public class DeclareIssueFragment extends Fragment{
         });
 
         currentLocation.setOnClickListener(v -> {
-            Intent localisationActivity=new Intent(this.getActivity(), IncidentLocalisationActivity.class);
-            startActivityForResult(localisationActivity,REQUEST_GET_MAP_LOCATION);
+            FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
+            Fragment issueLocationFragment= IncidentLocalisationActivity.newInstance();
+            ft.replace(R.id.content_frame, issueLocationFragment );
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.addToBackStack(null);
+            ft.commit();
+
         });
 
         return view;
