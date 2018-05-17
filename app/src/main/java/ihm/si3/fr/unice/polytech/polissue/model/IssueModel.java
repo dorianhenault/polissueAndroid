@@ -3,6 +3,8 @@ package ihm.si3.fr.unice.polytech.polissue.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.storage.StorageReference;
+
 import java.util.Date;
 
 /**
@@ -18,7 +20,7 @@ public class IssueModel implements Parcelable{
     //public int userID;
     //TODO temporarly replaces  the userID
     public String userName;
-    public String imageURL;
+    public String imagePath;
 
 
     public IssueModel() {
@@ -50,9 +52,9 @@ public class IssueModel implements Parcelable{
      * @param emergency the emergency level of the issue
      * @param location the location of the issue
      * @param userName the userID who declared the issue
-     * @param imageURL the image URL of the issue
+     * @param imagePath the image path on the firebase hosting bucket
      */
-    public IssueModel(String title, String description, Date date, Emergency emergency, Location location,String userName /*int userID*/, String imageURL) {
+    public IssueModel(String title, String description, Date date, Emergency emergency, Location location, String userName /*int userID*/, String imagePath) {
         this.title = title;
         this.description = description;
         this.date = date;
@@ -60,7 +62,7 @@ public class IssueModel implements Parcelable{
         this.location = location;
         //this.userID = userID;
         this.userName=userName;
-        this.imageURL = imageURL;
+        this.imagePath = imagePath;
     }
 
 
@@ -73,7 +75,7 @@ public class IssueModel implements Parcelable{
         //userID = in.readInt();
         userName=in.readString();
 
-        imageURL = in.readString();
+        imagePath = in.readString();
     }
 
     public static final Creator<IssueModel> CREATOR = new Creator<IssueModel>() {
@@ -102,8 +104,11 @@ public class IssueModel implements Parcelable{
         dest.writeParcelable(location, PARCELABLE_WRITE_RETURN_VALUE);
         //dest.writeInt(userID);
         dest.writeString(userName);
-        dest.writeString(imageURL);
+        dest.writeString(imagePath);
     }
 
 
+    public void imagePathFromRef(StorageReference imageRef) {
+        this.imagePath = imageRef.getPath();
+    }
 }

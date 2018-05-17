@@ -10,11 +10,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-public class PictureFetcher extends AsyncTask<URL, Void, Bitmap> {
+/**
+ * Fetches the remote picture and stores it in a imageView
+ */
+public class PictureFecthingTask extends AsyncTask<URL, Void, Bitmap> {
     private static final String TAG = "Picture Fectcher";
     private final ImageView imageView;
 
-    PictureFetcher(ImageView imageView) {
+    PictureFecthingTask(ImageView imageView) {
         this.imageView = imageView;
     }
 

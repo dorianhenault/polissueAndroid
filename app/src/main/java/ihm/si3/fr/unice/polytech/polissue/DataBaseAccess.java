@@ -57,4 +57,5 @@ public class DataBaseAccess {
         issueRef.push().setValue(issue);
     }
 
+
 }

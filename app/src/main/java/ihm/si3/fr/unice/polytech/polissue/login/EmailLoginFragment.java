@@ -82,7 +82,6 @@ public class EmailLoginFragment extends Fragment {
                     .addOnCompleteListener(this::loginAckowledge);
         }
     }
-
     /**
      * Check the form for errors, return false if data are not valid
      *
