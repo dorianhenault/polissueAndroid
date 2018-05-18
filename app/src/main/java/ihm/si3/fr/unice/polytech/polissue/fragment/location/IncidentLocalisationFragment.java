@@ -1,6 +1,5 @@
-package ihm.si3.fr.unice.polytech.polissue.location;
+package ihm.si3.fr.unice.polytech.polissue.fragment.location;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,9 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,22 +26,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
-import java.util.concurrent.Executor;
 
 import ihm.si3.fr.unice.polytech.polissue.PermissionUtils;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
-import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
-public class IncidentLocalisationActivity extends Fragment
+public class IncidentLocalisationFragment extends Fragment
         implements
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMyLocationButtonClickListener,
@@ -77,8 +69,8 @@ public class IncidentLocalisationActivity extends Fragment
 
     private IssueModel issueModel;
 
-    public static IncidentLocalisationActivity newInstance() {
-        return new IncidentLocalisationActivity();
+    public static IncidentLocalisationFragment newInstance() {
+        return new IncidentLocalisationFragment();
     }
 
 
@@ -115,7 +107,7 @@ public class IncidentLocalisationActivity extends Fragment
             ft.commit();
 
             /*setResult(Activity.RESULT_OK, new Intent().putExtra("latitude", getIncidentPosition().latitude).putExtra("longitude", getIncidentPosition().longitude));
-            IncidentLocalisationActivity.this.finish();*/
+            IncidentLocalisationFragment.this.finish();*/
         });
         return view;
     }

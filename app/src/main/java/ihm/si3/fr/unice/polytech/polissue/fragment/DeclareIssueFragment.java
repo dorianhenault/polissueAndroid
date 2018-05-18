@@ -1,8 +1,6 @@
 package ihm.si3.fr.unice.polytech.polissue.fragment;
 
 
-import android.app.Activity;
-import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -26,7 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 import ihm.si3.fr.unice.polytech.polissue.DataBaseAccess;
-import ihm.si3.fr.unice.polytech.polissue.location.IncidentLocalisationActivity;
+import ihm.si3.fr.unice.polytech.polissue.fragment.location.IncidentLocalisationFragment;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.model.Emergency;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
@@ -150,7 +148,7 @@ public class DeclareIssueFragment extends Fragment{
             Bundle bundle=new Bundle();
             bundle.putParcelable("issue",issue);
             FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
-            Fragment issueLocationFragment= IncidentLocalisationActivity.newInstance();
+            Fragment issueLocationFragment= IncidentLocalisationFragment.newInstance();
             issueLocationFragment.setArguments(bundle);
             ft.replace(R.id.content_frame, issueLocationFragment );
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

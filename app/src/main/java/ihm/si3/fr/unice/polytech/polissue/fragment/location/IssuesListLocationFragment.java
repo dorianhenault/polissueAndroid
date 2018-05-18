@@ -1,5 +1,6 @@
-package ihm.si3.fr.unice.polytech.polissue.location;
+package ihm.si3.fr.unice.polytech.polissue.fragment.location;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,9 +13,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -23,29 +25,28 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ihm.si3.fr.unice.polytech.polissue.PermissionUtils;
 import ihm.si3.fr.unice.polytech.polissue.R;
+import ihm.si3.fr.unice.polytech.polissue.adapter.MyIssueRecyclerViewAdapter;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
+import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
-public class IssuesListLocationActivity extends AppCompatActivity
+public class IssuesListLocationFragment extends Fragment
         implements
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMyLocationButtonClickListener,
@@ -67,33 +68,53 @@ public class IssuesListLocationActivity extends AppCompatActivity
      */
     private boolean mPermissionDenied = false;
 
+    private MapView map;
     private GoogleMap mMap;
     private ChildEventListener issueEventListener;
     private FusedLocationProviderClient mLocationClient;
     private List<IssueModel> mValues;
     private DatabaseReference ref;
 
-
+    public static IssuesListLocationFragment newInstance() {
+        return new IssuesListLocationFragment();
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.incident_list_gmaps);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        mValues=new ArrayList<>();
-        ref = FirebaseDatabase.getInstance().getReference("mishap");
-        addEventListener();
+        final View view = inflater.inflate(R.layout.incident_list_gmaps, container, false);
+        findViewById(view);
+        map.onCreate(savedInstanceState);
+        map.getMapAsync(this);
 
-        Button button = (Button) findViewById(R.id.validatePosition);
+        Button button=(Button) view.findViewById(R.id.validatePosition) ;
         button.setOnClickListener(v -> {
-            IssuesListLocationActivity.this.finish();
+            FragmentTransaction ft = ((FragmentActivity)this.getContext()).getSupportFragmentManager().beginTransaction();
+            Fragment issueListFragemnt= IssueListFragment.newInstance(2);
+            ft.replace(R.id.content_frame, issueListFragemnt );
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            ft.addToBackStack(null);
+            ft.commit();
         });
+        mValues= MyIssueRecyclerViewAdapter.mValues;
+        //TODO c est ici que je ne peux pas récuperer les éléments depuis la BD
+       /* ref = FirebaseDatabase.getInstance().getReference("mishap");
+        addEventListener();
+        System.out.println(mValues+" INCIDEEENTS");*/
 
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        return view;
 
-        mLocationClient = LocationServices.getFusedLocationProviderClient(this);
+    }
+
+    private void findViewById(View rootView) {
+        map = (MapView) rootView.findViewById(R.id.map);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
 
     }
 
@@ -104,15 +125,13 @@ public class IssuesListLocationActivity extends AppCompatActivity
         mMap.setOnMyLocationClickListener(this);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
-
-        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
-        }
-
+        addMarkers();
         enableMyLocation();
         setCurrentLocation();
-        addMarkers();
+        final LocationManager manager = (LocationManager) this.getActivity().getSystemService( Context.LOCATION_SERVICE );
+        if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            buildAlertMessageNoGps();
+        }
 
     }
 
@@ -162,9 +181,8 @@ public class IssuesListLocationActivity extends AppCompatActivity
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        /*IssueModel issueModel=(IssueModel) marker.getTag();
-        Toast.makeText(this, "Info window clicked", Toast.LENGTH_SHORT).show();
-        FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
+        IssueModel issueModel=(IssueModel) marker.getTag();
+        FragmentTransaction ft = ((FragmentActivity)this.getContext()).getSupportFragmentManager().beginTransaction();
         Fragment issueDetailFragment= IssueDetailFragment.newInstance();
         Bundle bundle=new Bundle();
         bundle.putParcelable("issue",issueModel);
@@ -172,22 +190,19 @@ public class IssuesListLocationActivity extends AppCompatActivity
         ft.replace(R.id.content_frame, issueDetailFragment );
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.addToBackStack(null);
-        ft.commit();*/
+        ft.commit();
     }
 
 
-    private void setCurrentLocation() {
-        //if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    private void setCurrentLocation(){
+        // if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         Task<Location> locationTask = mLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // Got last known location. In some rare situations this can be null.
-                        if (location != null) {
-                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-                            mMap.animateCamera(cameraUpdate);
-                        }
+                .addOnSuccessListener( this.getActivity(), location -> {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                        mMap.animateCamera(cameraUpdate);
                     }
                 });
 
@@ -199,14 +214,16 @@ public class IssuesListLocationActivity extends AppCompatActivity
      * Enables the My Location layer if the fine location permission has been granted.
      */
     private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION, true);
-        }else if (mMap != null) {
-            // Access to the location has been granted to the app.
-            mMap.setMyLocationEnabled(true);
+        if(getContext()!=null){
+            if (ActivityCompat.checkSelfPermission((Activity)getContext(),
+                    android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
+            }else if (mMap != null) {
+                // Access to the location has been granted to the app.
+                mMap.setMyLocationEnabled(true);
+            }
         }
     }
 
@@ -218,8 +235,14 @@ public class IssuesListLocationActivity extends AppCompatActivity
     }
 
     @Override
+    public void onResume() {
+        map.onResume();
+        super.onResume();
+    }
+
+    @Override
     public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "Retour sur ma position", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getActivity(), "Retour sur ma position", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
@@ -228,7 +251,7 @@ public class IssuesListLocationActivity extends AppCompatActivity
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, "L'incident est sur ma position", Toast.LENGTH_LONG).show();
+        Toast.makeText(this.getActivity(), "L'incident est sur ma position", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -248,27 +271,9 @@ public class IssuesListLocationActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-        if (mPermissionDenied) {
-            // Permission was not granted, display error dialog.
-            showMissingPermissionError();
-            mPermissionDenied = false;
-        }
-        setCurrentLocation();
-    }
-
-    /**
-     * Displays a dialog with error message explaining that the location permission is missing.
-     */
-    private void showMissingPermissionError() {
-        PermissionUtils.PermissionDeniedDialog
-                .newInstance(true).show(getSupportFragmentManager(), "dialog");
-    }
 
     private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -279,7 +284,6 @@ public class IssuesListLocationActivity extends AppCompatActivity
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
-                        IssuesListLocationActivity.this.finish();
                     }
                 });
         final AlertDialog alert = builder.create();
