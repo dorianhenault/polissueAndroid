@@ -36,6 +36,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -97,11 +98,11 @@ public class IssuesListLocationFragment extends Fragment
             ft.addToBackStack(null);
             ft.commit();
         });
-        mValues= MyIssueRecyclerViewAdapter.mValues;
+       // mValues= MyIssueRecyclerViewAdapter.mValues;
         //TODO c est ici que je ne peux pas récuperer les éléments depuis la BD
-       /* ref = FirebaseDatabase.getInstance().getReference("mishap");
+        ref = FirebaseDatabase.getInstance().getReference("mishap");
         addEventListener();
-        System.out.println(mValues+" INCIDEEENTS");*/
+
 
         return view;
 
@@ -125,7 +126,7 @@ public class IssuesListLocationFragment extends Fragment
         mMap.setOnMyLocationClickListener(this);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
-        addMarkers();
+        //addMarkers();
         enableMyLocation();
         setCurrentLocation();
         final LocationManager manager = (LocationManager) this.getActivity().getSystemService( Context.LOCATION_SERVICE );
@@ -135,23 +136,19 @@ public class IssuesListLocationFragment extends Fragment
 
     }
 
-    private void addMarkers(){
-        for(int i=0;i<mValues.size();i++){
-
-            IssueModel issueModel=mValues.get(i);
-            double latitude=0;
-            double longitude=0;
-            try{
-                 latitude=issueModel.location.latitude;
-                 longitude=issueModel.location.longitude;
-            }
-            catch (NullPointerException e){
-                System.out.print(e);
-            }
-            if(longitude!=0 && latitude!=0){
-                LatLng point=new LatLng(latitude,longitude);
-                Marker marker=personaliseMarker(issueModel,point);
-            }
+    private void addMarker(IssueModel issueModel){
+        double latitude=0;
+        double longitude=0;
+        try{
+             latitude=issueModel.location.latitude;
+             longitude=issueModel.location.longitude;
+        }
+        catch (NullPointerException e){
+            System.out.print(e);
+        }
+        if(longitude!=0 && latitude!=0){
+            LatLng point=new LatLng(latitude,longitude);
+            Marker marker=personaliseMarker(issueModel,point);
         }
     }
 
@@ -295,7 +292,9 @@ public class IssuesListLocationFragment extends Fragment
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 IssueModel issue = dataSnapshot.getValue(IssueModel.class);
-                mValues.add(issue);
+                //mValues.add(issue);
+                addMarker(issue);
+                System.out.println(issue+" INCIDEEENTS");
             }
 
             @Override
