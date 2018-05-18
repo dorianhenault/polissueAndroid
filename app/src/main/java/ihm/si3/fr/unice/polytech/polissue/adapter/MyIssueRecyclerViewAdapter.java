@@ -1,13 +1,11 @@
 package ihm.si3.fr.unice.polytech.polissue.adapter;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,14 +21,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ihm.si3.fr.unice.polytech.polissue.FirebasePictureFetcher;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
+import ihm.si3.fr.unice.polytech.polissue.glide.GlideApp;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 /**
@@ -67,17 +63,11 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
 //        holder.issueState.setProgress(mValues.get(position).getState().getProgress());
 //        holder.issueDeclarer.setText(mValues.get(position).getDeclarer().getName());
 //        holder.issueDate.setText(mValues.get(position).getDate());
-
         if (mValues.get(position).imagePath != null) {
-
-            FirebasePictureFetcher fetcher = new FirebasePictureFetcher(holder.issueImage);
             StorageReference imageRef = FirebaseStorage.getInstance().getReference(mValues.get(position).imagePath);
-            File imageDir = holder.issueImage.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            try {
-                fetcher.fetch(imageRef, imageDir, true);
-            } catch (IOException e) {
-                Log.e(TAG, "onBindViewHolder: failed loading image", e);
-            }
+            GlideApp.with(holder.issueImage.getContext())
+                    .load(imageRef)
+                    .into(holder.issueImage);
         }
 
 
