@@ -3,6 +3,8 @@ package ihm.si3.fr.unice.polytech.polissue.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.storage.StorageReference;
+
 import java.util.Date;
 
 /**
@@ -72,7 +74,7 @@ public class IssueModel implements Parcelable{
      * @param emergency the emergency level of the issue
      * @param location the location of the issue
      * @param userName the userID who declared the issue
-     * @param imagePath the image URL of the issue
+     * @param imagePath the image path on the firebase hosting bucket
      */
     public IssueModel(String id, String title, String description, Date date, Emergency emergency, Location location, String userName /*int userID*/, String imagePath) {
         this.id = id;
@@ -178,6 +180,9 @@ public class IssueModel implements Parcelable{
         this.userName = userName;
     }
 
+    public void imagePathFromRef(StorageReference imageRef) {
+        this.imagePath = imageRef.getPath();
+    }
     public String getImagePath() {
         return imagePath;
     }

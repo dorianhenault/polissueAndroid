@@ -56,6 +56,9 @@
     <string name="error_auth_google_play_service_update">Mise a jours des services google play necessaire</string>
     <string name="error_profile_settings">Erreur lors de la creation de profile, voir la rubrique Mon Compte</string>
     <string name="error_password_confirmation_must_match">Doit être identique au mot de passe</string>
+    <string name="error_loading_picture">Erreur lors du chargement de l\'image</string>
+    <string name="error_internal_file">Erreur avec vos fichiers</string>
+    <string name="error_uploading_picture">Erreur d\'envoie de l\'image</string>
 
     <!--    Permissions    -->
     <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>

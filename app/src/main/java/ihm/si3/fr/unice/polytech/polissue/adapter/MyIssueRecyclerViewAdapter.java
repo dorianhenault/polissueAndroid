@@ -18,6 +18,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ import ihm.si3.fr.unice.polytech.polissue.R;
 
 import ihm.si3.fr.unice.polytech.polissue.factory.IssueModelFactory;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
-import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
+import ihm.si3.fr.unice.polytech.polissue.glide.GlideApp;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 /**
@@ -38,11 +40,11 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
     private final List<IssueModel> mValues;
     private ChildEventListener issueEventListener;
     private DatabaseReference ref;
-
+    private static final String TAG = "IssueViewAdapter";
 
 
     public MyIssueRecyclerViewAdapter() {
-        mValues=new ArrayList<>();
+        mValues = new ArrayList<>();
         ref = FirebaseDatabase.getInstance().getReference("mishap");
         addEventListener();
 
@@ -63,14 +65,21 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
 //        holder.issueState.setProgress(mValues.get(position).getState().getProgress());
 //        holder.issueDeclarer.setText(mValues.get(position).getDeclarer().getName());
 //        holder.issueDate.setText(mValues.get(position).getDate());
+        if (mValues.get(position).getImagePath() != null) {
+            StorageReference imageRef = FirebaseStorage.getInstance().getReference(mValues.get(position).imagePath);
+            GlideApp.with(holder.issueImage.getContext())
+                    .load(imageRef)
+                    .into(holder.issueImage);
+        }
+
 
         holder.mView.setOnClickListener(v -> {
-            FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
-            Fragment issueDetailFragment=IssueDetailFragment.newInstance();
-            Bundle bundle=new Bundle();
-            bundle.putParcelable("issue",mValues.get(position));
+            FragmentTransaction ft = ((FragmentActivity) v.getContext()).getSupportFragmentManager().beginTransaction();
+            Fragment issueDetailFragment = IssueDetailFragment.newInstance();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("issue", mValues.get(position));
             issueDetailFragment.setArguments(bundle);
-            ft.replace(R.id.content_frame, issueDetailFragment );
+            ft.replace(R.id.content_frame, issueDetailFragment);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             ft.addToBackStack(null);
             ft.commit();
@@ -103,13 +112,13 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
         }
     }
 
-    private void addEventListener(){
+    private void addEventListener() {
         issueEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 IssueModel issue = new IssueModelFactory().forge(dataSnapshot);
                 mValues.add(issue);
-                notifyItemInserted(mValues.size()-1);
+                notifyItemInserted(mValues.size() - 1);
             }
 
             @Override
@@ -120,7 +129,6 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 //TODO implement
-
             }
 
             @Override
