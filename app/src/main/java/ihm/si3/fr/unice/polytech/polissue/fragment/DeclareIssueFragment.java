@@ -39,6 +39,7 @@ import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.model.Emergency;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 import ihm.si3.fr.unice.polytech.polissue.model.Location;
+import ihm.si3.fr.unice.polytech.polissue.model.State;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -99,7 +100,7 @@ public class DeclareIssueFragment extends Fragment{
                 Emergency level = buildEmergencyLevel();
                 this.locationMap=new Location(location.getText().toString(),longitude,latitude);
                 // IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,declarer.getText().toString());
-                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), Emergency.MEDIUM,declarer.getText().toString());
+                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), Emergency.MEDIUM,declarer.getText().toString(), State.NOT_RESOLVED);
                 StorageReference imageRef = uploadPicture(imageURI, issue);
                 issue.imagePathFromRef(imageRef);
                 DataBaseAccess dataBaseAccess = new DataBaseAccess();

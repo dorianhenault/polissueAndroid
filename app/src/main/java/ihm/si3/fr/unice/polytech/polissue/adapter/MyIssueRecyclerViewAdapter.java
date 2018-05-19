@@ -62,9 +62,9 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.issueModel = mValues.get(position);
         holder.issueTitle.setText(mValues.get(position).getTitle());
-//        holder.issueState.setProgress(mValues.get(position).getState().getProgress());
-//        holder.issueDeclarer.setText(mValues.get(position).getDeclarer().getName());
-//        holder.issueDate.setText(mValues.get(position).getDate());
+        holder.issueState.setProgress(mValues.get(position).getState().getProgress());
+        holder.issueDeclarer.setText(mValues.get(position).getUserName());
+        holder.issueDate.setText(mValues.get(position).getDate().toString());
         if (mValues.get(position).getImagePath() != null) {
             StorageReference imageRef = FirebaseStorage.getInstance().getReference(mValues.get(position).getImagePath());
             GlideApp.with(holder.issueImage.getContext())
