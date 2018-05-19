@@ -1,12 +1,11 @@
 package ihm.si3.fr.unice.polytech.polissue.fragment;
 
-import android.content.Intent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,8 +102,8 @@ public class IssueDetailFragment extends Fragment{
      */
     private void loadImage() {
         Context context = getContext();
-        if (context != null && issue.imagePath != null) {
-            StorageReference imageRef = FirebaseStorage.getInstance().getReference(issue.imagePath);
+        if (context != null && issue.getImagePath() != null) {
+            StorageReference imageRef = FirebaseStorage.getInstance().getReference(issue.getImagePath());
             GlideApp.with(this)
                     .load(imageRef)
                     .into(image);

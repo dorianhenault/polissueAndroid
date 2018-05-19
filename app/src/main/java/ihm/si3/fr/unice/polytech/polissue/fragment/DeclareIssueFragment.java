@@ -194,7 +194,7 @@ public class DeclareIssueFragment extends Fragment{
     }
     private StorageReference uploadPicture(Uri imageURI, IssueModel issue) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference issueImages = storage.getReference("images").child("issues").child(issue.title);
+        StorageReference issueImages = storage.getReference("images").child("issues").child(issue.getTitle());
         String pictureName = String.valueOf(System.currentTimeMillis() / 1000);
         StorageReference pictureRef = issueImages.child(pictureName);
         IssuePictureListener uploadListener = new IssuePictureListener(issue);

@@ -79,7 +79,7 @@ public class MainPageActivity extends AppCompatActivity
         auth.addAuthStateListener(new NavigationAuthStateListener(navigationView));
         auth.addAuthStateListener(new DatabaseAuthStateListener());
         FacebookSdk.setApplicationId(getString(R.string.facebook_application_id));
-        AppEventsLogger.activateApp(this);
+
 
     }
 

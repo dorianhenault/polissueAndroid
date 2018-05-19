@@ -66,7 +66,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
 //        holder.issueDeclarer.setText(mValues.get(position).getDeclarer().getName());
 //        holder.issueDate.setText(mValues.get(position).getDate());
         if (mValues.get(position).getImagePath() != null) {
-            StorageReference imageRef = FirebaseStorage.getInstance().getReference(mValues.get(position).imagePath);
+            StorageReference imageRef = FirebaseStorage.getInstance().getReference(mValues.get(position).getImagePath());
             GlideApp.with(holder.issueImage.getContext())
                     .load(imageRef)
                     .into(holder.issueImage);
