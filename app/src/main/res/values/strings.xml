@@ -19,6 +19,13 @@
     <string name="notify_button">Notifier</string>
     <!-- /Users -->
 
+    <!-- Notifications -->
+    <string name="channel_name">polissue_notify_user_channel</string>
+    <string name="channel_description">polissue_notify_user_description</string>
+    <string name="CHANNEL_ID">polissue_notify_user_channel</string>
+    <string name="notification_message">Vous avez été notifié sur cet incident</string>
+    <!-- /Notifications -->
+
     <!--String related to login-->
     <string name="log_in">Connexion</string>
     <string name="sign_in">Inscription</string>
@@ -56,7 +63,9 @@
     <string name="permission_required_toast">Location permission is required for this demo.</string>
 
     <!-- INCIDENT LOCATION ACTIVITY -->
-    <string name="incident_location">Position de l'incident</string>
+    <string name="incident_location">Position de l\'incident</string>
+
+
 
 
 </resources>
