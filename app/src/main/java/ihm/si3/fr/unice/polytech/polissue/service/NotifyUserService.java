@@ -96,8 +96,6 @@ public class NotifyUserService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ref.removeEventListener(notifListener);
-        notifRef.removeEventListener(listener);
 
     }
 
