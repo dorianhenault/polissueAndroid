@@ -89,7 +89,10 @@ public class UserListFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             notify.setOnClickListener(v -> {
-                new DataBaseAccess().postNotification(usersToNotify, issue);
+                DataBaseAccess dataBaseAccess = new DataBaseAccess();
+                for (User user : usersToNotify) {
+                    dataBaseAccess.postNotification(user, issue);
+                }
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 Fragment fragment = IssueDetailFragment.newInstance();

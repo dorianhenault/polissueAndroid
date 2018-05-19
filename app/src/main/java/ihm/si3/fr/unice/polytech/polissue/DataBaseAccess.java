@@ -62,17 +62,15 @@ public class DataBaseAccess {
 
     /**
      * Posts a notification to firebase database
-     * @param users the users to notify
+     * @param user the user to notify
      * @param issue the issue where the user has been notified
      */
-    public void postNotification(Set<User> users, IssueModel issue){
+    public void postNotification(User user, IssueModel issue){
         DatabaseReference notificationRef = database.getReference().child("notifications");
-        for (User user : users) {
-            String key = notificationRef.push().getKey();
-            notificationRef.child(key).child("notifier").setValue(FirebaseAuth.getInstance().getUid());
-            notificationRef.child(key).child("notified").setValue(user.getId());
-            notificationRef.child(key).child("issueID").setValue(issue.getId());
-        }
+        String key = notificationRef.push().getKey();
+        notificationRef.child(key).child("notifier").setValue(FirebaseAuth.getInstance().getUid());
+        notificationRef.child(key).child("notified").setValue(user.getId());
+        notificationRef.child(key).child("issueID").setValue(issue.getId());
     }
 
 }
