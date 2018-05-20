@@ -8,6 +8,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -16,7 +17,11 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,12 +34,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.tasks.Task;
+
+import java.util.ArrayList;
 
 import ihm.si3.fr.unice.polytech.polissue.PermissionUtils;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.*;
 
 public class IncidentLocalisationFragment extends Fragment
         implements
@@ -58,16 +69,21 @@ public class IncidentLocalisationFragment extends Fragment
    // private boolean mPermissionDenied = false;
 
     private MapView map;
-
+    private ConstraintLayout issuePositionContainer;
+    private Button validatePosition,validateDescription,cancelDescription;
+    private EditText positionDescription;
     private GoogleMap mMap;
+    private Spinner spinnerClassRooms;
 
     private FusedLocationProviderClient mLocationClient;
-
     private LatLng incidentPosition;
-
     private LatLng myPosition;
+    private String positionDescriptionText="";
 
     private IssueModel issueModel;
+    private ArrayList<String> classrooms;
+
+    private Marker marker;
 
     public static IncidentLocalisationFragment newInstance() {
         return new IncidentLocalisationFragment();
@@ -81,34 +97,65 @@ public class IncidentLocalisationFragment extends Fragment
         if(getArguments()!=null){
             issueModel=getArguments().getParcelable("issue");
         }
-        final View view = inflater.inflate(R.layout.incident_location_gmaps, container, false);
 
+        final View view = inflater.inflate(R.layout.incident_location_gmaps, container, false);
+        issuePositionContainer=view.findViewById(R.id.issuePositionContainer);
         findViewById(view);
         map.onCreate(savedInstanceState);
         map.getMapAsync(this);
+        validatePosition=(Button) view.findViewById(R.id.validatePosition) ;
+        validateDescription=(Button) view.findViewById(R.id.validateDescription) ;
+        positionDescription=view.findViewById(R.id.issuePositionText) ;
+        cancelDescription=(Button) view.findViewById(R.id.canceldescription) ;
+
+        spinnerClassRooms=view.findViewById(R.id.spinnerClassRooms);
+        classrooms=new ArrayList<>();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, classrooms);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerClassRooms.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
 
-       /* SupportMapFragment mapFragment =
-                (SupportMapFragment) this.getActivity().getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
+        validatePosition.setOnClickListener(v -> {
+            if(checkMandatoryFields()){
+                ihm.si3.fr.unice.polytech.polissue.model.Location location=
+                        new ihm.si3.fr.unice.polytech.polissue.model.Location(positionDescriptionText,getIncidentPosition().longitude,getIncidentPosition().latitude);
+                FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
+                Fragment declareIssueFragment= DeclareIssueFragment.newInstance();
+                Bundle bundle=new Bundle();
+                bundle.putParcelable("location",location);
+                bundle.putParcelable("issue",issueModel);
+                bundle.putBoolean("buttonClicked",true);
+                declareIssueFragment.setArguments(bundle);
+                ft.replace(R.id.content_frame, declareIssueFragment );
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+            else{
+                Toast.makeText(this.getContext(), "Une description doit être ajoutée ", Toast.LENGTH_SHORT).show();
+            }
 
-        Button button=(Button) view.findViewById(R.id.validatePosition) ;
-        button.setOnClickListener(v -> {
-            FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
-            Fragment declareIssueFragment= DeclareIssueFragment.newInstance();
-            Bundle bundle=new Bundle();
-            bundle.putDouble("latitude",getIncidentPosition().latitude);
-            bundle.putDouble("longitude", getIncidentPosition().longitude);
-            bundle.putParcelable("issue",issueModel);
-            declareIssueFragment.setArguments(bundle);
-            ft.replace(R.id.content_frame, declareIssueFragment );
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ft.addToBackStack(null);
-            ft.commit();
-
-            /*setResult(Activity.RESULT_OK, new Intent().putExtra("latitude", getIncidentPosition().latitude).putExtra("longitude", getIncidentPosition().longitude));
-            IncidentLocalisationFragment.this.finish();*/
         });
+
+        validateDescription.setOnClickListener(v -> {
+            if(checkMandatoryFields()){
+                this.positionDescriptionText=positionDescription.getText().toString();
+                issuePositionContainer.setVisibility(View.GONE);
+                validatePosition.setVisibility(View.VISIBLE);
+                System.out.println(spinnerClassRooms.getSelectedItem().toString()+"NTMMM");
+            }
+            else{
+                Toast.makeText(this.getContext(), "Une description doit être ajoutée ", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
+        cancelDescription.setOnClickListener(v -> {
+            issuePositionContainer.setVisibility(View.GONE);
+            validatePosition.setVisibility(View.VISIBLE);
+        });
+
         return view;
     }
 
@@ -129,22 +176,27 @@ public class IncidentLocalisationFragment extends Fragment
 
     }
 
+
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         mMap.setOnMarkerClickListener(this);
+
+        initializeBuildings();
         enableMyLocation();
         setCurrentLocation();
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
             public void onMapClick(LatLng point) {
-                // TODO Auto-generated method stub
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(point));
+                //mMap.clear();
+                if(marker!=null)
+                    marker.remove();
+                marker=mMap.addMarker(new MarkerOptions().position(point));
                 incidentPosition=point;
+                showIssueDescriptionContainer(false);
             }
         });
         final LocationManager manager = (LocationManager) this.getActivity().getSystemService( Context.LOCATION_SERVICE );
@@ -168,7 +220,7 @@ public class IncidentLocalisationFragment extends Fragment
                     if (location != null) {
                         System.out.println(location+"LOCATION");
                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 18);
                         mMap.animateCamera(cameraUpdate);
                         myPosition=latLng;
                     }
@@ -197,8 +249,10 @@ public class IncidentLocalisationFragment extends Fragment
     @Override
     public boolean onMarkerClick(final Marker marker) {
         Toast.makeText(this.getActivity(), "Marqueur de l'incident retiré", Toast.LENGTH_SHORT).show();
+        issuePositionContainer.setVisibility(View.GONE);
+        validatePosition.setVisibility(View.VISIBLE);
         incidentPosition=null;
-        mMap.clear();
+        marker.remove();
         return true;
     }
 
@@ -210,10 +264,30 @@ public class IncidentLocalisationFragment extends Fragment
         return false;
     }
 
+    private boolean checkMandatoryFields() {
+        if (positionDescription.getText().length() == 0 || positionDescription.getText().toString().equals("")){
+            return false;
+        }
+        return true;
+    }
+
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this.getActivity(), "L'incident est sur ma position", Toast.LENGTH_LONG).show();
+        Toast.makeText(this.getActivity(), "L'incident est sur ma position", Toast.LENGTH_SHORT).show();
+        showIssueDescriptionContainer(false);
+    }
+
+    private void showIssueDescriptionContainer(boolean building) {
+        if(building){
+            spinnerClassRooms.setVisibility(View.VISIBLE);
+        }
+        else{
+            spinnerClassRooms.setVisibility(View.GONE);
+
+        }
+        issuePositionContainer.setVisibility(View.VISIBLE);
+        validatePosition.setVisibility(View.GONE);
     }
 
     @Override
@@ -244,6 +318,48 @@ public class IncidentLocalisationFragment extends Fragment
         }
     }
 
+    public void initializeBuildings(){
+        Polygon polygon1 = mMap.addPolygon(BUILDING1.getPolygonOptions());
+        polygon1.setClickable(true);
+        Polygon polygon2 = mMap.addPolygon(BUILDING2.getPolygonOptions());
+        polygon2.setClickable(true);
+        Polygon polygon3 = mMap.addPolygon(BUILDING3.getPolygonOptions());
+        polygon3.setClickable(true);
+        Polygon polygon4 = mMap.addPolygon(BUILDING4.getPolygonOptions());
+        polygon4.setClickable(true);
+        Polygon polygon5 = mMap.addPolygon(BUILDING5.getPolygonOptions());
+        polygon5.setClickable(true);
+        Polygon polygon6 = mMap.addPolygon(BUILDING6.getPolygonOptions());
+        polygon6.setClickable(true);
+
+        mMap.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
+            @Override
+            public void onPolygonClick(Polygon polygon) {
+                showIssueDescriptionContainer(true);
+                if(polygon.toString().equals(polygon1.toString())){
+                    classrooms.clear();
+                    classrooms.addAll(BUILDING1.getClassRooms());
+                }else  if(polygon.toString().equals(polygon2.toString())){
+                    classrooms.clear();
+                    classrooms.addAll(BUILDING2.getClassRooms());
+                }else if(polygon.toString().equals(polygon3.toString())){
+                    classrooms.clear();
+                    classrooms.addAll(BUILDING3.getClassRooms());
+                }else if(polygon.toString().equals(polygon4.toString())){
+                    classrooms.clear();
+                    classrooms.addAll(BUILDING4.getClassRooms());
+                }else if(polygon.toString().equals(polygon5.toString())){
+                    classrooms.clear();
+                    classrooms.addAll(BUILDING5.getClassRooms());
+                }else if(polygon.toString().equals(polygon6.toString())){
+                    classrooms.clear();
+                    classrooms.addAll(BUILDING6.getClassRooms());
+                }
+            }
+        });
+
+    }
+
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
@@ -261,4 +377,5 @@ public class IncidentLocalisationFragment extends Fragment
         final AlertDialog alert = builder.create();
         alert.show();
     }
+
 }

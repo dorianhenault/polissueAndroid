@@ -59,6 +59,7 @@
     <!-- INCIDENT LOCATION ACTIVITY -->
     <string name="incident_location">Position de l\'incident</string>
     <string name="issues_position">Carte des incidents</string>
+    <string name="location_text_field">Description de l\'incident</string>
 
 
 </resources>

@@ -39,7 +39,7 @@ public class DeclareIssueFragment extends Fragment{
     private static final String TAG = "DeclareIssueFragment";
     private ImageButton validButton, addImage, currentLocation, cancelButton;
     private ImageView image;
-    private EditText title, description, declarer, location;
+    private EditText title, description, declarer;
     private SeekBar emergencyLevel;
     private TextView titleError, declarerError, locationError,cityLocation,cityLocationText;
 
@@ -47,6 +47,7 @@ public class DeclareIssueFragment extends Fragment{
 
     private double longitude=0;
     private double latitude=0;
+    private boolean locationButtonClicked=false;
 
     public DeclareIssueFragment() {
 
@@ -72,7 +73,6 @@ public class DeclareIssueFragment extends Fragment{
         title = view.findViewById(R.id.titleTextField);
         description = view.findViewById(R.id.descriptionTextField);
         declarer = view.findViewById(R.id.declarerTextField);
-        location = view.findViewById(R.id.locationTextField);
         emergencyLevel = view.findViewById(R.id.emergencyLevel);
         titleError = view.findViewById(R.id.titleError);
         declarerError = view.findViewById(R.id.declarerError);
@@ -81,15 +81,14 @@ public class DeclareIssueFragment extends Fragment{
         cityLocationText = view.findViewById(R.id.cityLocationText);
 
         if(getArguments()!=null){
-            this.latitude=getArguments().getDouble("latitude");
-            this.longitude=getArguments().getDouble("longitude");
+            this.locationMap=getArguments().getParcelable("location");
             restoreFormFields(getArguments().getParcelable("issue"));
+            this.locationButtonClicked=getArguments().getBoolean("buttonClicked");
         }
 
         validButton.setOnClickListener((v) -> {
             if(checkMandatoryFields()){
                 Emergency level = buildEmergencyLevel();
-                this.locationMap=new Location(location.getText().toString(),longitude,latitude);
                // IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,declarer.getText().toString());
                 IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,locationMap,declarer.getText().toString(),"http://www.picslyrics.net/images/141613-rick-astley-never-gonna-give-you-up.jpg");
                 DataBaseAccess dataBaseAccess = new DataBaseAccess();
@@ -143,7 +142,6 @@ public class DeclareIssueFragment extends Fragment{
         });
 
         currentLocation.setOnClickListener(v -> {
-            this.locationMap=new Location(location.getText().toString(),longitude,latitude);
             IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), buildEmergencyLevel(),locationMap,declarer.getText().toString(),"");
             Bundle bundle=new Bundle();
             bundle.putParcelable("issue",issue);
@@ -177,9 +175,6 @@ public class DeclareIssueFragment extends Fragment{
         //}
         if(issueModel.description!=null){
             this.description.setText(issueModel.description);
-        }
-        if(issueModel.location!=null){
-            this.location.setText(issueModel.location.place);
         }
 
     }
@@ -235,7 +230,7 @@ public class DeclareIssueFragment extends Fragment{
             declarerError.setVisibility(View.VISIBLE);
             ok=false;
         }
-        if (location.getText().length() == 0 || location.getText().toString().equals("")){
+        if (!locationButtonClicked){
             locationError.setVisibility(View.VISIBLE);
             ok = false;
         }
