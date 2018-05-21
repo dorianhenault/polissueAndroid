@@ -103,17 +103,26 @@ public class IncidentLocalisationFragment extends Fragment
         findViewById(view);
         map.onCreate(savedInstanceState);
         map.getMapAsync(this);
-        validatePosition=(Button) view.findViewById(R.id.validatePosition) ;
-        validateDescription=(Button) view.findViewById(R.id.validateDescription) ;
+        validatePosition=view.findViewById(R.id.validatePosition) ;
+        validateDescription= view.findViewById(R.id.validateDescription) ;
         positionDescription=view.findViewById(R.id.issuePositionText) ;
-        cancelDescription=(Button) view.findViewById(R.id.canceldescription) ;
+        cancelDescription=view.findViewById(R.id.canceldescription) ;
 
         spinnerClassRooms=view.findViewById(R.id.spinnerClassRooms);
         classrooms=new ArrayList<>();
+        classrooms.add("");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, classrooms);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerClassRooms.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        spinnerClassRooms.setAdapter(adapter);
+        spinnerClassRooms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Object item = parent.getItemAtPosition(position);
+                positionDescription.setText((String)parent.getItemAtPosition(position));
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
 
         validatePosition.setOnClickListener(v -> {
@@ -143,7 +152,6 @@ public class IncidentLocalisationFragment extends Fragment
                 this.positionDescriptionText=positionDescription.getText().toString();
                 issuePositionContainer.setVisibility(View.GONE);
                 validatePosition.setVisibility(View.VISIBLE);
-                System.out.println(spinnerClassRooms.getSelectedItem().toString()+"NTMMM");
             }
             else{
                 Toast.makeText(this.getContext(), "Une description doit être ajoutée ", Toast.LENGTH_SHORT).show();
@@ -346,7 +354,7 @@ public class IncidentLocalisationFragment extends Fragment
                     classrooms.clear();
                     classrooms.addAll(BUILDING3.getClassRooms());
                 }else if(polygon.toString().equals(polygon4.toString())){
-                    classrooms.clear();
+                   classrooms.clear();
                     classrooms.addAll(BUILDING4.getClassRooms());
                 }else if(polygon.toString().equals(polygon5.toString())){
                     classrooms.clear();
