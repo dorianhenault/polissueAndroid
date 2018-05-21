@@ -202,6 +202,7 @@ public class IncidentLocalisationFragment extends Fragment
                 //mMap.clear();
                 if(marker!=null)
                     marker.remove();
+                positionDescription.setText("");
                 marker=mMap.addMarker(new MarkerOptions().position(point));
                 incidentPosition=point;
                 showIssueDescriptionContainer(false);
@@ -257,6 +258,7 @@ public class IncidentLocalisationFragment extends Fragment
     @Override
     public boolean onMarkerClick(final Marker marker) {
         Toast.makeText(this.getActivity(), "Marqueur de l'incident retiré", Toast.LENGTH_SHORT).show();
+        positionDescription.setText("");
         issuePositionContainer.setVisibility(View.GONE);
         validatePosition.setVisibility(View.VISIBLE);
         incidentPosition=null;
@@ -343,6 +345,8 @@ public class IncidentLocalisationFragment extends Fragment
         mMap.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
             @Override
             public void onPolygonClick(Polygon polygon) {
+                if(marker!=null)
+                    marker.remove();
                 showIssueDescriptionContainer(true);
                 if(polygon.toString().equals(polygon1.toString())){
                     classrooms.clear();
