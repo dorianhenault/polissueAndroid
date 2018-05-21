@@ -82,6 +82,8 @@ public class DeclareIssueFragment extends Fragment{
 
         if(getArguments()!=null){
             this.locationMap=getArguments().getParcelable("location");
+            this.longitude=locationMap.longitude;
+            this.latitude=locationMap.latitude;
             restoreFormFields(getArguments().getParcelable("issue"));
             this.locationButtonClicked=getArguments().getBoolean("buttonClicked");
         }
@@ -187,10 +189,13 @@ public class DeclareIssueFragment extends Fragment{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.print("VIIIILLLe1");
+
         if (addresses.size() > 0) {
             cityLocation.setText(addresses.get(0).getLocality());
             cityLocation.setVisibility(View.VISIBLE);
             cityLocationText.setVisibility(View.VISIBLE);
+            System.out.print(addresses.get(0).getLocality()+"VIIIILLLe2");
         }
     }
 
