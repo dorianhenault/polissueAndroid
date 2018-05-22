@@ -1,7 +1,9 @@
 package ihm.si3.fr.unice.polytech.polissue;
 
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -75,10 +77,11 @@ public class MainPageActivity extends AppCompatActivity
 
         auth = FirebaseAuth.getInstance();
 
-        if (auth.getCurrentUser() == null) auth.signInAnonymously();
+       // if (auth.getCurrentUser() == null) auth.signInAnonymously();
         auth.addAuthStateListener(new NavigationAuthStateListener(navigationView));
         auth.addAuthStateListener(new DatabaseAuthStateListener());
         FacebookSdk.setApplicationId(getString(R.string.facebook_application_id));
+
 
 
     }
@@ -127,32 +130,56 @@ public class MainPageActivity extends AppCompatActivity
     }
 
     private void displayView(int itemId){
-        Fragment fragment = null;
-        String title = getString(R.string.app_name);
+        final Fragment[] fragment = {null};
+        final String[] title = {getString(R.string.app_name)};
 
         if (itemId == R.id.nav_issues_list) {
-            fragment = IssueListFragment.newInstance(2);
-            title = getString(R.string.issue_list);
+            fragment[0] = IssueListFragment.newInstance(2);
+            title[0] = getString(R.string.issue_list);
         } else if ( itemId == R.id.nav_log_in){
             Intent logInIntent = new Intent(this, LoginActivity.class);
             startActivity(logInIntent);
         } else if(itemId == R.id.nav_log_out) {
             auth.signOut();
         } else if (itemId == R.id.nav_sign_in) {
+            title[0] = getString(R.string.declare_issue);
             Intent signInIntent = new Intent(this, LoginActivity.class);
             signInIntent.putExtra("signUp", true);
             startActivity(signInIntent);
         } else if(itemId == R.id.nav_declare_issue){
-            fragment = DeclareIssueFragment.newInstance();
-            title = getString(R.string.declare_issue);
+            FirebaseUser user = auth.getCurrentUser();
+            if (user == null){
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle(R.string.dialog_title);
+                alertDialogBuilder.setMessage(R.string.dialog_message)
+                        .setCancelable(true)
+                        .setPositiveButton(R.string.dialog_positive_button, (dialog, which) -> {
+                            Intent signInIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                            startActivity(signInIntent);
+                            fragment[0] = DeclareIssueFragment.newInstance();
+                            title[0] = getString(R.string.declare_issue);
+                        })
+                        .setNegativeButton(R.string.dialog_negative_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                                fragment[0] = null;
+                            }
+                        });
+                alertDialogBuilder.create();
+                alertDialogBuilder.show();
+            }else {
+                fragment[0] = DeclareIssueFragment.newInstance();
+                title[0] = getString(R.string.declare_issue);
+            }
         }
 
-        if (fragment != null){
+        if (fragment[0] != null){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment);
+            ft.replace(R.id.content_frame, fragment[0]);
             ft.commit();
             if (getSupportActionBar()!=null){
-                getSupportActionBar().setTitle(title);
+                getSupportActionBar().setTitle(title[0]);
             }
         }
 

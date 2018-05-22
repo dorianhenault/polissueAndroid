@@ -45,6 +45,10 @@
     <string name="surname">Nom</string>
     <string name="profile">Profile</string>
     <string name="birthdate">Date de naissance</string>
+    <string name="dialog_title">Connexion requise</string>
+    <string name="dialog_message">Vous devez être connecté pour pouvoir déclarer un incident</string>
+    <string name="dialog_positive_button">Se connecter</string>
+    <string name="dialog_negative_button">Retour</string>
 
     <!--End of Login related string -->
 

@@ -81,21 +81,6 @@
         app:layout_constraintTop_toBottomOf="@+id/emergencyLevel" />
 
     <EditText
-        android:id="@+id/declarerTextField"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="Déclarant*"
-        android:inputType="text|textCapSentences|textPersonName"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/descriptionTextField" />
-
-    <EditText
         android:id="@+id/locationTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -106,7 +91,7 @@
         android:inputType="textPersonName"
         android:textAlignment="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/declarerError" />
+        app:layout_constraintTop_toBottomOf="@+id/descriptionTextField" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/linearLayout"
@@ -155,7 +140,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/locationTextField"
-        app:layout_constraintTop_toBottomOf="@+id/declarerError" />
+        app:layout_constraintTop_toBottomOf="@+id/descriptionTextField" />
 
     <ImageButton
         android:id="@+id/cancelButton"
@@ -192,22 +177,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTextField" />
-
-    <TextView
-        android:id="@+id/declarerError"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Le déclarant ne peut être vide"
-        android:textAlignment="center"
-        android:textColor="@android:color/holo_red_light"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/declarerTextField" />
 
     <TextView
         android:id="@+id/locationError"

@@ -15,6 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.MapView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -65,10 +70,21 @@ public class IssueDetailFragment extends Fragment{
         emergency=view.findViewById(R.id.incidentEmergency);
 
         title.setText(issue.getTitle());
-        declarer.setText(issue.getUserName());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child("users").child(issue.getUserID()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                declarer.setText(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         date.setText(issue.getDate().toString());
-        place.setText(issue.getLocation().getPlace());
-        description.setText(issue.getDescription());
+        if (issue.getLocation().getPlace() != null) place.setText(issue.getLocation().getPlace());
+        if (issue.getDescription() !=null) description.setText(issue.getDescription());
         emergency.setText(issue.getEmergency().toString());
 
         notification.setOnClickListener(v -> {

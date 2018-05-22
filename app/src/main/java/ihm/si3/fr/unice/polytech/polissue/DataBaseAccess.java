@@ -22,33 +22,7 @@ public class DataBaseAccess {
         database = FirebaseDatabase.getInstance();
     }
 
-    public void sendData(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference dbRef = database.getReference();
-        DatabaseReference modelUser=dbRef.child("user").child("user1");
-        modelUser.child("id").setValue(0);
-        modelUser.child("email").setValue("JeanBonbeur@etu.unice.fr");
-        modelUser.child("firstName").setValue("Jean");
-        modelUser.child("name").setValue("Bombeur");
-        modelUser.child("birthDate").setValue(new Date());
-        modelUser.child("password").setValue("JulJTM");
 
-        DatabaseReference modelMishap=dbRef.child("mishap").child("mishap1");
-        modelMishap.child("id").setValue(0);
-        modelMishap.child("title").setValue("test");
-        modelMishap.child("description").setValue("AnotherTest");
-        modelMishap.child("date").setValue(new Date());
-        modelMishap.child("emergency").setValue("LOW");
-        modelMishap.child("location").setValue("");
-        modelMishap.child("declarantId").setValue(0);
-        modelMishap.child("photo").setValue("URL");
-
-        DatabaseReference modelLocation=dbRef.child("location").child("location1");
-        modelLocation.child("place").setValue("Dolines");
-        modelLocation.child("longitude").setValue("0,0");
-        modelLocation.child("latitude").setValue("0,0");
-
-    }
 
     /**
      * Method used to post and issue to the database
@@ -56,7 +30,15 @@ public class DataBaseAccess {
      */
     public void postIssue(IssueModel issue){
         DatabaseReference issueRef = database.getReference().child("mishap");
-        issueRef.push().setValue(issue);
+        String key = issueRef.push().getKey();
+        issueRef.child(key).child("title").setValue(issue.getTitle());
+        issueRef.child(key).child("description").setValue(issue.getDescription());
+        issueRef.child(key).child("date").setValue(issue.getDate().getTime());
+        issueRef.child(key).child("emergency").setValue(issue.getEmergency());
+        issueRef.child(key).child("location").setValue(issue.getLocation());
+        issueRef.child(key).child("userID").setValue(issue.getUserID());
+        issueRef.child(key).child("imagePath").setValue(issue.getImagePath());
+        issueRef.child(key).child("state").setValue(issue.getState());
     }
 
     /**

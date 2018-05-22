@@ -24,6 +24,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -54,9 +55,9 @@ public class DeclareIssueFragment extends Fragment{
     private static final String TAG = "DeclareIssueFragment";
     private ImageButton validButton, addImage, takePicture, currentLocation, cancelButton;
     private ImageView image;
-    private EditText title, description, declarer, location;
+    private EditText title, description, location;
     private SeekBar emergencyLevel;
-    private TextView titleError, declarerError, locationError;
+    private TextView titleError, locationError;
     private Uri imageURI;
 
     private Location locationMap;
@@ -88,11 +89,9 @@ public class DeclareIssueFragment extends Fragment{
         image = view.findViewById(R.id.issueImagePreview);
         title = view.findViewById(R.id.titleTextField);
         description = view.findViewById(R.id.descriptionTextField);
-        declarer = view.findViewById(R.id.declarerTextField);
         location = view.findViewById(R.id.locationTextField);
         emergencyLevel = view.findViewById(R.id.emergencyLevel);
         titleError = view.findViewById(R.id.titleError);
-        declarerError = view.findViewById(R.id.declarerError);
         locationError = view.findViewById(R.id.locationError);
 
         validButton.setOnClickListener((v) -> {
@@ -100,7 +99,7 @@ public class DeclareIssueFragment extends Fragment{
                 Emergency level = buildEmergencyLevel();
                 this.locationMap=new Location(location.getText().toString(),longitude,latitude);
                 // IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,declarer.getText().toString());
-                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), Emergency.MEDIUM,declarer.getText().toString(), State.NOT_RESOLVED);
+                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), Emergency.MEDIUM, FirebaseAuth.getInstance().getUid(), State.NOT_RESOLVED);
                 StorageReference imageRef = uploadPicture(imageURI, issue);
                 issue.imagePathFromRef(imageRef);
                 DataBaseAccess dataBaseAccess = new DataBaseAccess();
@@ -217,16 +216,11 @@ public class DeclareIssueFragment extends Fragment{
     private boolean checkMandatoryFields() {
         boolean ok = true;
         titleError.setVisibility(View.GONE);
-        declarerError.setVisibility(View.GONE);
         locationError.setVisibility(View.GONE);
 
         if (title.getText().length() == 0 || title.getText().toString().equals("")){
             titleError.setVisibility(View.VISIBLE);
             ok = false;
-        }
-        if (declarer.getText().length() == 0 || declarer.getText().toString().equals("")){
-            declarerError.setVisibility(View.VISIBLE);
-            ok=false;
         }
         if (location.getText().length() == 0 || location.getText().toString().equals("")){
             locationError.setVisibility(View.VISIBLE);

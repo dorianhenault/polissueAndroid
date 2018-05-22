@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -33,7 +34,6 @@ import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link IssueModel}
- * TODO: Replace the implementation with code for your data type.
  */
 public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecyclerViewAdapter.ViewHolder> {
 
@@ -63,7 +63,20 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
         holder.issueModel = mValues.get(position);
         holder.issueTitle.setText(mValues.get(position).getTitle());
         holder.issueState.setProgress(mValues.get(position).getState().getProgress());
-        holder.issueDeclarer.setText(mValues.get(position).getUserName());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference declarerRef =  ref.child("users").child(holder.issueModel.getUserID()).child("username");
+        declarerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                holder.issueDeclarer.setText(dataSnapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        holder.issueDeclarer.setText(mValues.get(position).getUserID());
         holder.issueDate.setText(mValues.get(position).getDate().toString());
         if (mValues.get(position).getImagePath() != null) {
             StorageReference imageRef = FirebaseStorage.getInstance().getReference(mValues.get(position).getImagePath());
