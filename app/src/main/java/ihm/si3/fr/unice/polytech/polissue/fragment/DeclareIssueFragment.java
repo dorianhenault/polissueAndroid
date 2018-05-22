@@ -158,7 +158,11 @@ public class DeclareIssueFragment extends Fragment{
         });
 
         updateCityLocation();
-
+        if(this.locationMap!=null){
+            TextView locationDescription=view.findViewById(R.id.locationDescription);
+            locationDescription.setText(locationMap.place);
+            locationDescription.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
@@ -189,13 +193,12 @@ public class DeclareIssueFragment extends Fragment{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.print("VIIIILLLe1");
 
         if (addresses.size() > 0) {
             cityLocation.setText(addresses.get(0).getLocality());
             cityLocation.setVisibility(View.VISIBLE);
             cityLocationText.setVisibility(View.VISIBLE);
-            System.out.print(addresses.get(0).getLocality()+"VIIIILLLe2");
+            System.out.print(addresses.get(0).getLocality());
         }
     }
 

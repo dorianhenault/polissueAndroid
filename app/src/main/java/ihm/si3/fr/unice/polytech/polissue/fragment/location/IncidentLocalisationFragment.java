@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -33,16 +34,19 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ihm.si3.fr.unice.polytech.polissue.PermissionUtils;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
+import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING1;
@@ -85,6 +89,7 @@ public class IncidentLocalisationFragment extends Fragment
     private ArrayList<String> classrooms;
 
     private Marker marker;
+    private Polygon currentPolygon;
 
     public static IncidentLocalisationFragment newInstance() {
         return new IncidentLocalisationFragment();
@@ -101,7 +106,7 @@ public class IncidentLocalisationFragment extends Fragment
 
         final View view = inflater.inflate(R.layout.incident_location_gmaps, container, false);
         issuePositionContainer=view.findViewById(R.id.issuePositionContainer);
-        findViewById(view);
+        map = view.findViewById(R.id.map);
         map.onCreate(savedInstanceState);
         map.getMapAsync(this);
         validatePosition=view.findViewById(R.id.validatePosition) ;
@@ -153,6 +158,22 @@ public class IncidentLocalisationFragment extends Fragment
             if(checkMandatoryFields()){
                 issuePositionContainer.setVisibility(View.GONE);
                 validatePosition.setVisibility(View.VISIBLE);
+
+                if(marker!=null) {
+                    marker.setTitle(positionDescriptionText);
+                    marker.showInfoWindow();
+                }
+
+               /* if(currentPolygon!=null){
+                    MarkerOptions options=(MarkerOptions) currentPolygon.getTag();
+                    options.title(positionDescriptionText);
+                    Marker mark=mMap.addMarker(options);
+                    mark.showInfoWindow();
+                }*/
+
+                initialiseMapClickListener();
+                mMap.setOnMarkerClickListener(this);
+                mMap.setMapStyle(null);
             }
             else{
                 Toast.makeText(this.getContext(), "Une description doit être ajoutée ", Toast.LENGTH_SHORT).show();
@@ -163,16 +184,13 @@ public class IncidentLocalisationFragment extends Fragment
         cancelDescription.setOnClickListener(v -> {
             issuePositionContainer.setVisibility(View.GONE);
             validatePosition.setVisibility(View.VISIBLE);
+            initialiseMapClickListener();
+            mMap.setOnMarkerClickListener(this);
+            mMap.setMapStyle(null);
         });
 
         return view;
     }
-
-    private void findViewById(View rootView) {
-        map = (MapView) rootView.findViewById(R.id.map);
-    }
-
-
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -191,21 +209,7 @@ public class IncidentLocalisationFragment extends Fragment
         initializeBuildings();
         enableMyLocation();
         setCurrentLocation();
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
-            @Override
-            public void onMapClick(LatLng point) {
-                //mMap.clear();
-                if(marker!=null)
-                    marker.remove();
-                positionDescription.setText("");
-                positionDescriptionText="";
-                locationDescription.setVisibility(View.VISIBLE);
-                marker=mMap.addMarker(new MarkerOptions().position(point));
-                incidentPosition=point;
-                showIssueDescriptionContainer(false);
-            }
-        });
+        initialiseMapClickListener();
         final LocationManager manager = (LocationManager) this.getActivity().getSystemService( Context.LOCATION_SERVICE );
         if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
             buildAlertMessageNoGps();
@@ -265,6 +269,25 @@ public class IncidentLocalisationFragment extends Fragment
         return true;
     }
 
+    public void initialiseMapClickListener(){
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng point) {
+                //mMap.clear();
+                if(marker!=null)
+                    marker.remove();
+                positionDescription.setText("");
+                positionDescriptionText="";
+                locationDescription.setVisibility(View.VISIBLE);
+                marker=mMap.addMarker(new MarkerOptions().position(point));
+                incidentPosition=point;
+                showIssueDescriptionContainer(false);
+            }
+        });
+    }
+
+
     @Override
     public boolean onMyLocationButtonClick() {
         Toast.makeText(this.getActivity(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
@@ -299,6 +322,22 @@ public class IncidentLocalisationFragment extends Fragment
         }
         issuePositionContainer.setVisibility(View.VISIBLE);
         validatePosition.setVisibility(View.GONE);
+
+        mMap.setOnMapClickListener(null);
+        mMap.setOnMarkerClickListener(null);
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = mMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this.getActivity(), R.raw.style_json));
+
+            if (!success) {
+                System.err.println("Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            System.err.println("Can't find style. Error: "+ e);
+        }
 
     }
 
@@ -378,8 +417,21 @@ public class IncidentLocalisationFragment extends Fragment
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 adapter.notifyDataSetChanged();
                 spinnerClassRooms.setAdapter(adapter);
+                currentPolygon=polygon;
+                currentPolygon.setTag(new MarkerOptions().position(createPositionWithPolygonPoints(polygon.getPoints())));
+
             }
         });
+    }
+
+    public LatLng createPositionWithPolygonPoints(List<LatLng> list){
+        double lat=0;
+        double lon=0;
+        for(LatLng pos:list){
+            lat+=pos.latitude;
+            lon+=pos.longitude;
+        }
+        return new LatLng(lat/list.size(),lon/list.size());
     }
 
     private void checkIfOtherThanAClassRoomSelected(String selected){
