@@ -80,16 +80,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emergencyLevel" />
 
-    <EditText
-        android:id="@+id/locationTextField"
+    <TextView
+        android:id="@+id/cityLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/validButton"
+        app:layout_constraintStart_toEndOf="@+id/cityLocationText"
+        app:layout_constraintTop_toBottomOf="@+id/currentLocationButton"
+        app:layout_constraintVertical_bias="0.29000002" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="134dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:hint="Emplacement*"
-        android:inputType="textPersonName"
-        android:textAlignment="center"
+        android:text="Emplacement :"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/cancelButton"
+        app:layout_constraintEnd_toStartOf="@+id/locationDescription"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descriptionTextField" />
 
@@ -138,8 +156,8 @@
         android:layout_marginTop="8dp"
         android:src="@android:drawable/ic_menu_mylocation"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/locationDescription"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/locationTextField"
         app:layout_constraintTop_toBottomOf="@+id/descriptionTextField" />
 
     <ImageButton
@@ -150,7 +168,7 @@
         android:layout_marginTop="8dp"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/locationError" />
+        app:layout_constraintTop_toTopOf="@+id/locationError" />
 
     <ImageButton
         android:id="@+id/validButton"
@@ -184,14 +202,45 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="L'emplacement ne peut être vide"
+        android:text="L'emplacement doit être précisé"
         android:textAlignment="center"
         android:textColor="@android:color/holo_red_light"
         android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/locationTextField" />
+        app:layout_constraintTop_toBottomOf="@+id/currentLocationButton" />
+
+    <TextView
+        android:id="@+id/cityLocationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="8dp"
+        android:text="Position GPS :"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cityLocation"
+        app:layout_constraintHorizontal_bias="0.17"
+        app:layout_constraintStart_toEndOf="@+id/cancelButton"
+        app:layout_constraintTop_toBottomOf="@+id/currentLocationButton"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <TextView
+        android:id="@+id/locationDescription"
+        android:layout_width="47dp"
+        android:layout_height="27dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/cancelButton"
+        app:layout_constraintEnd_toStartOf="@+id/currentLocationButton"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+         />
 
 </android.support.constraint.ConstraintLayout>

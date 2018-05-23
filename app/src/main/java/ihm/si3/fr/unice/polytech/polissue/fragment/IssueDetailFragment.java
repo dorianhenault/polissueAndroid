@@ -56,6 +56,7 @@ public class IssueDetailFragment extends Fragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
         View view = inflater.inflate(R.layout.fragment_issue_detail, container, false);
 
         title=view.findViewById(R.id.incidentTitle);
@@ -71,7 +72,7 @@ public class IssueDetailFragment extends Fragment{
 
         title.setText(issue.getTitle());
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child("users").child(issue.getUserID()).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.child("users").child(issue.getUserID()).child("username").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 declarer.setText(dataSnapshot.getValue(String.class));
