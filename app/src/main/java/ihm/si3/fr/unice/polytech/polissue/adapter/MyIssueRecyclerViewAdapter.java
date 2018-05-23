@@ -42,8 +42,7 @@ import ihm.si3.fr.unice.polytech.polissue.model.State;
  */
 public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecyclerViewAdapter.ViewHolder> {
 
-    //TODO a fix, le seul moyen pour récuperer les élements de la BD dans le fragmentIssuesListLocation etait de rendre cette liste statique.
-    public static List<IssueModel> mValues;
+    private final List<IssueModel> mValues;
     private ChildEventListener issueEventListener;
     private DatabaseReference ref;
     private static final String TAG = "IssueViewAdapter";

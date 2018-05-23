@@ -176,6 +176,7 @@ public class MainPageActivity extends AppCompatActivity
                 fragment[0] = DeclareIssueFragment.newInstance();
                 title[0] = getString(R.string.declare_issue);
             }
+        }
 
         if (fragment[0] != null){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -233,7 +234,7 @@ public class MainPageActivity extends AppCompatActivity
     }
 
 
-    private void createNotificationChannel() {
+    private void createNotificationChannel(){
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

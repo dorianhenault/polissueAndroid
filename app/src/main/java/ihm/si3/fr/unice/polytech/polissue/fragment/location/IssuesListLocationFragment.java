@@ -43,6 +43,7 @@ import java.util.List;
 import ihm.si3.fr.unice.polytech.polissue.PermissionUtils;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.adapter.MyIssueRecyclerViewAdapter;
+import ihm.si3.fr.unice.polytech.polissue.factory.IssueModelFactory;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
@@ -140,8 +141,8 @@ public class IssuesListLocationFragment extends Fragment
         double latitude=0;
         double longitude=0;
         try{
-             latitude=issueModel.location.latitude;
-             longitude=issueModel.location.longitude;
+             latitude=issueModel.getLocation().getLatitude();
+             longitude=issueModel.getLocation().getLongitude();
         }
         catch (NullPointerException e){
             System.out.print(e);
@@ -156,15 +157,15 @@ public class IssuesListLocationFragment extends Fragment
         Marker marker= mMap.addMarker(
                 new MarkerOptions().position(point)
                         .icon(BitmapDescriptorFactory.defaultMarker(selectEmergencyColor(issueModel)))
-                        .title(issueModel.title)
-                        .snippet(issueModel.date.toString()));
+                        .title(issueModel.getTitle())
+                        .snippet(issueModel.getDate().toString()));
         marker.setTag(issueModel);
 
         return marker;
     }
 
     public float selectEmergencyColor(IssueModel issueModel){
-        switch (issueModel.emergency){
+        switch (issueModel.getEmergency()){
             case LOW:
                 return BitmapDescriptorFactory.HUE_GREEN;
             case MEDIUM:
@@ -291,7 +292,7 @@ public class IssuesListLocationFragment extends Fragment
         issueEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                IssueModel issue = dataSnapshot.getValue(IssueModel.class);
+                IssueModel issue = new IssueModelFactory().forge(dataSnapshot);
                 //mValues.add(issue);
                 addMarker(issue);
                 System.out.println(issue+" INCIDEEENTS");

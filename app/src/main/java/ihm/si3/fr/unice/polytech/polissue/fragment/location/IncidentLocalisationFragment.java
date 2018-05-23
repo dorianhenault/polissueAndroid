@@ -140,6 +140,7 @@ public class IncidentLocalisationFragment extends Fragment
                 Bundle bundle=new Bundle();
                 bundle.putParcelable("location",location);
                 bundle.putParcelable("issue",issueModel);
+                bundle.putParcelable("imageUri",getArguments().getParcelable("imageUri"));
                 bundle.putBoolean("buttonClicked",true);
                 declareIssueFragment.setArguments(bundle);
                 ft.replace(R.id.content_frame, declareIssueFragment );

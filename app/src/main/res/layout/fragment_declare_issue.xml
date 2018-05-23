@@ -80,25 +80,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emergencyLevel" />
 
-    <EditText
-        android:id="@+id/declarerTextField"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="Déclarant*"
-        android:inputType="text|textCapSentences|textPersonName"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/descriptionTextField" />
-
     <TextView
         android:id="@+id/cityLocation"
-    <EditText
-        android:id="@+id/locationTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -127,7 +110,6 @@
         app:layout_constraintEnd_toStartOf="@+id/locationDescription"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/descriptionTextField" />
-        app:layout_constraintTop_toTopOf="@+id/declarerError" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/linearLayout"
@@ -175,9 +157,7 @@
         android:src="@android:drawable/ic_menu_mylocation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/locationDescription"
-        app:layout_constraintTop_toTopOf="@+id/declarerError" />
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/locationTextField"
         app:layout_constraintTop_toBottomOf="@+id/descriptionTextField" />
 
     <ImageButton
@@ -261,6 +241,6 @@
         app:layout_constraintEnd_toStartOf="@+id/currentLocationButton"
         app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toTopOf="@+id/declarerError" />
+         />
 
 </android.support.constraint.ConstraintLayout>

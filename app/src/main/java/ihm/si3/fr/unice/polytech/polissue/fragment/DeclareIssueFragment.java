@@ -1,12 +1,11 @@
 package ihm.si3.fr.unice.polytech.polissue.fragment;
 
 
-import android.location.Address;
-import android.location.Geocoder;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,7 +13,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +25,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -40,10 +37,9 @@ import java.util.Locale;
 import java.util.Objects;
 
 import ihm.si3.fr.unice.polytech.polissue.DataBaseAccess;
-import ihm.si3.fr.unice.polytech.polissue.fragment.location.IncidentLocalisationFragment;
-import ihm.si3.fr.unice.polytech.polissue.IncidentLocalisationActivity;
 import ihm.si3.fr.unice.polytech.polissue.IssuePictureListener;
 import ihm.si3.fr.unice.polytech.polissue.R;
+import ihm.si3.fr.unice.polytech.polissue.fragment.location.IncidentLocalisationFragment;
 import ihm.si3.fr.unice.polytech.polissue.model.Emergency;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 import ihm.si3.fr.unice.polytech.polissue.model.Location;
@@ -58,13 +54,12 @@ public class DeclareIssueFragment extends Fragment{
 
     private static final int ADD_IMAGE = 1;
     private static final int TAKE_PICTURE = 2;
-    private static final int REQUEST_GET_MAP_LOCATION = 0;
     private static final String TAG = "DeclareIssueFragment";
     private ImageButton validButton, addImage, takePicture, currentLocation, cancelButton;
     private ImageView image;
-    private EditText title, description, location;
+    private EditText title, description;
     private SeekBar emergencyLevel;
-    private TextView titleError, declarerError, locationError,cityLocation,cityLocationText;
+    private TextView titleError, locationError,cityLocation,cityLocationText;
     private Uri imageURI;
 
     private Location locationMap;
@@ -97,7 +92,6 @@ public class DeclareIssueFragment extends Fragment{
         image = view.findViewById(R.id.issueImagePreview);
         title = view.findViewById(R.id.titleTextField);
         description = view.findViewById(R.id.descriptionTextField);
-        location = view.findViewById(R.id.locationTextField);
         emergencyLevel = view.findViewById(R.id.emergencyLevel);
         titleError = view.findViewById(R.id.titleError);
         locationError = view.findViewById(R.id.locationError);
@@ -106,8 +100,9 @@ public class DeclareIssueFragment extends Fragment{
 
         if(getArguments()!=null){
             this.locationMap=getArguments().getParcelable("location");
-            this.longitude=locationMap.longitude;
-            this.latitude=locationMap.latitude;
+            this.longitude=locationMap.getLongitude();
+            this.latitude=locationMap.getLatitude();
+            this.imageURI=getArguments().getParcelable("imageUri");
             restoreFormFields(getArguments().getParcelable("issue"));
             this.locationButtonClicked=getArguments().getBoolean("buttonClicked");
         }
@@ -115,13 +110,11 @@ public class DeclareIssueFragment extends Fragment{
         validButton.setOnClickListener((v) -> {
             if(checkMandatoryFields()){
                 Emergency level = buildEmergencyLevel();
-               // IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,declarer.getText().toString());
-                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,locationMap,declarer.getText().toString(),"http://www.picslyrics.net/images/141613-rick-astley-never-gonna-give-you-up.jpg");
-                this.locationMap=new Location(location.getText().toString(),longitude,latitude);
-                // IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,declarer.getText().toString());
-                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), Emergency.MEDIUM, FirebaseAuth.getInstance().getUid(), State.NOT_RESOLVED);
-                StorageReference imageRef = uploadPicture(imageURI, issue);
-                issue.imagePathFromRef(imageRef);
+                IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), level,locationMap, FirebaseAuth.getInstance().getUid(),"", State.NOT_RESOLVED);
+                if(imageURI!=null){
+                    StorageReference imageRef = uploadPicture(imageURI, issue);
+                    issue.imagePathFromRef(imageRef);
+                }
                 DataBaseAccess dataBaseAccess = new DataBaseAccess();
                 dataBaseAccess.postIssue(issue);
                 Log.d(TAG, "onCreateView: Posted issue");
@@ -195,9 +188,10 @@ public class DeclareIssueFragment extends Fragment{
             }
         });
         currentLocation.setOnClickListener(v -> {
-            IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), buildEmergencyLevel(),locationMap,declarer.getText().toString(),"");
+            IssueModel issue = new IssueModel(title.getText().toString(),description.getText().toString(),new Date(), buildEmergencyLevel(),locationMap, FirebaseAuth.getInstance().getUid(),"", State.NOT_RESOLVED);
             Bundle bundle=new Bundle();
             bundle.putParcelable("issue",issue);
+            bundle.putParcelable("imageUri",imageURI);
             FragmentTransaction ft = ((FragmentActivity)v.getContext()).getSupportFragmentManager().beginTransaction();
             Fragment issueLocationFragment= IncidentLocalisationFragment.newInstance();
             issueLocationFragment.setArguments(bundle);
@@ -211,27 +205,36 @@ public class DeclareIssueFragment extends Fragment{
         updateCityLocation();
         if(this.locationMap!=null){
             TextView locationDescription=view.findViewById(R.id.locationDescription);
-            locationDescription.setText(locationMap.place);
+            locationDescription.setText(locationMap.getPlace());
             locationDescription.setVisibility(View.VISIBLE);
         }
         return view;
     }
 
     private void restoreFormFields(IssueModel issueModel){
-        if(issueModel.title!=null){
-            this.title.setText(issueModel.title);
+        if(issueModel.getTitle()!=null){
+            this.title.setText(issueModel.getTitle());
         }
-        if(issueModel.emergency!=null){
-            this.emergencyLevel.setProgress(buildEmergencyLevelReversed(issueModel.emergency));
+        if(issueModel.getEmergency()!=null){
+            this.emergencyLevel.setProgress(buildEmergencyLevelReversed(issueModel.getEmergency()));
         }
-        if(issueModel.userName!=null){
-            this.declarer.setText(issueModel.userName);
+        if(imageURI!=null){
+            Bitmap  picture=null;
+            try {
+                  picture = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getContext()).getContentResolver(), imageURI);
+            } catch (IOException e) {
+                Log.e(TAG, "onActivityResult:Loading Picture ", e);
+                Toast.makeText(this.getContext(), getString(R.string.error_loading_picture), Toast.LENGTH_LONG).show();
+            }
+            if (picture != null) {
+                image.setImageBitmap(picture);
+            }
+            else{
+                image.setImageURI(imageURI);
+            }
         }
-        //if(issueModel.imageURL!=null){
-         //   this.im.setText(issueModel.title);
-        //}
-        if(issueModel.description!=null){
-            this.description.setText(issueModel.description);
+        if(issueModel.getDescription()!=null){
+            this.description.setText(issueModel.getDescription());
         }
 
     }
@@ -314,11 +317,7 @@ public class DeclareIssueFragment extends Fragment{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_GET_MAP_LOCATION && resultCode == Activity.RESULT_OK) {
-            latitude = data.getDoubleExtra("latitude", 0);
-            longitude = data.getDoubleExtra("longitude", 0);
-            // do something with B's return values
-        }else if ((requestCode == ADD_IMAGE || requestCode == TAKE_PICTURE )
+        if ((requestCode == ADD_IMAGE || requestCode == TAKE_PICTURE )
                 && resultCode == RESULT_OK && data != null) {
             Bitmap picture = null;
             if (requestCode == ADD_IMAGE) {
