@@ -182,6 +182,8 @@ public class MainPageActivity extends AppCompatActivity
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment[0]);
             ft.commit();
+            ft.addToBackStack(null);
+
             if (getSupportActionBar()!=null){
                 getSupportActionBar().setTitle(title[0]);
             }
