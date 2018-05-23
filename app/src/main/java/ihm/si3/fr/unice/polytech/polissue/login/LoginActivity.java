@@ -13,6 +13,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -75,6 +76,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
 
         //setting up the facebook sign in option
         callbackManager = CallbackManager.Factory.create();
+        FacebookSdk.sdkInitialize(this);
         LoginManager.getInstance().registerCallback(
                 callbackManager,
                 new FacebookCallback<LoginResult>() {

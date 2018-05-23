@@ -4,18 +4,19 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,10 +24,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import ihm.si3.fr.unice.polytech.polissue.DataBaseAccess;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.adapter.MyUserRecyclerViewAdapter;
+import ihm.si3.fr.unice.polytech.polissue.factory.UserFactory;
+import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 import ihm.si3.fr.unice.polytech.polissue.model.User;
 
 /**
@@ -35,11 +41,16 @@ import ihm.si3.fr.unice.polytech.polissue.model.User;
  */
 public class UserListFragment extends Fragment {
 
+    private static final String TAG = "UserListFragment";
+
     // TODO: Customize parameters
     private int mColumnCount = 1;
 
     private List<User> users = new ArrayList<>();;
     private MyUserRecyclerViewAdapter adapter;
+    private OnCheckUserListener checkUserListener;
+    private Set<User> usersToNotify = new HashSet<>();
+    private IssueModel issue;
 
 
     /**
@@ -49,14 +60,17 @@ public class UserListFragment extends Fragment {
     public UserListFragment() {
     }
 
-    public static Fragment newInstance(){
+    public static Fragment newInstance()
+    {
         return new UserListFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if(getArguments() != null) {
+            issue = getArguments().getParcelable("issue");
+        }
     }
 
     @Override
@@ -75,7 +89,19 @@ public class UserListFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             notify.setOnClickListener(v -> {
-                //TODO
+                DataBaseAccess dataBaseAccess = new DataBaseAccess();
+                for (User user : usersToNotify) {
+                    dataBaseAccess.postNotification(user, issue);
+                }
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                Fragment fragment = IssueDetailFragment.newInstance();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("issue", issue);
+                fragment.setArguments(bundle);
+                ft.replace(R.id.content_frame, fragment);
+                ft.commit();
+                Log.d(TAG, "users to notify size :" + usersToNotify.size());
             });
             searchField.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -90,7 +116,11 @@ public class UserListFragment extends Fragment {
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    if (s.toString().equals("")){
+                        adapter.filter(users);
+                    }
                     filter(s.toString());
+                    Log.d(TAG, s.toString());
                 }
             });
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
@@ -98,7 +128,7 @@ public class UserListFragment extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        User user = snapshot.getValue(User.class);
+                        User user = new UserFactory().forge(snapshot);
                         users.add(user);
                     }
                 }
@@ -109,8 +139,24 @@ public class UserListFragment extends Fragment {
                 }
             };
             ref.addListenerForSingleValueEvent(eventListener);
+            checkUserListener = new OnCheckUserListener() {
 
+                @Override
+                public void onUserChecked(User user) {
+                    if (!usersToNotify.contains(user)){
+                        usersToNotify.add(user);
+                    }
+                }
+
+                @Override
+                public void onUserUnchecked(User user) {
+                    if (usersToNotify.contains(user)){
+                        usersToNotify.remove(user);
+                    }
+                }
+            };
             adapter = new MyUserRecyclerViewAdapter(users);
+            adapter.setCheckUserListener(checkUserListener);
             recyclerView.setAdapter(adapter);
         return view;
     }
@@ -118,16 +164,20 @@ public class UserListFragment extends Fragment {
     private void filter(String s) {
         List<User> users = new ArrayList<>();
 
-        for (User user : users) {
-            if (user.firstName.toLowerCase().contains(s.toLowerCase()) ||
-                    user.lastName.toLowerCase().contains(s.toLowerCase())||
-                    user.email.contains(s)){
+        for (User user : this.users) {
+            if (user.getUsername().toLowerCase().contains(s.toLowerCase())||
+                    user.getEmail().toLowerCase().contains(s.toLowerCase())){
                 users.add(user);
             }
         }
         adapter.filter(users);
 
 
+    }
+
+    public interface OnCheckUserListener{
+        void onUserChecked(User user);
+        void onUserUnchecked(User user);
     }
 
 

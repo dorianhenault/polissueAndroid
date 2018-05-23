@@ -34,7 +34,7 @@
         </activity>
         <activity
             android:name=".login.LoginActivity"
-            android:label="@string/log_in"></activity>
+            android:label="@string/log_in"/>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -43,20 +43,21 @@
             android:name=".service.HighEmergencyIssueService"
             android:enabled="true"
             android:exported="true" />
-        <service
-            android:name=".service.MyFirebaseInstanceIdService"
+        <service android:name=".service.NotifyUserService"
             android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-            </intent-filter>
-        </service>
+            android:exported="true"/>
 
-        <service android:name=".service.NotifyUserService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="fr.unice.polytech.polissue.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
 
     </application>
 

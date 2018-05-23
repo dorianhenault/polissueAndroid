@@ -30,14 +30,17 @@ public class IssueNotificationBuilder {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_menu_camera)
-                .setContentTitle(issue.toString())
-                .setContentText(issue.toString())
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context,context.getString(R.string.CHANNEL_ID))
+                .setSmallIcon(R.mipmap.ic_logo_polissue_round)
+                .setContentTitle(issue.getTitle())
+                .setContentText(context.getString(R.string.notification_message))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(0, mBuilder.build());
     }
+
+
+
 }

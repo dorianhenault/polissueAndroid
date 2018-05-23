@@ -10,14 +10,17 @@
     <ImageView
         android:id="@+id/issueImagePreview"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:contentDescription="Image for issue taken with camera"
+        android:maxHeight="256dp"
+        android:scaleType="fitCenter"
         android:src="@drawable/ic_menu_manage"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="128dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +37,7 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addImageButton" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <TextView
         android:id="@+id/textView3"
@@ -94,6 +97,8 @@
 
     <TextView
         android:id="@+id/cityLocation"
+    <EditText
+        android:id="@+id/locationTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -121,19 +126,44 @@
         app:layout_constraintBottom_toTopOf="@+id/cancelButton"
         app:layout_constraintEnd_toStartOf="@+id/locationDescription"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionTextField" />
         app:layout_constraintTop_toTopOf="@+id/declarerError" />
 
-    <ImageButton
-        android:id="@+id/addImageButton"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:src="@android:drawable/ic_menu_camera"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/issueImagePreview" />
+        app:layout_constraintTop_toBottomOf="@+id/issueImagePreview">
+
+        <ImageButton
+            android:id="@+id/takePicutreButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@android:drawable/ic_menu_camera"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="52dp"
+            tools:layout_conversion_absoluteWidth="56dp" />
+
+        <ImageButton
+            android:id="@+id/addImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@android:drawable/ic_menu_gallery"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/takePicutreButton"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="52dp"
+            tools:layout_conversion_absoluteWidth="56dp" />
+    </android.support.constraint.ConstraintLayout>
 
     <ImageButton
         android:id="@+id/currentLocationButton"
@@ -146,6 +176,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/locationDescription"
         app:layout_constraintTop_toTopOf="@+id/declarerError" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/locationTextField"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionTextField" />
 
     <ImageButton
         android:id="@+id/cancelButton"
@@ -182,22 +215,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTextField" />
-
-    <TextView
-        android:id="@+id/declarerError"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Le déclarant ne peut être vide"
-        android:textAlignment="center"
-        android:textColor="@android:color/holo_red_light"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/declarerTextField" />
 
     <TextView
         android:id="@+id/locationError"

@@ -3,17 +3,15 @@ package ihm.si3.fr.unice.polytech.polissue.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
-
 /**
  * Class that models a user
  */
 public class User implements Parcelable{
 
-    public int id;
-    public String email;
-    public String lastName;
-    public String firstName;
+    private String id;
+    private String email;
+    private String username;
+    private String photoUrl;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -23,21 +21,21 @@ public class User implements Parcelable{
      * Constructor for User
      * @param id the id of the user
      * @param email the email of the user
-     * @param lastName the lastName of the user
-     * @param firstName the first name of the user
+     * @param username the username of the user
+     * @param photoUrl the first name of the user
      */
-    public User(int id, String email, String lastName, String firstName) {
+    public User(String id, String email, String username, String photoUrl) {
         this.id = id;
         this.email = email;
-        this.lastName = lastName;
-        this.firstName = firstName;
+        this.username = username;
+        this.photoUrl = photoUrl;
     }
 
     protected User(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         email = in.readString();
-        lastName = in.readString();
-        firstName = in.readString();
+        username = in.readString();
+        photoUrl = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -59,9 +57,41 @@ public class User implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(email);
-        dest.writeString(lastName);
-        dest.writeString(firstName);
+        dest.writeString(username);
+        dest.writeString(photoUrl);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

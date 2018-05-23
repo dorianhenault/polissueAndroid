@@ -10,6 +10,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import ihm.si3.fr.unice.polytech.polissue.R;
+import ihm.si3.fr.unice.polytech.polissue.fragment.UserListFragment;
+import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 import ihm.si3.fr.unice.polytech.polissue.model.User;
 
 /**
@@ -19,6 +21,8 @@ import ihm.si3.fr.unice.polytech.polissue.model.User;
 public class MyUserRecyclerViewAdapter extends RecyclerView.Adapter<MyUserRecyclerViewAdapter.ViewHolder> {
 
     private List<User> mValues;
+    private UserListFragment.OnCheckUserListener checkUserListener;
+
 
 
     public MyUserRecyclerViewAdapter(List<User> items) {
@@ -35,12 +39,21 @@ public class MyUserRecyclerViewAdapter extends RecyclerView.Adapter<MyUserRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
+        holder.name.setText(holder.mItem.getUsername());
 
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+        holder.mView.setOnClickListener(v -> {
+            holder.notify.setChecked(!holder.notify.isChecked());
+            if (holder.notify.isChecked()){
+                checkUserListener.onUserChecked(holder.mItem);
+            }else {
+                checkUserListener.onUserUnchecked(holder.mItem);
+            }
+        });
+        holder.notify.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked){
+                checkUserListener.onUserChecked(holder.mItem);
+            }else {
+                checkUserListener.onUserUnchecked(holder.mItem);
             }
         });
     }
@@ -53,6 +66,11 @@ public class MyUserRecyclerViewAdapter extends RecyclerView.Adapter<MyUserRecycl
     public void filter(List<User> users) {
         mValues = users;
         notifyDataSetChanged();;
+    }
+
+
+    public void setCheckUserListener(UserListFragment.OnCheckUserListener checkUserListener) {
+        this.checkUserListener = checkUserListener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

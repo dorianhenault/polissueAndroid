@@ -5,19 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    tools:layout_editor_absoluteY="81dp">
+    android:elevation="2dp"
+    tools:layout_editor_absoluteY="81dp"
+    android:padding="4dp"
+    android:background="@drawable/card_shape">
 
     <ImageView
         android:id="@+id/issueImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+
         android:contentDescription="issueImage"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/issueState"
         app:srcCompat="@drawable/ic_menu_manage" />
 
     <TextView
@@ -26,11 +31,10 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="TextView"
         android:textAlignment="center"
-        app:layout_constraintEnd_toStartOf="@+id/issueState"
-        app:layout_constraintHorizontal_bias="0.61"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/issueImage" />
 
@@ -40,24 +44,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:indeterminate="false"
         android:max="100"
         android:progress="0"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="48dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/issueDeclarer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="TextView"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/issueTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/issueTitle"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/issueDate"
@@ -71,8 +79,7 @@
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/issueDeclarer"
-        app:layout_constraintTop_toBottomOf="@+id/issueTitle" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/issueDeclarer" />
 
 </android.support.constraint.ConstraintLayout>
