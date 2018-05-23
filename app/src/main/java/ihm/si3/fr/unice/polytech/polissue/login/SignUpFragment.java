@@ -18,8 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-import java.util.regex.Pattern;
-
 import ihm.si3.fr.unice.polytech.polissue.R;
 
 public class SignUpFragment extends Fragment {
@@ -28,7 +26,6 @@ public class SignUpFragment extends Fragment {
     private static final String EMAIL_KEY = "email";
     private static final String TAG = "SignUpFragment";
     private static final String USER_FIREBASE_REF = "users";
-    private static final Pattern PASS_PATTERN = Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{6,}$");
     LoginFragmentListener listener;
 
     private FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -120,9 +117,7 @@ public class SignUpFragment extends Fragment {
         String password = passwordTextView.getText().toString();
         error = "";
         if (password.isEmpty()) error = getString(R.string.error_field_required);
-        else if (password.length() < 6) error = getString(R.string.error_invalid_password);
-        else if (!PASS_PATTERN.matcher(password).matches())
-            error = getString(R.string.error_incorrect_password);
+        else if (password.length() < 8) error = getString(R.string.error_invalid_password);
         if (!error.isEmpty()) {
             passwordTextView.setError(error);
             valid = false;

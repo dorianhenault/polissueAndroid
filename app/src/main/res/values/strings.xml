@@ -35,7 +35,7 @@
     <string name="prompt_password">Mot de passe</string>
     <string name="prompt_password_confirmation">Mot de passe (Confirmation)</string>
     <string name="error_invalid_email">Email doit avoir la forme example@example.com</string>
-    <string name="error_invalid_password">Doit faire au moins 6 characteres </string>
+    <string name="error_invalid_password">Doit faire au moins 8 characteres </string>
     <string name="error_incorrect_password">Doit faire 6 charactere minimum et inclure une majuscule, minuscule et un charactère special</string>
     <string name="error_field_required">Ce champ est obligatoire</string>
     <string name="email_login">Email</string>
