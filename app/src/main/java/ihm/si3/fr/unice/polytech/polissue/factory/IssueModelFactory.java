@@ -15,12 +15,17 @@ public class IssueModelFactory {
     }
 
     public IssueModel forge(DataSnapshot snapshot){
-        return new IssueModel(snapshot.getKey(), snapshot.child("title").getValue(String.class),
-                snapshot.child("description").getValue(String.class),
-                snapshot.child("date").getValue(Long.class), snapshot.child("emergency").getValue(Emergency.class),
-                snapshot.child("location").getValue(Location.class), snapshot.child("userID").getValue(String.class),
-                snapshot.child("imagePath").getValue(String.class),
-                snapshot.child("state").getValue(State.class)
-                );
+        String key = snapshot.getKey();
+        IssueModel model = new IssueModel(key);
+        model.setTitle(snapshot.child("title").getValue(String.class));
+        model.setDescription(snapshot.child("description").getValue(String.class));
+        model.setDate(snapshot.child("date").getValue(Long.class));
+        model.setEmergency(snapshot.child("emergency").getValue(Emergency.class));
+        model.setLocation(snapshot.child("location").getValue(Location.class));
+        model.setUserID(snapshot.child("userID").getValue(String.class));
+        model.setImagePath(snapshot.child("imagePath").getValue(String.class));
+        model.setState(snapshot.child("state").getValue(State.class));
+
+        return model;
     }
 }
