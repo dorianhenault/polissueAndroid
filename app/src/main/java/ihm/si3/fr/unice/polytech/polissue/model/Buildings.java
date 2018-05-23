@@ -13,7 +13,7 @@ public enum Buildings {
                     new LatLng(43.615340, 7.073133),
                     new LatLng(43.615711, 7.072697),
                     new LatLng(43.615629, 7.072531))
-                    .strokeColor(Color.BLUE).fillColor(Color.BLUE).strokeWidth(2),
+                    .strokeColor(0xFF205DCF).fillColor(0xFF205DCF).strokeWidth(2),
             new ArrayList<String>() {{
                     add("E-107");
                     add("E-108");
@@ -24,7 +24,7 @@ public enum Buildings {
             new LatLng(43.615089, 7.072725),
             new LatLng(43.615187, 7.072879),
             new LatLng(43.615582, 7.072415))
-            .strokeColor(Color.BLUE).fillColor(Color.BLUE).strokeWidth(2),
+            .strokeColor(0xFF205DCF).fillColor(0xFF205DCF).strokeWidth(2),
             new ArrayList<String>() {{
                 add("0-107");
                 add("0-108");
@@ -35,7 +35,7 @@ public enum Buildings {
             new LatLng(43.616220, 7.072130),
             new LatLng(43.615738, 7.072691),
             new LatLng(43.615631, 7.072511))
-            .strokeColor(Color.BLUE).fillColor(Color.BLUE).strokeWidth(2),
+            .strokeColor(0xFF205DCF).fillColor(0xFF205DCF).strokeWidth(2),
             new ArrayList<String>() {{
                 add("E+130");
                 add("E+131");
@@ -46,7 +46,7 @@ public enum Buildings {
             new LatLng(43.615744, 7.072220),
             new LatLng(43.615629, 7.072352),
             new LatLng(43.615458, 7.072064))
-            .strokeColor(Color.BLUE).fillColor(Color.BLUE).strokeWidth(2),
+            .strokeColor(0xFF205DCF).fillColor(0xFF205DCF).strokeWidth(2),
             new ArrayList<String>() {{
                 add("0+107");
                 add("0+108");
@@ -58,7 +58,7 @@ public enum Buildings {
             new LatLng(43.615796, 7.072066),
             new LatLng(43.615875, 7.071994),
             new LatLng(43.615888,7.071788))
-            .strokeColor(Color.BLUE).fillColor(Color.BLUE).strokeWidth(2),
+            .strokeColor(0xFF205DCF).fillColor(0xFF205DCF).strokeWidth(2),
             new ArrayList<String>() {{
                 add("Amphi-Est");
                 add("Amphi-Ouest");
@@ -68,7 +68,7 @@ public enum Buildings {
             new LatLng(43.615707, 7.071304),
             new LatLng(43.615254, 7.071835),
             new LatLng(43.615384, 7.072062))
-            .strokeColor(Color.BLUE).fillColor(Color.BLUE).strokeWidth(2),
+            .strokeColor(0xFF205DCF).fillColor(0xFF205DCF).strokeWidth(2),
             new ArrayList<String>() {{
                 add("0+308");
                 add("0+309");

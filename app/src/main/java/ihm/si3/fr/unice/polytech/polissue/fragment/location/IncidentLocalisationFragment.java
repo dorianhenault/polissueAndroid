@@ -47,6 +47,7 @@ import ihm.si3.fr.unice.polytech.polissue.PermissionUtils;
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
+import ihm.si3.fr.unice.polytech.polissue.model.Buildings;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING1;
@@ -90,6 +91,7 @@ public class IncidentLocalisationFragment extends Fragment
 
     private Marker marker;
     private Polygon currentPolygon;
+    private List<Polygon>polygonList=new ArrayList<>();
 
     public static IncidentLocalisationFragment newInstance() {
         return new IncidentLocalisationFragment();
@@ -151,7 +153,7 @@ public class IncidentLocalisationFragment extends Fragment
 
         });
 
-        validateDescription.setOnClickListener(v -> {
+        validateDescription.setOnClickListener((View v) -> {
             if(!checkMandatoryFields()) {
                 this.positionDescriptionText = positionDescription.getText().toString();
             }
@@ -171,9 +173,12 @@ public class IncidentLocalisationFragment extends Fragment
                     mark.showInfoWindow();
                 }*/
 
+
                 initialiseMapClickListener();
                 mMap.setOnMarkerClickListener(this);
                 mMap.setMapStyle(null);
+                changePolygonColor(false);
+
             }
             else{
                 Toast.makeText(this.getContext(), "Une description doit être ajoutée ", Toast.LENGTH_SHORT).show();
@@ -187,6 +192,8 @@ public class IncidentLocalisationFragment extends Fragment
             initialiseMapClickListener();
             mMap.setOnMarkerClickListener(this);
             mMap.setMapStyle(null);
+            changePolygonColor(false);
+
         });
 
         return view;
@@ -325,6 +332,9 @@ public class IncidentLocalisationFragment extends Fragment
 
         mMap.setOnMapClickListener(null);
         mMap.setOnMarkerClickListener(null);
+
+        changePolygonColor(true);
+
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -337,6 +347,22 @@ public class IncidentLocalisationFragment extends Fragment
             }
         } catch (Resources.NotFoundException e) {
             System.err.println("Can't find style. Error: "+ e);
+        }
+
+    }
+
+    public void changePolygonColor(boolean transparency){
+        if(transparency){
+            for (Polygon polygon : polygonList) {
+                polygon.setFillColor(0x55205DCF);
+                polygon.setStrokeColor(0x55205DCF);
+            }
+        }
+        else{
+            for (Polygon polygon : polygonList) {
+                polygon.setFillColor(0xFF205DCF);
+                polygon.setStrokeColor(0xFF205DCF);
+            }
         }
 
     }
@@ -382,6 +408,13 @@ public class IncidentLocalisationFragment extends Fragment
         polygon5.setClickable(true);
         Polygon polygon6 = mMap.addPolygon(BUILDING6.getPolygonOptions());
         polygon6.setClickable(true);
+        polygonList.add(polygon1);
+        polygonList.add(polygon2);
+        polygonList.add(polygon3);
+        polygonList.add(polygon4);
+        polygonList.add(polygon5);
+        polygonList.add(polygon6);
+
 
         mMap.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
 
