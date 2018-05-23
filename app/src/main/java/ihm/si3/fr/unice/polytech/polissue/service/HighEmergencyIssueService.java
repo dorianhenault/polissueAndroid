@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import ihm.si3.fr.unice.polytech.polissue.factory.IssueModelFactory;
 import ihm.si3.fr.unice.polytech.polissue.model.Emergency;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 import ihm.si3.fr.unice.polytech.polissue.notifications.IssueNotificationBuilder;
@@ -28,7 +29,7 @@ public class HighEmergencyIssueService extends Service {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    IssueModel issueModel = snapshot.getValue(IssueModel.class);
+                    IssueModel issueModel = new IssueModelFactory().forge(snapshot);
                     if (issueModel.getEmergency().equals(Emergency.HIGH)) {
                         IssueNotificationBuilder builder = new IssueNotificationBuilder(issueModel, getApplicationContext());
                         builder.build();

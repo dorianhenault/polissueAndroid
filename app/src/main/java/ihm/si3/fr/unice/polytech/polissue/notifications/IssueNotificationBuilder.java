@@ -31,7 +31,7 @@ public class IssueNotificationBuilder {
 
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context,context.getString(R.string.CHANNEL_ID))
-                .setSmallIcon(R.drawable.ic_menu_camera)
+                .setSmallIcon(R.mipmap.ic_logo_polissue_round)
                 .setContentTitle(issue.getTitle())
                 .setContentText(context.getString(R.string.notification_message))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
