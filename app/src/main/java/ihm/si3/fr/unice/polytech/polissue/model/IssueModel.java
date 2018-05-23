@@ -27,6 +27,10 @@ public class IssueModel implements Parcelable{
         // Default constructor required for calls to DataSnapshot.getValue(IssueModel.class)
     }
 
+    public IssueModel(String id){
+        this.id = id;
+    }
+
     public IssueModel(String title, String description, Date date, Emergency emergency, Location location, String userID, String imagePath, State state) {
         this.title = title;
         this.description = description;
@@ -61,7 +65,6 @@ public class IssueModel implements Parcelable{
         this.description = description;
         this.date = new Date(date);
         this.emergency = emergency;
-        //this.userID = userID;
         this.userID = userID;
         this.state=state;
     }
@@ -97,7 +100,6 @@ public class IssueModel implements Parcelable{
         date = new Date(in.readLong());
         emergency = Emergency.valueOf(in.readString());
         location = in.readParcelable(Location.class.getClassLoader());
-        //userID = in.readInt();
         userID =in.readString();
         imagePath = in.readString();
         state = State.valueOf(in.readString());
@@ -128,7 +130,6 @@ public class IssueModel implements Parcelable{
         dest.writeLong(date.getTime());
         dest.writeString(emergency.name());
         dest.writeParcelable(location, PARCELABLE_WRITE_RETURN_VALUE);
-        //dest.writeInt(userID);
         dest.writeString(userID);
         dest.writeString(imagePath);
         dest.writeString(state.name());
@@ -154,8 +155,8 @@ public class IssueModel implements Parcelable{
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(Long date) {
+        if (date != null) this.date = new Date(date);
     }
 
     public Emergency getEmergency() {
