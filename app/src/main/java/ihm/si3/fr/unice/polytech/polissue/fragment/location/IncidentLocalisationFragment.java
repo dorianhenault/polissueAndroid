@@ -90,6 +90,8 @@ public class IncidentLocalisationFragment extends Fragment
     private ArrayList<String> classrooms;
 
     private Marker marker;
+    private Marker buildingMarker;
+
     private Polygon currentPolygon;
     private List<Polygon>polygonList=new ArrayList<>();
 
@@ -167,12 +169,12 @@ public class IncidentLocalisationFragment extends Fragment
                     marker.showInfoWindow();
                 }
 
-               /* if(currentPolygon!=null){
+                if(currentPolygon!=null && marker==null){
                     MarkerOptions options=(MarkerOptions) currentPolygon.getTag();
                     options.title(positionDescriptionText);
-                    Marker mark=mMap.addMarker(options);
-                    mark.showInfoWindow();
-                }*/
+                    buildingMarker=mMap.addMarker(options);
+                    buildingMarker.showInfoWindow();
+                }
 
 
                 initialiseMapClickListener();
@@ -274,6 +276,7 @@ public class IncidentLocalisationFragment extends Fragment
         validatePosition.setVisibility(View.VISIBLE);
         incidentPosition=null;
         marker.remove();
+
         return true;
     }
 
@@ -283,14 +286,21 @@ public class IncidentLocalisationFragment extends Fragment
             @Override
             public void onMapClick(LatLng point) {
                 //mMap.clear();
-                if(marker!=null)
+                if(marker!=null) {
                     marker.remove();
+                    marker=null;
+                }
+                if(buildingMarker!=null) {
+                    buildingMarker.remove();
+                    buildingMarker=null;
+                }
                 positionDescription.setText("");
                 positionDescriptionText="";
                 locationDescription.setVisibility(View.VISIBLE);
                 marker=mMap.addMarker(new MarkerOptions().position(point));
                 incidentPosition=point;
                 showIssueDescriptionContainer(false);
+
             }
         });
     }
@@ -333,7 +343,6 @@ public class IncidentLocalisationFragment extends Fragment
 
         mMap.setOnMapClickListener(null);
         mMap.setOnMarkerClickListener(null);
-
         changePolygonColor(true);
 
         try {
@@ -422,8 +431,14 @@ public class IncidentLocalisationFragment extends Fragment
 
             @Override
             public void onPolygonClick(Polygon polygon) {
-                if(marker!=null)
+                if(marker!=null){
                     marker.remove();
+                    marker=null;
+                }
+                if(buildingMarker!=null){
+                    buildingMarker.remove();
+                    buildingMarker=null;
+                }
                 //positionDescription.setText("");
                 showIssueDescriptionContainer(true);
                 if(polygon.toString().equals(polygon1.toString())){
