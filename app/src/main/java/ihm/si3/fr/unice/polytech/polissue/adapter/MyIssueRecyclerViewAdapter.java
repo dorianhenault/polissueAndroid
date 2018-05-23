@@ -1,5 +1,7 @@
 package ihm.si3.fr.unice.polytech.polissue.adapter;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -22,8 +24,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import ihm.si3.fr.unice.polytech.polissue.R;
 
@@ -31,6 +35,7 @@ import ihm.si3.fr.unice.polytech.polissue.factory.IssueModelFactory;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
 import ihm.si3.fr.unice.polytech.polissue.glide.GlideApp;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
+import ihm.si3.fr.unice.polytech.polissue.model.State;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link IssueModel}
@@ -62,7 +67,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.issueModel = mValues.get(position);
         holder.issueTitle.setText(mValues.get(position).getTitle());
-        holder.issueState.setProgress(mValues.get(position).getState().getProgress());
+        setProgressBar(holder.issueState, holder.issueModel.getState());
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         DatabaseReference declarerRef =  ref.child("users").child(holder.issueModel.getUserID()).child("username");
         declarerRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -77,7 +82,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
             }
         });
         holder.issueDeclarer.setText(mValues.get(position).getUserID());
-        holder.issueDate.setText(mValues.get(position).getDate().toString());
+        holder.issueDate.setText(new SimpleDateFormat("dd-mm-yyyy HH:mm", Locale.FRANCE).format(mValues.get(position).getDate()));
         if (mValues.get(position).getImagePath() != null) {
             StorageReference imageRef = FirebaseStorage.getInstance().getReference(mValues.get(position).getImagePath());
             GlideApp.with(holder.issueImage.getContext())
@@ -102,6 +107,18 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+
+    private void setProgressBar(ProgressBar progressBar, State state){
+        if (state == State.NOT_RESOLVED){
+            progressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+        }else if (state == State.RESOLVED){
+            progressBar.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+        }else {
+            progressBar.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+        }
+        progressBar.setProgress(state.getProgress());
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
