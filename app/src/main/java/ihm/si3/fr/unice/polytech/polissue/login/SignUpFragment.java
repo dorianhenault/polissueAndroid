@@ -87,7 +87,7 @@ public class SignUpFragment extends Fragment {
     private void signUp() {
         auth.signOut();
         String email = emailTextView.getText().toString();
-        String password = emailTextView.getText().toString();
+        String password = passwordTextView.getText().toString();
 
         if (validateForm()) {
             auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this::ackowledgeSignUp);
