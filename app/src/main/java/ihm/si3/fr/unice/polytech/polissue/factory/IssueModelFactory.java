@@ -17,7 +17,7 @@ public class IssueModelFactory {
     public IssueModel forge(DataSnapshot snapshot){
         return new IssueModel(snapshot.getKey(), snapshot.child("title").getValue(String.class),
                 snapshot.child("description").getValue(String.class),
-                snapshot.child("date").getValue(long.class), snapshot.child("emergency").getValue(Emergency.class),
+                snapshot.child("date").getValue(Long.class), snapshot.child("emergency").getValue(Emergency.class),
                 snapshot.child("location").getValue(Location.class), snapshot.child("userID").getValue(String.class),
                 snapshot.child("imagePath").getValue(String.class),
                 snapshot.child("state").getValue(State.class)

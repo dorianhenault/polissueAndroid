@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,7 +84,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
         });
         holder.issueDeclarer.setText(mValues.get(position).getUserID());
         holder.issueDate.setText(new SimpleDateFormat("dd-mm-yyyy HH:mm", Locale.FRANCE).format(mValues.get(position).getDate()));
-        if (mValues.get(position).getImagePath() != null) {
+        if (!mValues.get(position).getImagePath().equals("") || mValues.get(position).getImagePath() != null) {
             StorageReference imageRef = FirebaseStorage.getInstance().getReference(mValues.get(position).getImagePath());
             GlideApp.with(holder.issueImage.getContext())
                     .load(imageRef)

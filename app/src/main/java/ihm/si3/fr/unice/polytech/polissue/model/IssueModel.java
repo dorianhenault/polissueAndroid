@@ -77,14 +77,13 @@ public class IssueModel implements Parcelable{
      * @param userID the userID who declared the issue
      * @param imagePath the image path on the firebase hosting bucket
      */
-    public IssueModel(String id, String title, String description, long date, Emergency emergency, Location location, String userID, String imagePath, State state) {
+    public IssueModel(String id, String title, String description, Long date, Emergency emergency, Location location, String userID, String imagePath, State state) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.date = new Date(date);
         this.emergency = emergency;
         this.location = location;
-        //this.userID = userID;
         this.userID = userID;
         this.imagePath = imagePath;
         this.state = state;
