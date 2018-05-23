@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity implements LoginFragmentLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        Fragment startFragment = new LoginSelectorFragment();
+        Fragment startFragment = new LoginFragment();
         Bundle datas = getIntent().getExtras();
 
         if (datas != null && datas.containsKey("signUp") && datas.getBoolean("signUp")) {

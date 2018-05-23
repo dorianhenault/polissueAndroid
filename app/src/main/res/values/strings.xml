@@ -71,8 +71,7 @@
 
     <!-- INCIDENT LOCATION ACTIVITY -->
     <string name="incident_location">Position de l\'incident</string>
-
-
+    <string name="or">ou</string>
 
 
 </resources>
