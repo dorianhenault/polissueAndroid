@@ -24,18 +24,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
-import ihm.si3.fr.unice.polytech.polissue.service.HighEmergencyIssueService;
 import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
+import ihm.si3.fr.unice.polytech.polissue.service.HighEmergencyIssueService;
 import ihm.si3.fr.unice.polytech.polissue.service.NotifyUserService;
 
 public class MainPageActivity extends AppCompatActivity
@@ -211,13 +209,13 @@ public class MainPageActivity extends AppCompatActivity
             logOut.setVisible(user!=null);
             account.setVisible(user!=null);
 
+            View v = navView.getHeaderView(0);
+
+            ImageView profilePic = v.findViewById(R.id.nav_header_profile_pic);
+            TextView username = v.findViewById(R.id.nav_header_username);
+            TextView email = v.findViewById(R.id.nav_header_email);
+
             if (user != null) {
-                View v = navView.getHeaderView(0);
-
-                ImageView profilePic = v.findViewById(R.id.nav_header_profile_pic);
-                TextView username = v.findViewById(R.id.nav_header_username);
-                TextView email = v.findViewById(R.id.nav_header_email);
-
                 username.setText(user.getDisplayName());
                 email.setText(user.getEmail());
                 try {
@@ -225,6 +223,10 @@ public class MainPageActivity extends AppCompatActivity
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
+            } else {
+                username.setText("");
+                email.setText("");
+                profilePic.setImageResource(android.R.color.transparent);
             }
         }
     }
