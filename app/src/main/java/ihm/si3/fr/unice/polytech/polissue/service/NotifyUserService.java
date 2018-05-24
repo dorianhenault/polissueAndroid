@@ -13,6 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import ihm.si3.fr.unice.polytech.polissue.factory.IssueModelFactory;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 import ihm.si3.fr.unice.polytech.polissue.notifications.IssueNotificationBuilder;
 
@@ -45,17 +46,21 @@ public class NotifyUserService extends Service {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                                String notifier = dataSnapshot.child("notifier").getValue(String.class);
-                                String notified = dataSnapshot.child("notified").getValue(String.class);
-                                String issueID = dataSnapshot.child("issueID").getValue(String.class);
-                                if (FirebaseAuth.getInstance().getUid().equals(notified)) {
+                                String notifier = snapshot.child("notifier").getValue(String.class);
+                                String notified = snapshot.child("notified").getValue(String.class);
+                                String issueID = snapshot.child("issueID").getValue(String.class);
+                                String uid = FirebaseAuth.getInstance().getUid();
+                                if (uid.equals(notified)) {
                                     DatabaseReference issuesRef = FirebaseDatabase.getInstance().getReference().child("mishap").child(issueID);
                                     final IssueModel[] issue = new IssueModel[1];
                                     ValueEventListener issueListener = new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             for (DataSnapshot issueSnapshot : dataSnapshot.getChildren()) {
-                                                issue[0] = issueSnapshot.getValue(IssueModel.class);
+                                                issue[0] = new IssueModelFactory().forge(issueSnapshot);
+                                                IssueNotificationBuilder builder = new IssueNotificationBuilder(issue[0], getBaseContext());
+                                                builder.build();
+                                                notifRef.child(snapshot.getKey()).removeValue();
                                             }
                                         }
 
@@ -65,9 +70,7 @@ public class NotifyUserService extends Service {
                                         }
                                     };
                                     issuesRef.addValueEventListener(issueListener);
-                                    IssueNotificationBuilder builder = new IssueNotificationBuilder(issue[0], getBaseContext());
-                                    builder.build();
-                                    notifRef.child(snapshot.getKey()).removeValue();
+
                                 }
                             }
                         }
@@ -77,6 +80,7 @@ public class NotifyUserService extends Service {
 
                         }
                     };
+                    notifRef.addListenerForSingleValueEvent(listener);
                 }
             }
 
