@@ -28,6 +28,7 @@ import com.google.firebase.storage.StorageReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -55,7 +56,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
         mValues = new ArrayList<>();
         ref = FirebaseDatabase.getInstance().getReference("mishap");
         addEventListener();
-        date = new Date();
+        date = Calendar.getInstance().getTime();
 
     }
 

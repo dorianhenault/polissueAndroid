@@ -10,6 +10,14 @@
     tools:layout_editor_absoluteY="81dp"
     android:background="@drawable/card_shape">
 
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toTopOf="@+id/issueImage" />
+
     <ImageView
         android:id="@+id/issueImage"
         android:layout_width="128dp"
@@ -24,6 +32,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/issueState"
         app:srcCompat="@drawable/ic_menu_manage" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/issueImage"
+        app:layout_constraintTop_toTopOf="@+id/issueTitle" />
 
     <TextView
         android:id="@+id/issueTitle"
