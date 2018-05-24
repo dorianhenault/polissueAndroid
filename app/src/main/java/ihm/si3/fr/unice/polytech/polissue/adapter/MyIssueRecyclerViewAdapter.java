@@ -95,6 +95,10 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
             GlideApp.with(holder.issueImage.getContext())
                     .load(imageRef)
                     .into(holder.issueImage);
+        }else {
+            GlideApp.with(holder.issueImage.getContext())
+                    .load(R.mipmap.ic_logo_polissue)
+                    .into(holder.issueImage);
         }
 
 

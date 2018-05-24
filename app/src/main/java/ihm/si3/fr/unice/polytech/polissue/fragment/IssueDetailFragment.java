@@ -147,6 +147,10 @@ public class IssueDetailFragment extends Fragment implements OnMapReadyCallback 
                     .into(image);
 
 
+        }else {
+            GlideApp.with(this)
+                    .load(R.mipmap.ic_logo_polissue)
+                    .into(image);
         }
 
 
