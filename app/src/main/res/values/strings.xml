@@ -76,8 +76,6 @@
     <string name="issues_position">Carte des incidents</string>
     <string name="location_text_field">Description de l\'incident</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="reset_password">Reinitialiser mot de passe</string>
     <string name="email_change">Changer Email</string>
     <string name="email_sent">Email envoyé</string>
@@ -85,10 +83,22 @@
     <string name="error_not_logged_in">Connexion nécéssaire</string>
     <string name="send">Envoyer</string>
     <string name="new_email">Nouvel Email</string>
-
     <string name="change_username">Changer de pseudo</string>
     <string name="new_username">Nouveau pseudo</string>
     <string name="change">changer</string>
+
+    <!-- Time -->
+    <string name="seconds">s</string>
+    <string name="minutes">min</string>
+    <string name="hours">h</string>
+    <string name="days">j</string>
+    <string name="weeks">sem</string>
+    <string name="months">mois</string>
+    <string name="years">an</string>
+    <!-- /Time -->
+
+
+
 
 
 </resources>

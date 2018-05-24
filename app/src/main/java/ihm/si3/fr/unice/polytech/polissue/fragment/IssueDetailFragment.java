@@ -29,6 +29,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.glide.GlideApp;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
@@ -89,7 +93,8 @@ public class IssueDetailFragment extends Fragment implements OnMapReadyCallback 
 
             }
         });
-        date.setText(issue.getDate().toString());
+        DateFormat dateFr=new SimpleDateFormat("dd/mm/yyyy", Locale.FRANCE);
+        date.setText(dateFr.format(issue.getDate()));
         if (issue.getLocation().getPlace() != null) place.setText(issue.getLocation().getPlace());
         if (issue.getDescription() !=null) description.setText(issue.getDescription());
         emergency.setText(issue.getEmergency().toString());
@@ -142,6 +147,10 @@ public class IssueDetailFragment extends Fragment implements OnMapReadyCallback 
                     .into(image);
 
 
+        }else {
+            GlideApp.with(this)
+                    .load(R.mipmap.ic_logo_polissue)
+                    .into(image);
         }
 
 

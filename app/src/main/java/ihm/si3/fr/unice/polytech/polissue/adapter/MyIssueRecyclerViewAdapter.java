@@ -1,5 +1,6 @@
 package ihm.si3.fr.unice.polytech.polissue.adapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -24,8 +25,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,12 +49,14 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
     private ChildEventListener issueEventListener;
     private DatabaseReference ref;
     private static final String TAG = "IssueViewAdapter";
+    private Date date;
 
 
     public MyIssueRecyclerViewAdapter() {
         mValues = new ArrayList<>();
         ref = FirebaseDatabase.getInstance().getReference("mishap");
         addEventListener();
+        date = Calendar.getInstance().getTime();
 
     }
 
@@ -81,11 +87,17 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
             }
         });
         holder.issueDeclarer.setText(mValues.get(position).getUserID());
-        holder.issueDate.setText(new SimpleDateFormat("dd-mm-yyyy HH:mm", Locale.FRANCE).format(mValues.get(position).getDate()));
+        long diff =date.getTime()- mValues.get(position).getDate().getTime();
+        String expiredTime = calculateExpiredTime(diff, holder.mView.getContext());
+        holder.issueDate.setText(expiredTime);
         if (mValues.get(position).getImagePath() != null && !mValues.get(position).getImagePath().isEmpty()) {
             StorageReference imageRef = FirebaseStorage.getInstance().getReference(mValues.get(position).getImagePath());
             GlideApp.with(holder.issueImage.getContext())
                     .load(imageRef)
+                    .into(holder.issueImage);
+        }else {
+            GlideApp.with(holder.issueImage.getContext())
+                    .load(R.mipmap.ic_logo_polissue)
                     .into(holder.issueImage);
         }
 
@@ -101,6 +113,41 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
             ft.addToBackStack(null);
             ft.commit();
         });
+    }
+
+    private String calculateExpiredTime(long diff, Context context) {
+        double minutes = diff/1000/60;
+        if ((int)minutes%10 > 0){
+            double hours = minutes/60;
+            if ((int)hours%10 > 0){
+                double days = hours/24;
+                if ((int)days%10>0){
+                    double weeks = days/7;
+                    if ((int)weeks%10>0){
+                        double months = weeks/4;
+                        if (months%10>0){
+                            double years = months/12;
+                            if ((int)years%10>0){
+                                return String.valueOf((int)years)+context.getString(R.string.years);
+                            }else {
+                                return String.valueOf((int)months)+context.getString(R.string.months);
+                            }
+                        }else{
+                            return String.valueOf((int)weeks)+context.getString(R.string.weeks);
+                        }
+                    }else{
+                        return String.valueOf((int)days)+context.getString(R.string.days);
+                    }
+                }else {
+                    return String.valueOf((int)hours)+context.getString(R.string.hours);
+                }
+            }else {
+                return String.valueOf((int)minutes)+context.getString(R.string.minutes);
+            }
+        }else {
+            return String.valueOf(diff/1000)+context.getString(R.string.seconds);
+        }
+
     }
 
     @Override

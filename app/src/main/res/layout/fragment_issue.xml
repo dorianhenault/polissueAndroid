@@ -6,9 +6,17 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:elevation="2dp"
+    android:layout_margin="8dp"
     tools:layout_editor_absoluteY="81dp"
-    android:padding="4dp"
     android:background="@drawable/card_shape">
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="@color/colorPolytech"
+        app:layout_constraintBottom_toTopOf="@+id/issueImage" />
 
     <ImageView
         android:id="@+id/issueImage"
@@ -25,6 +33,16 @@
         app:layout_constraintTop_toBottomOf="@+id/issueState"
         app:srcCompat="@drawable/ic_menu_manage" />
 
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/colorPolytech"
+        app:layout_constraintBottom_toBottomOf="@+id/issueImage"
+        app:layout_constraintTop_toTopOf="@+id/issueTitle" />
+
     <TextView
         android:id="@+id/issueTitle"
         android:layout_width="wrap_content"
@@ -34,7 +52,10 @@
         android:layout_marginTop="8dp"
         android:text="TextView"
         android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/issueImage" />
 
@@ -71,15 +92,11 @@
         android:id="@+id/issueDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="TextView"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/issueDeclarer" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

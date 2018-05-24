@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -38,7 +39,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import ihm.si3.fr.unice.polytech.polissue.PermissionUtils;
 import ihm.si3.fr.unice.polytech.polissue.R;
@@ -48,11 +53,17 @@ import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING1;
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING2;
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING3;
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING4;
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING5;
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING6;
+
 public class IssuesListLocationFragment extends Fragment
         implements
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener,
         OnMapReadyCallback,
         GoogleMap.OnInfoWindowClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
@@ -74,9 +85,9 @@ public class IssuesListLocationFragment extends Fragment
     private GoogleMap mMap;
     private ChildEventListener issueEventListener;
     private FusedLocationProviderClient mLocationClient;
-    private List<IssueModel> mValues;
     private DatabaseReference ref;
-
+    private LatLng myPosition;
+    private List<Marker>markers=new ArrayList<>();
     public static IssuesListLocationFragment newInstance() {
         return new IssuesListLocationFragment();
     }
@@ -84,7 +95,6 @@ public class IssuesListLocationFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         final View view = inflater.inflate(R.layout.incident_list_gmaps, container, false);
         findViewById(view);
         map.onCreate(savedInstanceState);
@@ -103,7 +113,6 @@ public class IssuesListLocationFragment extends Fragment
         //TODO c est ici que je ne peux pas récuperer les éléments depuis la BD
         ref = FirebaseDatabase.getInstance().getReference("mishap");
         addEventListener();
-
 
         return view;
 
@@ -124,10 +133,9 @@ public class IssuesListLocationFragment extends Fragment
     public void onMapReady(GoogleMap map) {
         mMap = map;
         mMap.setOnMyLocationButtonClickListener(this);
-        mMap.setOnMyLocationClickListener(this);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
-        //addMarkers();
+        initializeBuildings();
         enableMyLocation();
         setCurrentLocation();
         final LocationManager manager = (LocationManager) this.getActivity().getSystemService( Context.LOCATION_SERVICE );
@@ -140,9 +148,11 @@ public class IssuesListLocationFragment extends Fragment
     private void addMarker(IssueModel issueModel){
         double latitude=0;
         double longitude=0;
+
         try{
              latitude=issueModel.getLocation().getLatitude();
              longitude=issueModel.getLocation().getLongitude();
+
         }
         catch (NullPointerException e){
             System.out.print(e);
@@ -154,12 +164,14 @@ public class IssuesListLocationFragment extends Fragment
     }
 
     public Marker personaliseMarker(IssueModel issueModel,LatLng point){
+        DateFormat date=new SimpleDateFormat("dd/mm/yyyy", Locale.FRANCE);
         Marker marker= mMap.addMarker(
                 new MarkerOptions().position(point)
                         .icon(BitmapDescriptorFactory.defaultMarker(selectEmergencyColor(issueModel)))
                         .title(issueModel.getTitle())
-                        .snippet(issueModel.getDate().toString()));
+                        .snippet(date.format(issueModel.getDate())));
         marker.setTag(issueModel);
+        markers.add(marker);
 
         return marker;
     }
@@ -201,6 +213,15 @@ public class IssuesListLocationFragment extends Fragment
                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
                         mMap.animateCamera(cameraUpdate);
+                        myPosition=latLng;
+                        for(Marker marker:markers){
+                            double distance=calculDistance(marker.getPosition().latitude,marker.getPosition().longitude,this.myPosition.latitude,this.myPosition.latitude);
+                            if(distance>1.0008 || distance < 0.9992){
+                                marker.remove();
+                            }
+                            System.out.println(calculDistance(marker.getPosition().latitude,marker.getPosition().longitude,this.myPosition.latitude,this.myPosition.latitude)+" DISTANCE MAMEN"+"  et nom "+marker.getTitle());
+
+                        }
                     }
                 });
 
@@ -248,11 +269,6 @@ public class IssuesListLocationFragment extends Fragment
 
 
     @Override
-    public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this.getActivity(), "L'incident est sur ma position", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
@@ -267,6 +283,15 @@ public class IssuesListLocationFragment extends Fragment
             // Display the missing permission error dialog when the fragments resume.
             mPermissionDenied = true;
         }
+    }
+
+    public void initializeBuildings(){
+        Polygon polygon1 = mMap.addPolygon(BUILDING1.getPolygonOptions());
+        Polygon polygon2 = mMap.addPolygon(BUILDING2.getPolygonOptions());
+        Polygon polygon3 = mMap.addPolygon(BUILDING3.getPolygonOptions());
+        Polygon polygon4 = mMap.addPolygon(BUILDING4.getPolygonOptions());
+        Polygon polygon5 = mMap.addPolygon(BUILDING5.getPolygonOptions());
+        Polygon polygon6 = mMap.addPolygon(BUILDING6.getPolygonOptions());
     }
 
 
@@ -291,12 +316,19 @@ public class IssuesListLocationFragment extends Fragment
         alert.show();
     }
 
+
+
+    public double calculDistance(double lat_a_degre,double lon_a_degre,double lat_b_degre,double lon_b_degre){
+
+        double d = Math.sqrt(Math.pow(lat_b_degre-lat_a_degre,2)+Math.pow(lon_b_degre-lon_a_degre,2))/36.542265;
+        return d;
+    }
+
     private void addEventListener(){
         issueEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 IssueModel issue = new IssueModelFactory().forge(dataSnapshot);
-                //mValues.add(issue);
                 addMarker(issue);
                 System.out.println(issue+" INCIDEEENTS");
             }
@@ -323,4 +355,6 @@ public class IssuesListLocationFragment extends Fragment
         };
         ref.addChildEventListener(issueEventListener);
     }
+
+
 }
