@@ -27,12 +27,13 @@ import com.facebook.FacebookSdk;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import ihm.si3.fr.unice.polytech.polissue.fragment.location.IssuesListLocationFragment;
+import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
-import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
 import ihm.si3.fr.unice.polytech.polissue.service.HighEmergencyIssueService;
 import ihm.si3.fr.unice.polytech.polissue.service.NotifyUserService;
 
@@ -144,6 +145,9 @@ public class MainPageActivity extends AppCompatActivity
             Intent signInIntent = new Intent(this, LoginActivity.class);
             signInIntent.putExtra("signUp", true);
             startActivity(signInIntent);
+        }else if(itemId == R.id.nav_issues_list_maps){
+            fragment[0] = IssuesListLocationFragment.newInstance();
+            title[0] = getString(R.string.issue_list_maps);
         } else if(itemId == R.id.nav_declare_issue){
             FirebaseUser user = auth.getCurrentUser();
             if (user == null){
@@ -166,7 +170,7 @@ public class MainPageActivity extends AppCompatActivity
                         });
                 alertDialogBuilder.create();
                 alertDialogBuilder.show();
-            }else {
+        }else {
                 fragment[0] = DeclareIssueFragment.newInstance();
                 title[0] = getString(R.string.declare_issue);
             }
@@ -232,7 +236,7 @@ public class MainPageActivity extends AppCompatActivity
     }
 
 
-    private void createNotificationChannel() {
+    private void createNotificationChannel(){
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
