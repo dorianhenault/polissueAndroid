@@ -14,7 +14,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +34,7 @@ import ihm.si3.fr.unice.polytech.polissue.glide.GlideApp;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 
 
-public class IssueDetailFragment extends Fragment{
+public class IssueDetailFragment extends Fragment implements OnMapReadyCallback {
 
     private IssueModel issue;
     private ImageView image;
@@ -111,7 +117,17 @@ public class IssueDetailFragment extends Fragment{
             startActivity(Intent.createChooser(shareIntent, "Partager un incident"));
         });
 
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+
         return  view;
+    }
+
+    @Override
+    public void onResume() {
+        mapView.onResume();
+        super.onResume();
+
     }
 
     /**
@@ -129,5 +145,26 @@ public class IssueDetailFragment extends Fragment{
         }
 
 
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        double latitude = 0;
+        double longitude = 0;
+        try {
+            latitude = issue.getLocation().getLatitude();
+            longitude = issue.getLocation().getLongitude();
+        } catch (NullPointerException e) {
+            System.out.print(e);
+        }
+
+        if (longitude != 0 && latitude != 0) {
+            LatLng point = new LatLng(latitude, longitude);
+            googleMap.addMarker(new MarkerOptions().position(point));
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(latitude, longitude)).zoom(17).build();
+
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
     }
 }
