@@ -97,7 +97,7 @@ public class IssueDetailFragment extends Fragment implements OnMapReadyCallback 
 
             }
         });
-        DateFormat dateFr=new SimpleDateFormat("dd/mm/yyyy", Locale.FRANCE);
+        DateFormat dateFr=new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
         date.setText(dateFr.format(issue.getDate()));
         if (issue.getLocation().getPlace() != null) place.setText(issue.getLocation().getPlace());
         if (issue.getDescription() !=null) description.setText(issue.getDescription());
