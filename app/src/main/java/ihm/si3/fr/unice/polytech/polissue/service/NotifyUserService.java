@@ -50,27 +50,29 @@ public class NotifyUserService extends Service {
                                 String notified = snapshot.child("notified").getValue(String.class);
                                 String issueID = snapshot.child("issueID").getValue(String.class);
                                 String uid = FirebaseAuth.getInstance().getUid();
-                                if (uid.equals(notified)) {
-                                    DatabaseReference issuesRef = FirebaseDatabase.getInstance().getReference().child("mishap").child(issueID).getRef();
-                                    final IssueModel[] issue = new IssueModel[1];
-                                    ValueEventListener issueListener = new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                if(uid != null) {
+                                    if (uid.equals(notified)) {
+                                        DatabaseReference issuesRef = FirebaseDatabase.getInstance().getReference().child("mishap").child(issueID).getRef();
+                                        final IssueModel[] issue = new IssueModel[1];
+                                        ValueEventListener issueListener = new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
 
                                                 issue[0] = new IssueModelFactory().forge(dataSnapshot);
                                                 IssueNotificationBuilder builder = new IssueNotificationBuilder(issue[0], getBaseContext());
                                                 builder.build();
                                                 notifRef.child(snapshot.getKey()).removeValue();
 
-                                        }
+                                            }
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
 
-                                        }
-                                    };
-                                    issuesRef.addValueEventListener(issueListener);
+                                            }
+                                        };
+                                        issuesRef.addValueEventListener(issueListener);
 
+                                    }
                                 }
                             }
                         }
