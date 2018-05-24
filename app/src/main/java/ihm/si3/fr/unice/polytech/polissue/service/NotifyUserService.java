@@ -33,6 +33,8 @@ public class NotifyUserService extends Service {
         super.onCreate();
         ref = FirebaseDatabase.getInstance().getReference();
 
+
+
         notifListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -65,7 +67,6 @@ public class NotifyUserService extends Service {
                                     issuesRef.addValueEventListener(issueListener);
                                     IssueNotificationBuilder builder = new IssueNotificationBuilder(issue[0], getBaseContext());
                                     builder.build();
-                                    issuesRef.removeEventListener(issueListener);
                                     notifRef.child(snapshot.getKey()).removeValue();
                                 }
                             }
