@@ -1,9 +1,11 @@
 package ihm.si3.fr.unice.polytech.polissue.login;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +36,7 @@ public class LoginFragment extends Fragment {
 
     private AutoCompleteTextView emailTextView;
     private TextView passwordTextView;
+    private Button forgotPassword;
     private FirebaseAuth auth = FirebaseAuth.getInstance();
     private static String TAG = "LoginFragment";
 
@@ -86,8 +90,32 @@ public class LoginFragment extends Fragment {
                 mListener.toSignUp(emailTextView.getText().toString(), passwordTextView.getText().toString());
         });
 
-
+        forgotPassword = mainView.findViewById(R.id.forgot_password);
+        forgotPassword.setOnClickListener(v -> passwordPopUp());
         return mainView;
+    }
+
+    private void passwordPopUp() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.forgot_password));
+
+
+        final EditText passwordEmail = new EditText(getContext());
+        passwordEmail.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+        passwordEmail.setHint(R.string.prompt_email);
+        String emailText = emailTextView.getText().toString();
+        if (!emailText.isEmpty()) passwordEmail.setText(emailText);
+        builder.setView(passwordEmail);
+
+        builder.setPositiveButton(getString(R.string.change), (dialog, which) -> {
+                    auth.sendPasswordResetEmail(passwordEmail.getText().toString())
+                            .addOnSuccessListener(t -> Toast.makeText(getContext(), getString(R.string.email_sent), Toast.LENGTH_LONG).show())
+                            .addOnFailureListener(t -> Toast.makeText(getContext(), getString(R.string.error_invalid_email), Toast.LENGTH_LONG).show());
+                }
+        );
+        builder.setNegativeButton(R.string.dialog_negative_button, (dialog, which) -> dialog.cancel());
+        builder.show();
     }
 
     private void login() {
