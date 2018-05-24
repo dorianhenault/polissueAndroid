@@ -99,6 +99,17 @@
     <string name="profile_pic">Photo de profil</string>
     <!-- /Time -->
 
+    <!-- Emergency -->
+    <string name="high_emergency">Très urgent</string>
+    <string name="medium_emergency">Urgent</string>
+    <string name="low_emergency">Pas urgent</string>
+    <!-- /Emergency -->
+
+    <!-- State -->
+    <string name="issue_not_resolved">Non résolu</string>
+    <string name="issue_resolved">Résolu</string>
+    <!-- /State -->
+
 
 
 

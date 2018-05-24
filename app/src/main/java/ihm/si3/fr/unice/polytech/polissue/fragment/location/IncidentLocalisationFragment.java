@@ -84,6 +84,7 @@ public class IncidentLocalisationFragment extends Fragment
     private FusedLocationProviderClient mLocationClient;
     private LatLng incidentPosition;
     private LatLng myPosition;
+    private LatLng buildingPosition;
     private String positionDescriptionText="";
 
     private IssueModel issueModel;
@@ -271,6 +272,7 @@ public class IncidentLocalisationFragment extends Fragment
     public boolean onMarkerClick(final Marker marker) {
         Toast.makeText(this.getActivity(), "Marqueur de l'incident retiré", Toast.LENGTH_SHORT).show();
         positionDescription.setText("");
+        positionDescriptionText="";
         locationDescription.setVisibility(View.VISIBLE);
         issuePositionContainer.setVisibility(View.GONE);
         validatePosition.setVisibility(View.VISIBLE);
@@ -299,6 +301,7 @@ public class IncidentLocalisationFragment extends Fragment
                 locationDescription.setVisibility(View.VISIBLE);
                 marker=mMap.addMarker(new MarkerOptions().position(point));
                 incidentPosition=point;
+                buildingPosition=null;
                 showIssueDescriptionContainer(false);
 
             }
@@ -326,6 +329,8 @@ public class IncidentLocalisationFragment extends Fragment
     public void onMyLocationClick(@NonNull Location location) {
         Toast.makeText(this.getActivity(), "L'incident est sur ma position", Toast.LENGTH_SHORT).show();
         showIssueDescriptionContainer(false);
+        incidentPosition=null;
+        buildingPosition=null;
     }
 
     private void showIssueDescriptionContainer(boolean building) {
@@ -397,11 +402,14 @@ public class IncidentLocalisationFragment extends Fragment
 
 
     public LatLng getIncidentPosition(){
-        if(this.incidentPosition==null){
-            return myPosition;
+        if(this.incidentPosition!=null){
+            return incidentPosition;
+        }
+        else if(this.buildingPosition!=null){
+            return buildingPosition;
         }
         else{
-            return incidentPosition;
+            return myPosition;
         }
     }
 
@@ -468,6 +476,8 @@ public class IncidentLocalisationFragment extends Fragment
                 spinnerClassRooms.setAdapter(adapter);
                 currentPolygon=polygon;
                 currentPolygon.setTag(new MarkerOptions().position(createPositionWithPolygonPoints(polygon.getPoints())));
+                buildingPosition=createPositionWithPolygonPoints(polygon.getPoints());
+                incidentPosition=null;
 
             }
         });
