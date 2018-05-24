@@ -118,7 +118,7 @@ public class IssueDetailFragment extends Fragment{
      */
     private void loadImage() {
         Context context = getContext();
-        if (context != null && issue.getImagePath() != null) {
+        if (context != null && issue.getImagePath() != null && !issue.getImagePath().isEmpty()) {
             StorageReference imageRef = FirebaseStorage.getInstance().getReference(issue.getImagePath());
             GlideApp.with(this)
                     .load(imageRef)
