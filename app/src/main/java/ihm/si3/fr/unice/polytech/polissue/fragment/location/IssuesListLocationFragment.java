@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -47,6 +48,13 @@ import ihm.si3.fr.unice.polytech.polissue.factory.IssueModelFactory;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueDetailFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
 import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
+
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING1;
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING2;
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING3;
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING4;
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING5;
+import static ihm.si3.fr.unice.polytech.polissue.model.Buildings.BUILDING6;
 
 public class IssuesListLocationFragment extends Fragment
         implements
@@ -128,6 +136,7 @@ public class IssuesListLocationFragment extends Fragment
         mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
         //addMarkers();
+        initializeBuildings();
         enableMyLocation();
         setCurrentLocation();
         final LocationManager manager = (LocationManager) this.getActivity().getSystemService( Context.LOCATION_SERVICE );
@@ -267,6 +276,15 @@ public class IssuesListLocationFragment extends Fragment
             // Display the missing permission error dialog when the fragments resume.
             mPermissionDenied = true;
         }
+    }
+
+    public void initializeBuildings(){
+        Polygon polygon1 = mMap.addPolygon(BUILDING1.getPolygonOptions());
+        Polygon polygon2 = mMap.addPolygon(BUILDING2.getPolygonOptions());
+        Polygon polygon3 = mMap.addPolygon(BUILDING3.getPolygonOptions());
+        Polygon polygon4 = mMap.addPolygon(BUILDING4.getPolygonOptions());
+        Polygon polygon5 = mMap.addPolygon(BUILDING5.getPolygonOptions());
+        Polygon polygon6 = mMap.addPolygon(BUILDING6.getPolygonOptions());
     }
 
 
