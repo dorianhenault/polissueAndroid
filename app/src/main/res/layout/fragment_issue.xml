@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:elevation="2dp"
     android:layout_margin="8dp"
-    tools:layout_editor_absoluteY="81dp"
-    android:background="@drawable/card_shape">
+    android:background="@drawable/card_shape"
+    android:elevation="2dp"
+    android:orientation="horizontal"
+    tools:layout_editor_absoluteY="81dp">
 
     <View
         android:id="@+id/view2"
@@ -32,6 +32,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/issueState"
         app:srcCompat="@drawable/ic_menu_manage" />
+
+    <View
+        android:id="@+id/emergency_light"
+        android:layout_width="14dp"
+        android:layout_height="13dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/emergency_light_green"
+        app:layout_constraintEnd_toStartOf="@+id/issueState"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/view"

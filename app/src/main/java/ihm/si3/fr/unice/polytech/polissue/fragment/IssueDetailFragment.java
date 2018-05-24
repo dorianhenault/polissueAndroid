@@ -45,6 +45,7 @@ public class IssueDetailFragment extends Fragment implements OnMapReadyCallback 
     private ImageButton share,notification;
     private TextView title, declarer, date,place, description, emergency;
     private MapView mapView;
+    private View emergencyLight;
     private static final String TAG = "IssueDetailsFragment";
 
     public IssueDetailFragment(){}
@@ -79,6 +80,7 @@ public class IssueDetailFragment extends Fragment implements OnMapReadyCallback 
         share=view.findViewById(R.id.incidentShare);
         notification=view.findViewById(R.id.incidentNotify);
         emergency=view.findViewById(R.id.incidentEmergency);
+        emergencyLight = view.findViewById(R.id.emergency_light);
 
         title.setText(issue.getTitle());
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -97,7 +99,8 @@ public class IssueDetailFragment extends Fragment implements OnMapReadyCallback 
         date.setText(dateFr.format(issue.getDate()));
         if (issue.getLocation().getPlace() != null) place.setText(issue.getLocation().getPlace());
         if (issue.getDescription() !=null) description.setText(issue.getDescription());
-        emergency.setText(issue.getEmergency().toString());
+        emergency.setText(issue.getEmergency().getMeaning());
+        emergencyLight.setBackgroundResource(issue.getEmergency().getDrawableID());
 
         notification.setOnClickListener(v -> {
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
