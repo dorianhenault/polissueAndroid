@@ -1,7 +1,6 @@
 package ihm.si3.fr.unice.polytech.polissue.fragment;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Address;
@@ -343,7 +342,6 @@ public class DeclareIssueFragment extends Fragment{
             }
             if (picture != null) {
                 image.setImageBitmap(picture);
-
             }
 
         }
