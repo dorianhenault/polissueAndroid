@@ -95,7 +95,13 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
             GlideApp.with(holder.issueImage.getContext())
                     .load(imageRef)
                     .into(holder.issueImage);
+        }else {
+            GlideApp.with(holder.issueImage.getContext())
+                    .load(R.mipmap.ic_logo_polissue)
+                    .into(holder.issueImage);
         }
+
+        holder.emergencyLight.setBackgroundResource(holder.issueModel.getEmergency().getDrawableID());
 
 
         holder.mView.setOnClickListener(v -> {
@@ -153,14 +159,16 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
 
 
     private void setProgressBar(ProgressBar progressBar, State state){
-        if (state == State.NOT_RESOLVED){
-            progressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-        }else if (state == State.RESOLVED){
-            progressBar.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
-        }else {
-            progressBar.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+        if (state!=null) {
+            if (state == State.NOT_RESOLVED) {
+                progressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+            } else if (state == State.RESOLVED) {
+                progressBar.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+            } else {
+                progressBar.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
+            }
+            progressBar.setProgress(state.getProgress());
         }
-        progressBar.setProgress(state.getProgress());
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -170,6 +178,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
         public final TextView issueDeclarer;
         public final TextView issueDate;
         public final ProgressBar issueState;
+        public final View emergencyLight;
         public IssueModel issueModel;
 
         public ViewHolder(View view) {
@@ -180,7 +189,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
             issueDeclarer = view.findViewById(R.id.issueDeclarer);
             issueDate = view.findViewById(R.id.issueDate);
             issueState = view.findViewById(R.id.issueState);
-
+            emergencyLight = view.findViewById(R.id.emergency_light);
         }
     }
 
