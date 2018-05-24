@@ -164,7 +164,7 @@ public class IssuesListLocationFragment extends Fragment
     }
 
     public Marker personaliseMarker(IssueModel issueModel,LatLng point){
-        DateFormat date=new SimpleDateFormat("dd/mm/yyyy", Locale.FRANCE);
+        DateFormat date=new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
         Marker marker= mMap.addMarker(
                 new MarkerOptions().position(point)
                         .icon(BitmapDescriptorFactory.defaultMarker(selectEmergencyColor(issueModel)))
