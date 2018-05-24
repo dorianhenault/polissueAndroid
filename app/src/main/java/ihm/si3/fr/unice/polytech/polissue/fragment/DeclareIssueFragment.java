@@ -67,6 +67,7 @@ public class DeclareIssueFragment extends Fragment{
     private double longitude=0;
     private double latitude=0;
     private boolean locationButtonClicked=false;
+    private IssueModel issueModelRetrieved;
 
     public DeclareIssueFragment() {
 
@@ -103,7 +104,7 @@ public class DeclareIssueFragment extends Fragment{
             this.longitude=locationMap.getLongitude();
             this.latitude=locationMap.getLatitude();
             this.imageURI=getArguments().getParcelable("imageUri");
-            restoreFormFields(getArguments().getParcelable("issue"));
+            this.issueModelRetrieved=getArguments().getParcelable("issue");
             this.locationButtonClicked=getArguments().getBoolean("buttonClicked");
         }
 
@@ -208,6 +209,11 @@ public class DeclareIssueFragment extends Fragment{
             locationDescription.setText(locationMap.getPlace());
             locationDescription.setVisibility(View.VISIBLE);
         }
+
+        if(this.issueModelRetrieved!=null){
+            restoreFormFields(this.issueModelRetrieved);
+
+        }
         return view;
     }
 
@@ -216,7 +222,9 @@ public class DeclareIssueFragment extends Fragment{
             this.title.setText(issueModel.getTitle());
         }
         if(issueModel.getEmergency()!=null){
+            System.out.println(buildEmergencyLevelReversed(issueModel.getEmergency())+" URGEEENCE");
             this.emergencyLevel.setProgress(buildEmergencyLevelReversed(issueModel.getEmergency()));
+            emergencyLevel.refreshDrawableState();
         }
         if(imageURI!=null){
             Bitmap  picture=null;
