@@ -76,6 +76,17 @@
     <string name="issues_position">Carte des incidents</string>
     <string name="location_text_field">Description de l\'incident</string>
 
+    <!-- Time -->
+    <string name="seconds">s</string>
+    <string name="minutes">min</string>
+    <string name="hours">h</string>
+    <string name="days">j</string>
+    <string name="weeks">sem</string>
+    <string name="months">mois</string>
+    <string name="years">an</string>
+    <!-- /Time -->
+
+
 
 
 
