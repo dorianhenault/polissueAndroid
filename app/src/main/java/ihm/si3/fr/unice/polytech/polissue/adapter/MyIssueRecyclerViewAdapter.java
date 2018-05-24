@@ -48,12 +48,14 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
     private ChildEventListener issueEventListener;
     private DatabaseReference ref;
     private static final String TAG = "IssueViewAdapter";
+    private Date date;
 
 
     public MyIssueRecyclerViewAdapter() {
         mValues = new ArrayList<>();
         ref = FirebaseDatabase.getInstance().getReference("mishap");
         addEventListener();
+        date = new Date();
 
     }
 
@@ -84,7 +86,6 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
             }
         });
         holder.issueDeclarer.setText(mValues.get(position).getUserID());
-        Date date = new Date();
         long diff =date.getTime()- mValues.get(position).getDate().getTime();
         String expiredTime = calculateExpiredTime(diff, holder.mView.getContext());
         holder.issueDate.setText(expiredTime);
