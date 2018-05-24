@@ -39,8 +39,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import ihm.si3.fr.unice.polytech.polissue.PermissionUtils;
 import ihm.si3.fr.unice.polytech.polissue.R;
@@ -161,11 +164,12 @@ public class IssuesListLocationFragment extends Fragment
     }
 
     public Marker personaliseMarker(IssueModel issueModel,LatLng point){
+        DateFormat date=new SimpleDateFormat("dd/mm/yyyy", Locale.FRANCE);
         Marker marker= mMap.addMarker(
                 new MarkerOptions().position(point)
                         .icon(BitmapDescriptorFactory.defaultMarker(selectEmergencyColor(issueModel)))
                         .title(issueModel.getTitle())
-                        .snippet(issueModel.getDate().toString()));
+                        .snippet(date.format(issueModel.getDate())));
         marker.setTag(issueModel);
         markers.add(marker);
 
