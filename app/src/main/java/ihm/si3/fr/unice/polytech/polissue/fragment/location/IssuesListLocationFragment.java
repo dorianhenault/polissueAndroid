@@ -272,16 +272,19 @@ public class IssuesListLocationFragment extends Fragment
 
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+        builder.setMessage("Votre GPS semble être désactivé, voulez-vous l'activer ?")
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Non", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
+                        LatLng latLng = new LatLng(43.615243,7.072978);
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 18);
+                        mMap.animateCamera(cameraUpdate);
                     }
                 });
         final AlertDialog alert = builder.create();

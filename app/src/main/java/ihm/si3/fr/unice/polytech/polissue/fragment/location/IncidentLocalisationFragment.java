@@ -308,7 +308,7 @@ public class IncidentLocalisationFragment extends Fragment
 
     @Override
     public boolean onMyLocationButtonClick() {
-        Toast.makeText(this.getActivity(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getActivity(), "Retour vers ma position", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
@@ -499,16 +499,19 @@ public class IncidentLocalisationFragment extends Fragment
 
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+        builder.setMessage("Votre GPS semble être désactivé, voulez-vous l'activer ?")
                 .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Oui", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Non", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                         dialog.cancel();
+                        LatLng latLng = new LatLng(43.615243,7.072978);
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 18);
+                        mMap.animateCamera(cameraUpdate);
                     }
                 });
         final AlertDialog alert = builder.create();
