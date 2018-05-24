@@ -41,9 +41,9 @@ import ihm.si3.fr.unice.polytech.polissue.model.IssueModel;
 public class IssueDetailFragment extends Fragment implements OnMapReadyCallback {
 
     private IssueModel issue;
-    private ImageView image;
+    private ImageView image, stateImage;
     private ImageButton share,notification;
-    private TextView title, declarer, date,place, description, emergency;
+    private TextView title, declarer, date,place, description, emergency, stateText;
     private MapView mapView;
     private View emergencyLight;
     private static final String TAG = "IssueDetailsFragment";
@@ -81,6 +81,8 @@ public class IssueDetailFragment extends Fragment implements OnMapReadyCallback 
         notification=view.findViewById(R.id.incidentNotify);
         emergency=view.findViewById(R.id.incidentEmergency);
         emergencyLight = view.findViewById(R.id.emergency_light);
+        stateImage = view.findViewById(R.id.incidentStateImage);
+        stateText = view.findViewById(R.id.incidentStateText);
 
         title.setText(issue.getTitle());
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -101,6 +103,11 @@ public class IssueDetailFragment extends Fragment implements OnMapReadyCallback 
         if (issue.getDescription() !=null) description.setText(issue.getDescription());
         emergency.setText(issue.getEmergency().getMeaning());
         emergencyLight.setBackgroundResource(issue.getEmergency().getDrawableID());
+
+        stateText.setText(issue.getState().getMeaning());
+        GlideApp.with(this)
+                .load(issue.getState().getDrawableId())
+                .into(stateImage);
 
         notification.setOnClickListener(v -> {
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();

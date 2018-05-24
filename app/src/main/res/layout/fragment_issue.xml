@@ -14,9 +14,9 @@
         android:id="@+id/view2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginBottom="1dp"
+        android:layout_marginTop="8dp"
         android:background="@color/colorPolytech"
-        app:layout_constraintBottom_toTopOf="@+id/issueImage" />
+        app:layout_constraintTop_toBottomOf="@+id/issueDate" />
 
     <ImageView
         android:id="@+id/issueImage"
@@ -24,13 +24,13 @@
         android:layout_height="128dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="1dp"
 
         android:contentDescription="issueImage"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/issueState"
+        app:layout_constraintTop_toBottomOf="@+id/view2"
         app:srcCompat="@drawable/ic_menu_manage" />
 
     <View
@@ -63,23 +63,20 @@
         android:text="TextView"
         android:textAlignment="center"
         android:textAllCaps="true"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/issueImage" />
 
-    <ProgressBar
+    <ImageView
         android:id="@+id/issueState"
-        style="@android:style/Widget.DeviceDefault.ProgressBar.Horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="14dp"
+        android:layout_height="13dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="0"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/issueStateText"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -106,7 +103,19 @@
         android:layout_marginTop="8dp"
         android:text="TextView"
         android:textAlignment="center"
+        android:textSize="10sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/issueStateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/colorPolytech"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

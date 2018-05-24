@@ -92,6 +92,11 @@
     <string name="low_emergency">Pas urgent</string>
     <!-- /Emergency -->
 
+    <!-- State -->
+    <string name="issue_not_resolved">Non résolu</string>
+    <string name="issue_resolved">Résolu</string>
+    <!-- /State -->
+
 
 
 

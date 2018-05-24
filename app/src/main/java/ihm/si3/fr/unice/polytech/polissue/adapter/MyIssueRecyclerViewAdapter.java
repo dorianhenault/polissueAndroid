@@ -25,13 +25,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import ihm.si3.fr.unice.polytech.polissue.R;
 import ihm.si3.fr.unice.polytech.polissue.factory.IssueModelFactory;
@@ -72,7 +69,6 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.issueModel = mValues.get(position);
         holder.issueTitle.setText(mValues.get(position).getTitle());
-        setProgressBar(holder.issueState, holder.issueModel.getState());
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         DatabaseReference declarerRef =  ref.child("users").child(holder.issueModel.getUserID()).child("username");
         declarerRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -86,6 +82,10 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
 
             }
         });
+        GlideApp.with(holder.mView)
+                .load(holder.issueModel.getState().getDrawableId())
+                .into(holder.issueState);
+        holder.issueStateText.setText(holder.issueModel.getState().getMeaning());
         holder.issueDeclarer.setText(mValues.get(position).getUserID());
         long diff =date.getTime()- mValues.get(position).getDate().getTime();
         String expiredTime = calculateExpiredTime(diff, holder.mView.getContext());
@@ -158,18 +158,6 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
     }
 
 
-    private void setProgressBar(ProgressBar progressBar, State state){
-        if (state!=null) {
-            if (state == State.NOT_RESOLVED) {
-                progressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-            } else if (state == State.RESOLVED) {
-                progressBar.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
-            } else {
-                progressBar.getProgressDrawable().setColorFilter(Color.YELLOW, PorterDuff.Mode.SRC_IN);
-            }
-            progressBar.setProgress(state.getProgress());
-        }
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
@@ -177,7 +165,8 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
         public final TextView issueTitle;
         public final TextView issueDeclarer;
         public final TextView issueDate;
-        public final ProgressBar issueState;
+        public final ImageView issueState;
+        public final TextView issueStateText;
         public final View emergencyLight;
         public IssueModel issueModel;
 
@@ -189,6 +178,7 @@ public class MyIssueRecyclerViewAdapter extends RecyclerView.Adapter<MyIssueRecy
             issueDeclarer = view.findViewById(R.id.issueDeclarer);
             issueDate = view.findViewById(R.id.issueDate);
             issueState = view.findViewById(R.id.issueState);
+            issueStateText = view.findViewById(R.id.issueStateText);
             emergencyLight = view.findViewById(R.id.emergency_light);
         }
     }
