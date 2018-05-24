@@ -51,17 +51,17 @@ public class NotifyUserService extends Service {
                                 String issueID = snapshot.child("issueID").getValue(String.class);
                                 String uid = FirebaseAuth.getInstance().getUid();
                                 if (uid.equals(notified)) {
-                                    DatabaseReference issuesRef = FirebaseDatabase.getInstance().getReference().child("mishap").child(issueID);
+                                    DatabaseReference issuesRef = FirebaseDatabase.getInstance().getReference().child("mishap").child(issueID).getRef();
                                     final IssueModel[] issue = new IssueModel[1];
                                     ValueEventListener issueListener = new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                            for (DataSnapshot issueSnapshot : dataSnapshot.getChildren()) {
-                                                issue[0] = new IssueModelFactory().forge(issueSnapshot);
+
+                                                issue[0] = new IssueModelFactory().forge(dataSnapshot);
                                                 IssueNotificationBuilder builder = new IssueNotificationBuilder(issue[0], getBaseContext());
                                                 builder.build();
                                                 notifRef.child(snapshot.getKey()).removeValue();
-                                            }
+
                                         }
 
                                         @Override
