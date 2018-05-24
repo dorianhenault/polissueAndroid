@@ -240,7 +240,12 @@ public class DeclareIssueFragment extends Fragment{
                 image.setVisibility(View.VISIBLE);
             }
             else{
-                image.setVisibility(View.GONE);
+                if (imageURI != null){
+                    image.setImageURI(imageURI);
+                    image.setVisibility(View.VISIBLE);
+                }else {
+                    image.setVisibility(View.GONE);
+                }
             }
         }
         if(issueModel.getDescription()!=null){

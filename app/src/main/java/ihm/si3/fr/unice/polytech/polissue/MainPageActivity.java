@@ -27,13 +27,14 @@ import com.facebook.FacebookSdk;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import ihm.si3.fr.unice.polytech.polissue.fragment.location.IssuesListLocationFragment;
-import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import ihm.si3.fr.unice.polytech.polissue.fragment.DeclareIssueFragment;
 import ihm.si3.fr.unice.polytech.polissue.fragment.IssueListFragment;
+import ihm.si3.fr.unice.polytech.polissue.fragment.ProfileFragment;
+import ihm.si3.fr.unice.polytech.polissue.fragment.location.IssuesListLocationFragment;
+import ihm.si3.fr.unice.polytech.polissue.login.LoginActivity;
 import ihm.si3.fr.unice.polytech.polissue.service.HighEmergencyIssueService;
 import ihm.si3.fr.unice.polytech.polissue.service.NotifyUserService;
 
@@ -170,14 +171,17 @@ public class MainPageActivity extends AppCompatActivity
                         });
                 alertDialogBuilder.create();
                 alertDialogBuilder.show();
-        }else {
+            } else {
                 fragment[0] = DeclareIssueFragment.newInstance();
                 title[0] = getString(R.string.declare_issue);
             }
+        } else if (itemId == R.id.nav_account) {
+            fragment[0] = new ProfileFragment();
         }
 
         if (fragment[0] != null){
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.addToBackStack(null);
             ft.replace(R.id.content_frame, fragment[0]);
             ft.commit();
             if (getSupportActionBar()!=null){
