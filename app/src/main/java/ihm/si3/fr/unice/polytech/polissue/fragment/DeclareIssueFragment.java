@@ -91,6 +91,7 @@ public class DeclareIssueFragment extends Fragment{
         currentLocation = view.findViewById(R.id.currentLocationButton);
         cancelButton = view.findViewById(R.id.cancelButton);
         image = view.findViewById(R.id.issueImagePreview);
+        image.setVisibility(View.GONE);
         title = view.findViewById(R.id.titleTextField);
         description = view.findViewById(R.id.descriptionTextField);
         emergencyLevel = view.findViewById(R.id.emergencyLevel);
@@ -236,9 +237,10 @@ public class DeclareIssueFragment extends Fragment{
             }
             if (picture != null) {
                 image.setImageBitmap(picture);
+                image.setVisibility(View.VISIBLE);
             }
             else{
-                image.setImageURI(imageURI);
+                image.setVisibility(View.GONE);
             }
         }
         if(issueModel.getDescription()!=null){
@@ -343,7 +345,9 @@ public class DeclareIssueFragment extends Fragment{
             }
             if (picture != null) {
                 image.setImageBitmap(picture);
-
+                image.setVisibility(View.VISIBLE);
+            }else {
+                image.setVisibility(View.GONE);
             }
 
         }
